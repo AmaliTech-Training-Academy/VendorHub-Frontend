@@ -5,7 +5,7 @@ export default function Home() {
     <div className="w-full  h-screen flex justify-center items-center">
       <h1 className="text-6xl text-black font-extrabold">
         Welcome to Vendor
-        <span className="text-orange-500 animate-ping">Hub</span>
+        <span className="text-orange-600 animate-ping">Hub</span>
       </h1>
     </div>
   );
