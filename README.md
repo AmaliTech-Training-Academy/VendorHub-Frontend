@@ -14,7 +14,7 @@ Ensure you have **Node.js (v18 or higher)** installed on your machine.
 
 1. Clone the repository and navigate to the project root:
    ```bash
-   git clone https://github.com
+   git clone https://github.com/AmaliTech-Training-Academy/VendorHub-Frontend.git
    cd VendorHub-Frontend
    ```
 2. Install the project dependencies:
