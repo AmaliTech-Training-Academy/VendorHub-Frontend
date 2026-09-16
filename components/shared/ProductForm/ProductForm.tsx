@@ -1,0 +1,157 @@
+"use client"
+
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Select } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { DialogFooter } from "@/components/ui/dialog"
+import { cn } from "@/lib/utils"
+import {
+  PRODUCT_CATEGORIES,
+  productSchema,
+  type ProductFormInput,
+  type ProductFormValues,
+} from "@/types/product"
+
+const DEFAULT_VALUES: ProductFormValues = {
+  name: "",
+  description: "",
+  price: 0,
+  category: PRODUCT_CATEGORIES[0],
+  inStock: true,
+}
+
+function ProductForm({
+  defaultValues,
+  isSubmitting,
+  submitLabel,
+  onSubmit,
+  onCancel,
+}: {
+  defaultValues?: ProductFormValues
+  isSubmitting?: boolean
+  submitLabel: string
+  onSubmit: (values: ProductFormValues) => void
+  onCancel?: () => void
+}) {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<ProductFormInput, unknown, ProductFormValues>({
+    resolver: zodResolver(productSchema),
+    defaultValues: defaultValues ?? DEFAULT_VALUES,
+  })
+
+  const inStock = watch("inStock")
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col gap-4"
+      noValidate
+    >
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="product-name">Product name</Label>
+        <Input
+          id="product-name"
+          placeholder="e.g. Jollof Rice (1kg)"
+          aria-invalid={!!errors.name}
+          {...register("name")}
+        />
+        {errors.name && (
+          <p role="alert" className="text-sm text-destructive">
+            {errors.name.message}
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="product-description">Description</Label>
+        <Textarea
+          id="product-description"
+          placeholder="Briefly describe the product"
+          aria-invalid={!!errors.description}
+          {...register("description")}
+        />
+        {errors.description && (
+          <p role="alert" className="text-sm text-destructive">
+            {errors.description.message}
+          </p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="product-price">Price (GHS)</Label>
+          <Input
+            id="product-price"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            aria-invalid={!!errors.price}
+            {...register("price")}
+          />
+          {errors.price && (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.price.message}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="product-category">Category</Label>
+          <Select
+            id="product-category"
+            aria-invalid={!!errors.category}
+            {...register("category")}
+          >
+            {PRODUCT_CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </Select>
+          {errors.category && (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.category.message}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
+        <Label htmlFor="product-in-stock" className="cursor-pointer">
+          In stock
+        </Label>
+        <Switch
+          id="product-in-stock"
+          checked={inStock}
+          onCheckedChange={(checked) => setValue("inStock", checked)}
+        />
+      </div>
+
+      <DialogFooter className={cn("mt-2")}>
+        {onCancel && (
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+        )}
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="size-4 animate-spin" />}
+          {submitLabel}
+        </Button>
+      </DialogFooter>
+    </form>
+  )
+}
+
+export { ProductForm }
