@@ -5,19 +5,6 @@ import Image from "next/image";
 export default function OnboardingGraphics() {
   return (
     <div className="md:w-1/2 bg-gradient-to-br from-orange-50 via-amber-50 to-white h-full hidden md:flex flex-col items-center justify-center gap-8 p-8 border-r border-gray-100">
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-            @keyframes float-slow { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
-            @keyframes float-delayed { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(12px); } }
-            @keyframes float-fast { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
-            .animate-float-1 { animation: float-slow 6s ease-in-out infinite; }
-            .animate-float-2 { animation: float-delayed 7s ease-in-out infinite; }
-            .animate-float-3 { animation: float-fast 5s ease-in-out infinite; }
-          `,
-        }}
-      />
-
       <div className="relative w-full max-w-[450px] h-[380px]">
         {/* Circle 1 */}
         <span className="absolute top-0 left-24 w-44 h-44 rounded-full bg-white shadow-lg border-2 border-white overflow-hidden animate-float-1">
@@ -26,6 +13,7 @@ export default function OnboardingGraphics() {
             alt="onboarding graphic 1"
             fill
             sizes="(max-width: 768px) 100vw, 176px"
+            loading="eager"
             className="object-cover"
             priority
           />
@@ -38,6 +26,7 @@ export default function OnboardingGraphics() {
             alt="onboarding graphic 2"
             fill
             sizes="(max-width: 768px) 100vw, 224px"
+            loading="eager"
             className="object-cover"
           />
         </span>
@@ -49,6 +38,7 @@ export default function OnboardingGraphics() {
             alt="onboarding graphic 3"
             fill
             sizes="(max-width: 768px) 100vw, 192px"
+            loading="eager"
             className="object-cover"
           />
         </span>

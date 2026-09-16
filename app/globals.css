@@ -128,3 +128,37 @@
     @apply font-sans;
   }
 }
+
+@theme {
+  --animate-float-1: float-slow 6s ease-in-out infinite;
+  --animate-float-2: float-delayed 7s ease-in-out infinite;
+  --animate-float-3: float-fast 5s ease-in-out infinite;
+
+  @keyframes float-slow {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+  }
+  @keyframes float-delayed {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(12px);
+    }
+  }
+  @keyframes float-fast {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+}
