@@ -1,6 +1,6 @@
 "use client";
 
-import RegisterForm from "@/components/forms/RegisterForm";
+import { VendorRegistrationFlow } from "@/components/registration/VendorRegistrationFlow";
 import OnboardingGraphics from "@/components/shared/OnboardingGraphics";
 
 export default function RegisterPage() {
@@ -11,7 +11,7 @@ export default function RegisterPage() {
         <OnboardingGraphics />
 
         {/* RIGHT SIDE: Form Layout Shell */}
-        <RegisterForm />
+        <VendorRegistrationFlow />
       </div>
     </div>
   );
