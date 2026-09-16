@@ -1,6 +1,6 @@
 "use client";
 
-import RegisterForm from "@/components/forms/registerForm";
+import RegisterForm from "@/components/forms/RegisterForm";
 import OnboardingGraphics from "@/components/shared/OnboardingGraphics";
 
 export default function RegisterPage() {

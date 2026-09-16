@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 
-export default function OnboardingGraphics() {
+export default function OnboardingGraphics({}) {
   return (
-    <div className="md:w-1/2 bg-gradient-to-br from-orange-50 via-amber-50 to-white h-full hidden md:flex flex-col items-center justify-center gap-8 p-8 border-r border-gray-100">
-      <div className="relative w-full max-w-[450px] h-[380px]">
+    <div className="md:w-1/2 bg-linear-to-br from-orange-50 via-amber-50 to-white h-full hidden md:flex flex-col items-center justify-center gap-8 p-8 border-r border-gray-100">
+      <div className="relative w-full max-w-112.5 h-95">
         {/* Circle 1 */}
         <span className="absolute top-0 left-24 w-44 h-44 rounded-full bg-white shadow-lg border-2 border-white overflow-hidden animate-float-1">
           <Image
