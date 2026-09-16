@@ -46,11 +46,11 @@ export default function OnboardingGraphics({}) {
 
       <div className="text-center max-w-sm space-y-2">
         <h2 className="text-xl font-bold text-gray-800">
-          Grow Your Business With <span className="text-orange-500">Us</span>
+          Welcome to <span className="text-orange-500">VendorHub</span>
         </h2>
         <p className="text-sm text-gray-600 leading-relaxed">
-          Join 50+ happy vendors on this platform and increase your sales while
-          saving precious time.
+          Connecting vendors and teams for faster, easier ordering right from
+          your desk.
         </p>
       </div>
     </div>

@@ -1,32 +1,35 @@
-// store/useVendorAuthStore.ts
+// store/useAuthStore.ts
 import { create } from "zustand";
 
+export type UserRole = "vendor" | "employee";
+
 export interface RegisterFormData {
-  businessName: string;
-  ownerName: string;
   email: string;
   password: string;
+  role: UserRole;
 }
 
-interface VendorAuthState {
+interface AuthState {
   isLoading: boolean;
   error: string;
+  role: UserRole | null;
   register: (formData: RegisterFormData) => Promise<boolean>;
 }
 
-export const useVendorAuthStore = create<VendorAuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   isLoading: false,
   error: "",
+  role: null,
 
   register: async (formData: RegisterFormData) => {
     set({ isLoading: true, error: "" });
 
-    if (!formData.businessName || !formData.email || !formData.password) {
+    if (!formData.email || !formData.password || !formData.role) {
       set({ error: "Please fill in all required fields", isLoading: false });
       return false;
     }
 
-    // 🔧 TEMPORARY — fake network delay, standing in for the real Backend call
+    // 🔧 TEMPORARY — fake network delay, standing in for the real Django call
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     const fakeSuccess = true;
@@ -39,7 +42,7 @@ export const useVendorAuthStore = create<VendorAuthState>((set) => ({
       return false;
     }
 
-    set({ isLoading: false, error: "" });
+    set({ isLoading: false, error: "", role: formData.role });
     return true;
   },
 }));
