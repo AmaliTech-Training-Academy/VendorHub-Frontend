@@ -4,7 +4,7 @@
 import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
-import LoginField from "./LoginCredentialsFields";
+import LoginCredentialsFields from "./LoginCredentialsFields";
 
 import { useUserLogin } from "@/hooks/useUserLogin";
 import Image from "next/image";
@@ -53,7 +53,7 @@ export default function LoginFlow() {
             </div>
           )}
 
-          <LoginField register={register} errors={errors} />
+          <LoginCredentialsFields register={register} errors={errors} />
 
           <button
             type="submit"
