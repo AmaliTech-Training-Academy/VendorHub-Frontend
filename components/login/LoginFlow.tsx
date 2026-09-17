@@ -23,7 +23,7 @@ export default function LoginFlow() {
   });
 
   return (
-    <div className="w-full md:w-1/2 h-full flex flex-col justify-center p-6 md:p-12  animate-slide-in-right">
+    <div className="w-full md:w-1/2 h-full flex flex-col justify-center p-6 md:p-12  animate-slide-in-right md:bg-white/45">
       <div className="max-w-md mx-auto w-full">
         {/* Mobile-only logo header */}
         <div className="flex md:hidden  items-center gap-2 mb-6">
