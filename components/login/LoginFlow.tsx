@@ -4,7 +4,7 @@
 import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
-import LoginField from "./LoginField";
+import LoginField from "./LoginCredentialsFields";
 
 import { useUserLogin } from "@/hooks/useUserLogin";
 import Image from "next/image";
@@ -12,7 +12,7 @@ import Link from "next/link";
 
 export default function LoginFlow() {
   const router = useRouter();
-  const { register, onSubmit, errors, isLoading, error } = useUserLogin({
+  const { register, errors, isLoading, error, handleSubmit } = useUserLogin({
     onSuccess: (role) => {
       toast.success("Welcome back!");
       router.push(role === "vendor" ? "/dashboard" : "/storefront");
@@ -46,7 +46,7 @@ export default function LoginFlow() {
         </h1>
         <p className="text-sm text-gray-500 mt-1 mb-6">Sign in to continue</p>
 
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <div className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg p-3">
               {error}

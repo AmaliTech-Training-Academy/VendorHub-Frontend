@@ -11,7 +11,7 @@ import Link from "next/link";
 
 export default function RegistrationFlow() {
   const router = useRouter();
-  const { register, onSubmit, errors, setValue, watch, isLoading, error } =
+  const { register, handleSubmit, errors, setValue, watch, isLoading, error } =
     useUserRegistration({
       onSuccess: (data) => {
         toast.success("Account created! Redirecting...");
@@ -49,7 +49,7 @@ export default function RegistrationFlow() {
           Create your account to get started
         </p>
 
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <div className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg p-3">
               {error}
@@ -66,7 +66,7 @@ export default function RegistrationFlow() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold py-3 px-6 rounded-xl shadow-md shadow-orange-500/20 hover:opacity-95 active:scale-[0.99] transition-all duration-100 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-linear-to-r from-orange-500 to-amber-500 text-white font-semibold py-3 px-6 rounded-xl shadow-md shadow-orange-500/20 hover:opacity-95 active:scale-[0.99] transition-all duration-100 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isLoading ? "Creating account..." : "Create Account"}
           </button>

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginFormData, loginSchema } from "@/types/loginSchema"; // Adjust path to your login schema
+import { LoginFormData, loginSchema } from "@/types/loginSchema";
 import { useAuthStore } from "@/store/useAuthStore";
 
 interface UseUserLoginOptions {
@@ -12,8 +12,9 @@ export const useUserLogin = ({
   onSuccess,
   onError,
 }: UseUserLoginOptions = {}) => {
-  // Grab login, isLoading, and error from the auth store
-  const { login, isLoading, error } = useAuthStore();
+  const login = useAuthStore((state) => state.login);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const error = useAuthStore((state) => state.error);
 
   const {
     register,
@@ -41,7 +42,6 @@ export const useUserLogin = ({
     errors,
     isLoading,
     error,
-    onSubmit: handleSubmit(onSubmit),
-    handleSubmit,
+    handleSubmit: handleSubmit(onSubmit),
   };
 };

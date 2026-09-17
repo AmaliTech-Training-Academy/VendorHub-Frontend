@@ -12,7 +12,9 @@ export const useUserRegistration = ({
   onSuccess,
   onError,
 }: UseUserRegistrationOptions = {}) => {
-  const { register: registerUser, isLoading, error } = useAuthStore();
+  const registerUser = useAuthStore((state) => state.register);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const error = useAuthStore((state) => state.error);
 
   const {
     register,
@@ -27,8 +29,8 @@ export const useUserRegistration = ({
   const onSubmit = async (data: RegisterFormData) => {
     const success = await registerUser(data);
 
-    if (success) {
-      if (onSuccess) onSuccess(data);
+    if (success && onSuccess) {
+      onSuccess(data);
     } else {
       const errorMessage =
         useAuthStore.getState().error ||
@@ -44,7 +46,6 @@ export const useUserRegistration = ({
     errors,
     isLoading,
     error,
-    onSubmit: handleSubmit(onSubmit),
-    handleSubmit,
+    handleSubmit: handleSubmit(onSubmit),
   };
 };

@@ -30,13 +30,17 @@ interface AuthState {
   login: (formData: LoginFormData) => Promise<boolean>;
 }
 
-// 🛡️ Next.js SSR Safety check: Load from localStorage only on the client side
 const getInitialUsers = (): User[] => {
-  if (typeof window !== "undefined") {
-    const savedUsers = localStorage.getItem("users");
-    return savedUsers ? JSON.parse(savedUsers) : [];
+  try {
+    if (typeof window !== "undefined") {
+      const savedUsers = localStorage.getItem("users");
+      return savedUsers ? JSON.parse(savedUsers) : [];
+    }
+    return [];
+  } catch (error) {
+    console.error("Failed to load users from localStorage:", error);
+    return [];
   }
-  return [];
 };
 
 export const useAuthStore = create<AuthState>((set, get) => ({
