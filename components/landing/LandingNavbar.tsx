@@ -3,9 +3,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react"; // Make sure lucide-react is installed!
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-export default function Navbar() {
+const navigationLinks = [
+  { label: "How it works", href: "#how-it-works" },
+  { label: "Features", href: "#feature" },
+];
+
+const actionLinks = [
+  {
+    label: "Login",
+    href: "/login",
+    className: "bg-orange-500",
+    mobileClassName: "bg-amber-500",
+  },
+  {
+    label: "Get Started",
+    href: "/register",
+    className: "bg-blue-900",
+    mobileClassName: "bg-blue-900",
+  },
+];
+
+export default function LandingNavbar() {
   const [scroll, setScroll] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -56,50 +77,44 @@ export default function Navbar() {
         {/* Desktop Navigation Links (Hidden on mobile) */}
         <nav className="hidden md:block">
           <ul className="flex gap-8">
-            <li>
-              <Link
-                href="#how-it-works"
-                className="text-base font-medium text-gray-600 cursor-pointer hover:scale-105 transition-all duration-200 hover:text-blue-900 inline-block"
-              >
-                How it works
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#feature"
-                className="text-base font-medium text-gray-600 cursor-pointer hover:scale-105 transition-all duration-200 hover:text-blue-900 inline-block"
-              >
-                Features
-              </Link>
-            </li>
+            {navigationLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="text-base font-medium text-gray-600 cursor-pointer hover:scale-105 transition-all duration-200 hover:text-blue-900 inline-block"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
 
         {/* Desktop Buttons (Hidden on mobile) */}
         <div className="hidden md:flex gap-4 justify-center items-center">
-          <Link
-            href="/login"
-            className="px-5 py-2 rounded-md bg-orange-500 text-white font-semibold shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
-          >
-            Login
-          </Link>
-          <Link
-            href="/register"
-            className="px-5 py-2 rounded-md bg-blue-900 text-white font-semibold shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
-          >
-            Get Started
-          </Link>
+          {actionLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`px-5 py-2 rounded-md text-white font-semibold shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 ${link.className}`}
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
 
         {/* Mobile Hamburger Button (Only visible on mobile screens) */}
         <div className="md:hidden flex items-center">
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 text-blue-950 focus:outline-none"
+            className="text-blue-950"
             aria-label="Toggle Menu"
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -110,42 +125,31 @@ export default function Navbar() {
       >
         <nav className="flex flex-col gap-4 bg-white/95 backdrop-blur-md p-4 rounded-lg shadow-inner border border-gray-100">
           <ul className="flex flex-col gap-3">
-            <li>
-              <Link
-                href="#"
-                onClick={() => setIsOpen(false)}
-                className="block text-lg font-medium text-gray-700 hover:text-blue-900 py-1"
-              >
-                How it works
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                onClick={() => setIsOpen(false)}
-                className="block text-lg font-medium text-gray-700 hover:text-blue-900 py-1"
-              >
-                Features
-              </Link>
-            </li>
+            {navigationLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="block text-lg font-medium text-gray-700 hover:text-blue-900 py-1"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
           </ul>
 
           {/* Action buttons inside mobile dropdown */}
           <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-gray-100">
-            <Link
-              href="/login"
-              onClick={() => setIsOpen(false)}
-              className="w-full text-center px-4 py-2.5 rounded-md bg-amber-500 text-white font-semibold"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              onClick={() => setIsOpen(false)}
-              className="w-full text-center px-4 py-2.5 rounded-md bg-blue-900 text-white font-semibold"
-            >
-              Get Started
-            </Link>
+            {actionLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className={`w-full text-center px-4 py-2.5 rounded-md text-white font-semibold ${link.mobileClassName}`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
         </nav>
       </div>

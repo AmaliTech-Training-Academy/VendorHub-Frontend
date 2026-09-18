@@ -32,7 +32,10 @@ export default function FeatureHighlights() {
   ];
 
   return (
-    <section className="w-full bg-blue-950 flex justify-center items-center py-16 md:py-24 overflow-hidden ">
+    <section
+      id="feature"
+      className="w-full bg-blue-950 flex justify-center items-center py-16 md:py-24 overflow-hidden"
+    >
       <div className="w-11/12 max-w-7xl flex flex-col gap-12">
         {/* Component Headers */}
         <div className="flex flex-col gap-2 max-w-xl">

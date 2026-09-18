@@ -5,10 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { LoginFieldsProps } from "@/types/interfaces";
 
-export default function LoginCredentialsFields({
-  register,
-  errors,
-}: LoginFieldsProps) {
+export default function LoginFields({ register, errors }: LoginFieldsProps) {
   return (
     <>
       <div className="flex flex-col gap-1.5">

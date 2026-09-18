@@ -4,7 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { Heart } from "lucide-react";
 
-export default function Footer() {
+const footerLinks = [
+  { label: "Sign In", href: "/login" },
+  { label: "Register", href: "/register" },
+  { label: "Support Contact", href: "mailto:support@vendorhub.com" },
+];
+
+export default function LandingFooter() {
   return (
     // Fits seamlessly into the landing page flow using bg-slate-900
     <footer className="w-full bg-slate-900 border-t border-slate-800 flex justify-center items-center py-12 overflow-hidden">
@@ -34,26 +40,19 @@ export default function Footer() {
 
           {/* Quick Navigation Links Array */}
           <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 text-sm">
-            <Link
-              href="/login"
-              className="text-slate-400 hover:text-white transition-colors duration-200 font-light"
-            >
-              Sign In
-            </Link>
-            <span className="hidden sm:inline text-slate-800">•</span>
-            <Link
-              href="/register"
-              className="text-slate-400 hover:text-white transition-colors duration-200 font-light"
-            >
-              Register
-            </Link>
-            <span className="hidden sm:inline text-slate-800">•</span>
-            <Link
-              href="mailto:support@vendorhub.com"
-              className="text-slate-400 hover:text-white transition-colors duration-200 font-light"
-            >
-              Support Contact
-            </Link>
+            {footerLinks.map((link, index) => (
+              <div key={link.href} className="flex items-center gap-6 sm:gap-8">
+                {index > 0 && (
+                  <span className="hidden sm:inline text-slate-800">•</span>
+                )}
+                <Link
+                  href={link.href}
+                  className="text-slate-400 hover:text-white transition-colors duration-200 font-light"
+                >
+                  {link.label}
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
 

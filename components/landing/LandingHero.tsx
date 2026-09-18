@@ -3,7 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function HeroSection() {
+const heroActions = [
+  {
+    label: "Get Started",
+    href: "/register",
+    className: "bg-blue-900 text-white shadow-md hover:shadow-xl",
+  },
+  {
+    label: "See how it works",
+    href: "#how-it-works",
+    className:
+      "bg-white border border-gray-200 text-blue-900 shadow-sm hover:shadow-md",
+  },
+];
+
+export default function LandingHero() {
   return (
     <section className="w-full flex justify-center py-12 md:py-24 overflow-hidden selection:bg-orange-500 selection:text-white">
       {/* Increased the gap and maximized space for large viewports */}
@@ -25,18 +39,15 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center md:justify-start w-full">
-            <Link
-              href="/register"
-              className="px-6 py-3 rounded-md bg-blue-900 text-white font-semibold shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center min-w-[140px]"
-            >
-              Get Started
-            </Link>
-            <Link
-              href="#how-it-works"
-              className="px-6 py-3 rounded-md bg-white border border-gray-200 text-blue-900 font-semibold shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 text-center min-w-[140px]"
-            >
-              See how it works
-            </Link>
+            {heroActions.map((action) => (
+              <Link
+                key={action.href}
+                href={action.href}
+                className={`px-6 py-3 rounded-md font-semibold transition-all duration-200 hover:-translate-y-1 text-center min-w-[140px] ${action.className}`}
+              >
+                {action.label}
+              </Link>
+            ))}
           </div>
         </div>
 

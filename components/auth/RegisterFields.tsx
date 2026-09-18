@@ -1,4 +1,3 @@
-// components/registration/RegistrationFields.tsx
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
@@ -7,7 +6,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { RegisterFieldsProps } from "@/types/interfaces";
 import type { RegisterFormData } from "@/types/types";
 
-export function RegistrationFields({
+export function RegisterFields({
   register,
   errors,
   setValue,

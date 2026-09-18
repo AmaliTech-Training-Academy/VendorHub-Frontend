@@ -2,7 +2,7 @@
 
 import { Star, Quote, Building2, Utensils, Sparkles } from "lucide-react";
 
-export default function SocialProof() {
+export default function TestimonialsSection() {
   const reviews = [
     {
       quote:

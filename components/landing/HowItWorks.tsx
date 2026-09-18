@@ -11,11 +11,16 @@ import {
   BellRing,
 } from "lucide-react";
 import { clsx } from "cn";
+import { Button } from "@/components/ui/button";
+import type { AudienceTab } from "@/types/types";
+
+const audienceTabs = [
+  { id: "employees", label: "Employees" },
+  { id: "vendors", label: "Vendors" },
+] as const;
 
 export default function HowItWorks() {
-  const [activeTab, setActiveTab] = useState<"employees" | "vendors">(
-    "employees",
-  );
+  const [activeTab, setActiveTab] = useState<AudienceTab>("employees");
 
   const data = {
     vendors: {
@@ -81,30 +86,27 @@ export default function HowItWorks() {
 
           {/* Clean Switcher Buttons */}
           <div className="flex bg-slate-900 p-1 rounded-xl w-full max-w-xs self-start md:self-auto shadow-inner border border-slate-800">
-            <button
-              onClick={() => setActiveTab("employees")}
-              className={clsx(
-                "w-1/2 py-2.5 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-300",
-                {
-                  "bg-blue-900 text-white shadow-sm": activeTab === "employees",
-                  "text-slate-400 hover:text-white": activeTab !== "employees",
-                },
-              )}
-            >
-              Employees
-            </button>
-            <button
-              onClick={() => setActiveTab("vendors")}
-              className={clsx(
-                "w-1/2 py-2.5 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-300",
-                {
-                  "bg-orange-500 text-white shadow-sm": activeTab === "vendors",
-                  "text-slate-400 hover:text-white": activeTab !== "vendors",
-                },
-              )}
-            >
-              Vendors
-            </button>
+            {audienceTabs.map((tab) => (
+              <Button
+                key={tab.id}
+                type="button"
+                variant="ghost"
+                aria-pressed={activeTab === tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={clsx(
+                  "w-1/2 py-2.5 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-300 hover:bg-transparent",
+                  {
+                    "bg-blue-900 text-white shadow-sm hover:text-white":
+                      activeTab === tab.id && tab.id === "employees",
+                    "bg-orange-500 text-white shadow-sm hover:text-white":
+                      activeTab === tab.id && tab.id === "vendors",
+                    "text-slate-400 hover:text-white": activeTab !== tab.id,
+                  },
+                )}
+              >
+                {tab.label}
+              </Button>
+            ))}
           </div>
         </div>
 
