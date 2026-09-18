@@ -8,7 +8,7 @@ type Props = {
   errors: FieldErrors<LoginFormData>;
 };
 
-export default function LoginField({ register, errors }: Props) {
+export default function LoginCredentialsFields({ register, errors }: Props) {
   return (
     <>
       <div className="flex flex-col gap-1.5">
