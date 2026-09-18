@@ -2,7 +2,8 @@
 
 import { Star, Quote, Building2, Utensils, Sparkles } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+import { Card, CardContent, CardFooter } from "../ui/card";
 
 export default function TestimonialsSection() {
   const reviews = [
@@ -12,8 +13,8 @@ export default function TestimonialsSection() {
       author: "Sarah K.",
       role: "Operations Lead",
       tag: "Corporate Team",
+      avatarUrl: "",
       icon: <Building2 className="w-3.5 h-3.5 text-sky-400" />,
-      // Extra styling flags for bento layout composition variation
       gridSpan: "md:col-span-2 lg:col-span-7",
       accentGlow: "from-sky-500/10 to-transparent",
     },
@@ -23,6 +24,7 @@ export default function TestimonialsSection() {
       author: "Chef Marcus",
       role: "Owner, StreetEats Catering",
       tag: "Food Vendor",
+      avatarUrl: "",
       icon: <Utensils className="w-3.5 h-3.5 text-orange-400" />,
       gridSpan: "md:col-span-1 lg:col-span-5",
       accentGlow: "from-orange-500/10 to-transparent",
@@ -33,6 +35,7 @@ export default function TestimonialsSection() {
       author: "David L.",
       role: "Software Engineer",
       tag: "Employee",
+      avatarUrl: "",
       icon: <Sparkles className="w-3.5 h-3.5 text-emerald-400" />,
       gridSpan: "md:col-span-3 lg:col-span-12",
       accentGlow: "from-emerald-500/5 to-transparent",
@@ -72,28 +75,31 @@ export default function TestimonialsSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-12 gap-6 w-full">
           {reviews.map((item, index) => (
-            <div
+            <Card
               key={index}
-              className={`group relative bg-linear-to-b from-white/3 to-white/1 border border-white/5 p-8 rounded-3xl shadow-xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:border-white/10 flex flex-col justify-between overflow-hidden backdrop-blur-sm ${item.gridSpan}`}
+              className={`group relative bg-transparent bg-linear-to-b from-white/3 to-white/1 border border-white/5 p-8 rounded-3xl shadow-xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:border-white/10 flex flex-col justify-between overflow-hidden backdrop-blur-sm ${item.gridSpan}`}
             >
-              {/* Internal abstract gradient accent that glows upon hovering */}
               <div
                 className={`absolute -right-20 -top-20 w-48 h-48 bg-linear-to-br ${item.accentGlow} rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`}
               />
 
-              {/* Decorative Large Modern Floating Quote Component */}
               <Quote className="absolute right-8 top-8 w-16 h-16 text-white/1.5 group-hover:text-white/3 group-hover:scale-110 transition-all duration-500 transform rotate-180 pointer-events-none" />
 
-              {/* Core Testimonial Quote */}
-              <p className="text-base sm:text-lg text-slate-200 font-light tracking-wide leading-relaxed mb-8 max-w-3xl relative z-10 antialiased">
-                {item.quote}
-              </p>
+              <CardContent className="p-0 mb-8 max-w-3xl relative z-10">
+                <p className="text-base sm:text-lg text-slate-200 font-light tracking-wide leading-relaxed antialiased">
+                  {item.quote}
+                </p>
+              </CardContent>
 
-              {/* Reviewer Profile Identity Footer Area */}
-              <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/5 relative z-10 mt-auto">
+              <CardFooter className="p-0 flex items-center justify-between gap-4 pt-4 border-t border-white/5 relative z-10 mt-auto bg-transparent">
                 <div className="flex items-center gap-3">
                   <Avatar className="size-10 border border-white/10 bg-linear-to-tr from-slate-800 to-slate-700 text-sm text-slate-200 shadow-inner transition-all duration-300 group-hover:from-slate-700 group-hover:to-slate-600">
-                    <AvatarFallback className="bg-transparent font-bold text-inherit">
+                    <AvatarImage
+                      src={item.avatarUrl}
+                      alt={item.author}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-transparent font-bold text-inherit flex items-center justify-center w-full h-full">
                       {item.author.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
@@ -114,8 +120,8 @@ export default function TestimonialsSection() {
                   {item.icon}
                   {item.tag}
                 </Badge>
-              </div>
-            </div>
+              </CardFooter>
+            </Card>
           ))}
         </div>
       </div>
