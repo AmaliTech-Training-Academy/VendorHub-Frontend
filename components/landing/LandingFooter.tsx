@@ -64,7 +64,7 @@ export default function LandingFooter() {
           {/* Amalitech Team Credit Pillar */}
           <div className="flex items-center gap-1.5 transition-all duration-300 hover:text-slate-400">
             <span>Built with</span>
-            <Heart className="w-3.5 h-3.5 text-orange-500 fill-orange-500 animate-pulse [animation-duration:3s]" />
+            <Heart className="w-3.5 h-3.5 text-orange-500 fill-orange-500 animate-pulse animation-duration-[3s]" />
             <span>by the VendorHub team at</span>
             <Link
               href="https://amalitech.org"

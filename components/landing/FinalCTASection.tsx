@@ -31,7 +31,7 @@ export default function FinalCTASection() {
     // Fits perfectly into your layout flow using bg-slate-900
     <section className="w-full bg-orange-200 flex justify-center items-center py-24 md:py-32 overflow-hidden border-t border-slate-800 relative">
       {/* Human-designed organic ambient light spotlights */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-gradient-to-tr from-blue-600/10 to-orange-500/5 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse [animation-duration:8s]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-137.5 h-137.5 bg-linear-to-tr from-blue-600/10 to-orange-500/5 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse animation-duration-[8s]" />
 
       {/* Decorative Floating UI Badge elements to break rigid alignments */}
       {ctaBadges.map((badge) => {
@@ -67,7 +67,7 @@ export default function FinalCTASection() {
         <div className="flex flex-col items-center gap-4 w-full max-w-md animate-slide-in-up [animation-delay:150ms] mt-2">
           <Link
             href="/register"
-            className="group w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-900 to-blue-950 hover:from-orange-500 hover:to-orange-600 text-white font-bold tracking-wide shadow-xl shadow-blue-950/50 hover:shadow-blue-900/30 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-3 text-base"
+            className="group w-full sm:w-auto px-8 py-4 rounded-2xl bg-linear-to-r from-blue-900 to-blue-950 hover:from-orange-500 hover:to-orange-600 text-white font-bold tracking-wide shadow-xl shadow-blue-950/50 hover:shadow-blue-900/30 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-3 text-base"
           >
             Create your account
             {/* Arrow icon slides outward smoothly on hover */}

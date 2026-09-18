@@ -62,10 +62,10 @@ export default function FeatureHighlights() {
             <div
               key={index}
               // Translucent hover container that responds smoothly to movement
-              className="group relative bg-white/[0.02] border border-white/5 p-6 rounded-2xl transition-all duration-300 hover:bg-white/5 hover:-translate-y-2 hover:shadow-xl hover:border-white/10 flex flex-col gap-4"
+              className="group relative bg-white/2 border border-white/5 p-6 rounded-2xl transition-all duration-300 hover:bg-white/5 hover:-translate-y-2 hover:shadow-xl hover:border-white/10 flex flex-col gap-4"
             >
               {/* Highlight Background Pulse (Adds subtle glowing effect on card hover) */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-white/2 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
               {/* Icon Holder Frame */}
               <div

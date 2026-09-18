@@ -39,8 +39,8 @@ export default function TestimonialsSection() {
 
   return (
     <section className="w-full bg-slate-900 flex justify-center items-center py-20 md:py-28 overflow-hidden relative border-t border-slate-800">
-      <div className="absolute top-1/4 left-1/4 w-[450px] h-[450px] bg-blue-600/[0.04] rounded-full blur-[130px] pointer-events-none -z-10" />
-      <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-orange-500/[0.04] rounded-full blur-[130px] pointer-events-none -z-10" />
+      <div className="absolute top-1/4 left-1/4 w-112.5 h-112.5 bg-blue-600/4 rounded-full blur-[130px] pointer-events-none -z-10" />
+      <div className="absolute bottom-1/4 right-1/4 w-112.5 h-112.5 bg-orange-500/4 rounded-full blur-[130px] pointer-events-none -z-10" />
 
       <div className="w-11/12 max-w-7xl flex flex-col gap-16">
         <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4 max-w-2xl">
@@ -71,15 +71,15 @@ export default function TestimonialsSection() {
           {reviews.map((item, index) => (
             <div
               key={index}
-              className={`group relative bg-gradient-to-b from-white/[0.03] to-white/[0.01] border border-white/5 p-8 rounded-3xl shadow-xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:border-white/10 flex flex-col justify-between overflow-hidden backdrop-blur-sm ${item.gridSpan}`}
+              className={`group relative bg-linear-to-b from-white/3 to-white/1 border border-white/5 p-8 rounded-3xl shadow-xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:border-white/10 flex flex-col justify-between overflow-hidden backdrop-blur-sm ${item.gridSpan}`}
             >
               {/* Internal abstract gradient accent that glows upon hovering */}
               <div
-                className={`absolute -right-20 -top-20 w-48 h-48 bg-gradient-to-br ${item.accentGlow} rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`}
+                className={`absolute -right-20 -top-20 w-48 h-48 bg-linear-to-br ${item.accentGlow} rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`}
               />
 
               {/* Decorative Large Modern Floating Quote Component */}
-              <Quote className="absolute right-8 top-8 w-16 h-16 text-white/[0.015] group-hover:text-white/[0.03] group-hover:scale-110 transition-all duration-500 transform rotate-180 pointer-events-none" />
+              <Quote className="absolute right-8 top-8 w-16 h-16 text-white/1.5 group-hover:text-white/3 group-hover:scale-110 transition-all duration-500 transform rotate-180 pointer-events-none" />
 
               {/* Core Testimonial Quote */}
               <p className="text-base sm:text-lg text-slate-200 font-light tracking-wide leading-relaxed mb-8 max-w-3xl relative z-10 antialiased">
@@ -90,7 +90,7 @@ export default function TestimonialsSection() {
               <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/5 relative z-10 mt-auto">
                 <div className="flex items-center gap-3">
                   {/* Humanizing Avatar Placeholder with initial lettering */}
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-slate-800 to-slate-700 border border-white/10 flex items-center justify-center font-bold text-sm text-slate-200 shadow-inner group-hover:from-slate-700 group-hover:to-slate-600 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-full bg-linear-to-tr from-slate-800 to-slate-700 border border-white/10 flex items-center justify-center font-bold text-sm text-slate-200 shadow-inner group-hover:from-slate-700 group-hover:to-slate-600 transition-all duration-300">
                     {item.author.charAt(0)}
                   </div>
                   <div>
@@ -104,7 +104,7 @@ export default function TestimonialsSection() {
                 </div>
 
                 {/* Styled pill badge label marking their role type */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.02] border border-white/5 text-[11px] font-medium text-slate-300 shadow-sm transition-all duration-300 group-hover:bg-white/[0.05]">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/2 border border-white/5 text-[11px] font-medium text-slate-300 shadow-sm transition-all duration-300 group-hover:bg-white/5">
                   {item.icon}
                   <span>{item.tag}</span>
                 </div>

@@ -124,7 +124,7 @@ export default function HowItWorks() {
               >
                 <div
                   className={clsx(
-                    "w-12 h-12 rounded-xl flex flex-shrink-0 items-center justify-center font-bold text-lg transition-transform duration-300 group-hover:scale-105",
+                    "w-12 h-12 rounded-xl flex shrink-0 items-center justify-center font-bold text-lg transition-transform duration-300 group-hover:scale-105",
                     {
                       "bg-sky-500/10": activeTab === "employees",
                       "bg-orange-500/10": activeTab === "vendors",
@@ -154,7 +154,7 @@ export default function HowItWorks() {
             key={`${activeTab}-image`}
             className="w-full flex justify-center md:justify-end order-1 md:order-2 animate-slide-in-right"
           >
-            <div className="relative w-full max-w-[480px] lg:max-w-[520px] h-[350px] sm:h-[450px] md:h-[420px] lg:h-[500px]">
+            <div className="relative w-full max-w-120 lg:max-w-130 h-87.5 sm:h-112.5 md:h-105 lg:h-125">
               <div
                 className={clsx(
                   "absolute -right-4 -bottom-4 w-full h-full rounded-3xl -z-10 border-4 border-dashed transition-colors duration-300",

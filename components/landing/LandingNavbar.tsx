@@ -46,8 +46,7 @@ export default function LandingNavbar() {
   }, []);
 
   return (
-    // 1. Added explicit backdrop-blur and altered widths.
-    // On scroll, it transitions to a solid background so text remains perfectly legible.
+    
     <header
       className={`sticky top-0 sm:top-5 z-50 w-full transition-all duration-300 flex flex-col justify-center px-4 sm:px-6 py-4
         ${
@@ -66,7 +65,7 @@ export default function LandingNavbar() {
             priority
             width={50}
             height={50}
-            className="object-contain rounded-full w-[40px] h-[40px] sm:w-[50px] sm:h-[50px]"
+            className="object-contain rounded-full w-10 h-10 sm:w-12.5 sm:h-12.5"
           />
           <span className="text-xl sm:text-2xl font-arial font-extrabold tracking-tight">
             <span className="text-blue-900">Vendor</span>
@@ -121,7 +120,7 @@ export default function LandingNavbar() {
       {/* 2. Mobile Dropdown Menu Container */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out 
-          ${isOpen ? "max-h-[300px] opacity-100 mt-4" : "max-h-0 opacity-0 pointer-events-none"}`}
+          ${isOpen ? "max-h-75 opacity-100 mt-4" : "max-h-0 opacity-0 pointer-events-none"}`}
       >
         <nav className="flex flex-col gap-4 bg-white/95 backdrop-blur-md p-4 rounded-lg shadow-inner border border-gray-100">
           <ul className="flex flex-col gap-3">

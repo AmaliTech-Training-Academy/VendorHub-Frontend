@@ -43,7 +43,7 @@ export default function LandingHero() {
               <Link
                 key={action.href}
                 href={action.href}
-                className={`px-6 py-3 rounded-md font-semibold transition-all duration-200 hover:-translate-y-1 text-center min-w-[140px] ${action.className}`}
+                className={`px-6 py-3 rounded-md font-semibold transition-all duration-200 hover:-translate-y-1 text-center min-w-35 ${action.className}`}
               >
                 {action.label}
               </Link>
@@ -51,7 +51,7 @@ export default function LandingHero() {
           </div>
         </div>
 
-        <div className="relative w-full max-w-137.5 lg:max-w-150 md:w-1/2 h-[400px] md:h-120 lg:h-145 animate-slide-in-right mt-12 md:mt-0">
+        <div className="relative w-full max-w-137.5 lg:max-w-150 md:w-1/2 h-100 md:h-120 lg:h-145 animate-slide-in-right mt-12 md:mt-0">
           <div className="absolute right-4 top-4 bg-orange-100/60 w-11/12 h-5/6 rounded-3xl transform rotate-3 -z-10 shadow-sm animate-bounce transition-all delay-200 duration-300"></div>
 
           <div className="absolute top-0 left-0 w-3/4 h-4/5 rounded-3xl shadow-xl border-4 border-white z-10 bg-orange-50 ">

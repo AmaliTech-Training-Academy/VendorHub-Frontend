@@ -29,7 +29,7 @@ export default function PainPointsSection() {
       id="story"
     >
       <div className="w-11/12 max-w-7xl flex flex-col md:flex-row gap-12 lg:gap-20 items-center justify-between">
-        <div className="relative w-full max-w-[450px] lg:max-w-[500px] h-[350px] md:h-[500px] border-8 border-orange-100 rounded-2xl overflow-hidden shadow-xl animate-slide-in-left transition-transform duration-500 hover:scale-[1.02]">
+        <div className="relative w-full max-w-112.5 lg:max-w-125 h-87.5 md:h-125 border-8 border-orange-100 rounded-2xl overflow-hidden shadow-xl animate-slide-in-left transition-transform duration-500 hover:scale-[1.02]">
           <Image
             src="/vendor-3.jpg"
             alt="Delicious office vendor meal food"
@@ -51,7 +51,7 @@ export default function PainPointsSection() {
                 key={point.emphasis}
                 className="group flex items-start gap-3 text-base sm:text-lg text-gray-700 font-light leading-relaxed p-3 rounded-xl transition-all duration-300 hover:bg-white hover:shadow-md hover:translate-x-2"
               >
-                <span className="text-orange-500 mt-1 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:text-orange-600">
+                <span className="text-orange-500 mt-1 shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:text-orange-600">
                   <CircleCheck className="w-6 h-6 fill-orange-50" />
                 </span>
                 <span>
