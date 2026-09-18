@@ -6,5 +6,3 @@ export const registerSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
   role: z.enum(["vendor", "employee"], "Please select a role"),
 });
-
-export type RegisterFormData = z.infer<typeof registerSchema>;

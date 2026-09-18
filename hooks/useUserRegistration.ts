@@ -1,12 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterFormData, registerSchema } from "@/types/registerSchema";
+import { registerSchema } from "@/schemas/registerSchema";
 import { useAuthStore } from "@/store/useAuthStore";
-
-interface UseUserRegistrationOptions {
-  onSuccess?: (data: RegisterFormData) => void;
-  onError?: (error: string) => void;
-}
+import type { UseUserRegistrationOptions } from "@/types/interfaces";
+import type { RegisterFormData } from "@/types/types";
 
 export const useUserRegistration = ({
   onSuccess,
