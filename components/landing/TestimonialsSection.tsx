@@ -2,6 +2,7 @@
 
 import { Star, Quote, Building2, Utensils, Sparkles } from "lucide-react";
 import { Badge } from "../ui/badge";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 
 export default function TestimonialsSection() {
   const reviews = [
@@ -91,10 +92,11 @@ export default function TestimonialsSection() {
               {/* Reviewer Profile Identity Footer Area */}
               <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/5 relative z-10 mt-auto">
                 <div className="flex items-center gap-3">
-                  {/* Humanizing Avatar Placeholder with initial lettering */}
-                  <div className="w-10 h-10 rounded-full bg-linear-to-tr from-slate-800 to-slate-700 border border-white/10 flex items-center justify-center font-bold text-sm text-slate-200 shadow-inner group-hover:from-slate-700 group-hover:to-slate-600 transition-all duration-300">
-                    {item.author.charAt(0)}
-                  </div>
+                  <Avatar className="size-10 border border-white/10 bg-linear-to-tr from-slate-800 to-slate-700 text-sm text-slate-200 shadow-inner transition-all duration-300 group-hover:from-slate-700 group-hover:to-slate-600">
+                    <AvatarFallback className="bg-transparent font-bold text-inherit">
+                      {item.author.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
                   <div>
                     <h4 className="text-sm font-bold text-white tracking-wide">
                       {item.author}
