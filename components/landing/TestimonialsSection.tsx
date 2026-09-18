@@ -1,6 +1,7 @@
 "use client";
 
 import { Star, Quote, Building2, Utensils, Sparkles } from "lucide-react";
+import { Badge } from "../ui/badge";
 
 export default function TestimonialsSection() {
   const reviews = [
@@ -44,11 +45,12 @@ export default function TestimonialsSection() {
 
       <div className="w-11/12 max-w-7xl flex flex-col gap-16">
         <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-linear-to-r from-blue-500/10 to-orange-500/10 border border-white/5 shadow-inner">
-            <span className="text-xs font-semibold text-orange-500 tracking-wider uppercase">
-              Early Access Reviews
-            </span>
-          </div>
+          <Badge
+            variant="outline"
+            className="gap-2 border-white/5 bg-linear-to-r from-blue-500/10 to-orange-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-orange-500 uppercase shadow-inner"
+          >
+            Early Access Reviews
+          </Badge>
 
           <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
             Loved by local vendors. <br className="hidden sm:inline" />
@@ -103,11 +105,13 @@ export default function TestimonialsSection() {
                   </div>
                 </div>
 
-                {/* Styled pill badge label marking their role type */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/2 border border-white/5 text-[11px] font-medium text-slate-300 shadow-sm transition-all duration-300 group-hover:bg-white/5">
+                <Badge
+                  variant="outline"
+                  className="gap-1.5 border-white/5 bg-white/2 px-3 py-1 text-[11px] font-medium text-slate-300 shadow-sm transition-all duration-300 group-hover:bg-white/5"
+                >
                   {item.icon}
-                  <span>{item.tag}</span>
-                </div>
+                  {item.tag}
+                </Badge>
               </div>
             </div>
           ))}
