@@ -6,7 +6,7 @@ import HowItWorks from "@/components/landing/HowItWorks";
 import LandingNavbar from "@/components/landing/LandingNavbar";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import PainPointsSection from "@/components/landing/PainPointsSection";
-import FinalCTASection from "@/components/landing/FinalCTASection";
+import CTASection from "@/components/landing/CTASection";
 import LandingFooter from "@/components/landing/LandingFooter";
 
 export default function Home() {
@@ -20,7 +20,7 @@ export default function Home() {
         <HowItWorks />
         <FeatureHighlights />
         <TestimonialsSection />
-        <FinalCTASection />
+        <CTASection />
         <LandingFooter />
       </main>
     </div>

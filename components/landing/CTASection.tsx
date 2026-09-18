@@ -26,7 +26,7 @@ const trustPoints = [
   "Cancel anytime",
 ];
 
-export default function FinalCTASection() {
+export default function CTASection() {
   return (
     // Fits perfectly into your layout flow using bg-slate-900
     <section className="w-full bg-orange-200 flex justify-center items-center py-24 md:py-32 overflow-hidden border-t border-slate-800 relative">
