@@ -66,18 +66,10 @@ export default function Navbar() {
             </li>
             <li>
               <Link
-                href="#"
+                href="#feature"
                 className="text-base font-medium text-gray-600 cursor-pointer hover:scale-105 transition-all duration-200 hover:text-blue-900 inline-block"
               >
                 Features
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                className="text-base font-medium text-gray-600 cursor-pointer hover:scale-105 transition-all duration-200 hover:text-blue-900 inline-block"
-              >
-                FAQ
               </Link>
             </li>
           </ul>
@@ -134,15 +126,6 @@ export default function Navbar() {
                 className="block text-lg font-medium text-gray-700 hover:text-blue-900 py-1"
               >
                 Features
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                onClick={() => setIsOpen(false)}
-                className="block text-lg font-medium text-gray-700 hover:text-blue-900 py-1"
-              >
-                FAQ
               </Link>
             </li>
           </ul>
