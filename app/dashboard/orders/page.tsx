@@ -1,7 +1,10 @@
 "use client"
 
-import { Loader2 } from "lucide-react"
+import { CircleAlert } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
+import { EmptyState } from "@/components/shared/EmptyState"
+import { OrdersTableSkeleton } from "@/components/shared/OrdersTableSkeleton"
 import {
   Table,
   TableBody,
@@ -12,13 +15,7 @@ import {
 } from "@/components/ui/table"
 import { useVendorOrders } from "@/hooks/useOrders"
 import { MOCK_VENDOR_ID } from "@/lib/constants"
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-GH", {
-    style: "currency",
-    currency: "GHS",
-  }).format(price)
-}
+import { formatPrice } from "@/lib/utils"
 
 export default function OrdersPage() {
   const vendorId = MOCK_VENDOR_ID
@@ -33,26 +30,23 @@ export default function OrdersPage() {
         </p>
       </div>
 
-      {isPending && (
-        <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" />
-          Loading orders…
-        </div>
-      )}
+      {isPending && <OrdersTableSkeleton />}
 
       {isError && (
-        <p className="text-sm text-destructive">
-          Something went wrong loading your orders. Please try again.
-        </p>
+        <Alert variant="destructive">
+          <CircleAlert />
+          <AlertTitle>Unable to load orders</AlertTitle>
+          <AlertDescription>
+            Something went wrong loading your orders. Please try again.
+          </AlertDescription>
+        </Alert>
       )}
 
       {orders && orders.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border py-16 text-center">
-          <p className="text-sm font-medium">No orders yet</p>
-          <p className="text-sm text-muted-foreground">
-            New orders from the storefront will appear here immediately.
-          </p>
-        </div>
+        <EmptyState
+          title="No orders yet"
+          description="New orders from the storefront will appear here immediately."
+        />
       )}
 
       {orders && orders.length > 0 && (

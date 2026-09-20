@@ -2,13 +2,7 @@
 
 import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-GH", {
-    style: "currency",
-    currency: "GHS",
-  }).format(price)
-}
+import { formatPrice } from "@/lib/utils"
 
 function CartSummary({
   subtotal,

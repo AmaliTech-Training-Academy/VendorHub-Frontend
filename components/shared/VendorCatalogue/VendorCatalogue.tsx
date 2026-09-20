@@ -14,6 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { EmptyState } from "@/components/shared/EmptyState"
 import { StorefrontProductCard } from "@/components/shared/StorefrontProductCard"
 import { useVendor, useVendorCatalogue } from "@/hooks/useVendors"
 import { useCartStore } from "@/store/cartStore"
@@ -97,12 +98,10 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
       )}
 
       {products && products.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border py-16 text-center">
-          <p className="text-sm font-medium">No products in stock</p>
-          <p className="text-sm text-muted-foreground">
-            This vendor has no available products right now.
-          </p>
-        </div>
+        <EmptyState
+          title="No products in stock"
+          description="This vendor has no available products right now."
+        />
       )}
 
       {products && products.length > 0 && (

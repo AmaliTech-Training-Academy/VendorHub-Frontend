@@ -1,14 +1,8 @@
 import Link from "next/link"
 import { PartyPopper } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { formatPrice } from "@/lib/utils"
 import type { Order } from "@/types/order"
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-GH", {
-    style: "currency",
-    currency: "GHS",
-  }).format(price)
-}
 
 function OrderConfirmation({ order }: { order: Order }) {
   return (

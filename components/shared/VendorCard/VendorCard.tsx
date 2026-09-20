@@ -1,14 +1,8 @@
 import Link from "next/link"
 import { Store } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { formatPrice } from "@/lib/utils"
 import type { Vendor } from "@/types/vendor"
-
-function formatDeliveryFee(fee: number) {
-  return new Intl.NumberFormat("en-GH", {
-    style: "currency",
-    currency: "GHS",
-  }).format(fee)
-}
 
 function VendorCard({ vendor }: { vendor: Vendor }) {
   return (
@@ -28,7 +22,7 @@ function VendorCard({ vendor }: { vendor: Vendor }) {
         </div>
       </div>
       <Badge variant="outline" className="w-fit">
-        Delivery fee: {formatDeliveryFee(vendor.deliveryFee)}
+        Delivery fee: {formatPrice(vendor.deliveryFee)}
       </Badge>
     </Link>
   )

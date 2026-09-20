@@ -8,24 +8,19 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { CartSummary } from "@/components/shared/CartSummary"
 import { DeliveryWindowSelector } from "@/components/shared/DeliveryWindowSelector"
+import { EmptyState } from "@/components/shared/EmptyState"
 import { OrderConfirmation } from "@/components/shared/OrderConfirmation"
 import { useDeliveryWindows } from "@/hooks/useDeliveryWindows"
 import { usePlaceOrder } from "@/hooks/useOrders"
 import { useVendor } from "@/hooks/useVendors"
 import { useCartStore } from "@/store/cartStore"
 import { MOCK_EMPLOYEE_ID } from "@/lib/constants"
+import { formatPrice } from "@/lib/utils"
 import {
   confirmOrderSchema,
   type ConfirmOrderValues,
   type Order,
 } from "@/types/order"
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-GH", {
-    style: "currency",
-    currency: "GHS",
-  }).format(price)
-}
 
 export default function CartPage() {
   const {
@@ -98,17 +93,17 @@ export default function CartPage() {
       </div>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border py-16 text-center">
-          <p className="text-sm font-medium">Your cart is empty</p>
-          <p className="text-sm text-muted-foreground">
-            Browse vendors to add products to your order.
-          </p>
-          <Link href="/storefront/vendors">
-            <Button variant="outline" className="mt-2">
-              Browse vendors
-            </Button>
-          </Link>
-        </div>
+        <EmptyState
+          title="Your cart is empty"
+          description="Browse vendors to add products to your order."
+          action={
+            <Link href="/storefront/vendors">
+              <Button variant="outline" className="mt-2">
+                Browse vendors
+              </Button>
+            </Link>
+          }
+        />
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">

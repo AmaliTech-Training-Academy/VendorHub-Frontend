@@ -3,14 +3,8 @@
 import { Plus } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { formatPrice } from "@/lib/utils"
 import type { Product } from "@/types/product"
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-GH", {
-    style: "currency",
-    currency: "GHS",
-  }).format(price)
-}
 
 function StorefrontProductCard({
   product,
