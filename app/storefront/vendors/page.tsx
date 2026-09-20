@@ -4,6 +4,8 @@ import Link from "next/link"
 import { CircleAlert, ShoppingCart } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { EmptyState } from "@/components/shared/EmptyState"
+import { VendorCard } from "@/components/shared/VendorCard"
 import { VendorList } from "@/components/shared/VendorList"
 import { VendorListSkeleton } from "@/components/shared/VendorListSkeleton"
 import { useVendors } from "@/hooks/useVendors"
@@ -40,7 +42,20 @@ export default function VendorsPage() {
         </Alert>
       )}
 
-      {vendors && <VendorList vendors={vendors} />}
+      {vendors && vendors.length === 0 && (
+        <EmptyState
+          title="No vendors available"
+          description="Check back later for active vendors."
+        />
+      )}
+
+      {vendors && vendors.length > 0 && (
+        <VendorList>
+          {vendors.map((vendor) => (
+            <VendorCard key={vendor.id} vendor={vendor} />
+          ))}
+        </VendorList>
+      )}
     </div>
   )
 }
