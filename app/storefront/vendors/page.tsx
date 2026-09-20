@@ -1,9 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { Loader2, ShoppingCart } from "lucide-react"
+import { CircleAlert, ShoppingCart } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { VendorList } from "@/components/shared/VendorList"
+import { VendorListSkeleton } from "@/components/shared/VendorListSkeleton"
 import { useVendors } from "@/hooks/useVendors"
 
 export default function VendorsPage() {
@@ -26,17 +28,16 @@ export default function VendorsPage() {
         </Link>
       </div>
 
-      {isPending && (
-        <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" />
-          Loading vendors…
-        </div>
-      )}
+      {isPending && <VendorListSkeleton />}
 
       {isError && (
-        <p className="text-sm text-destructive">
-          Something went wrong loading vendors. Please try again.
-        </p>
+        <Alert variant="destructive">
+          <CircleAlert />
+          <AlertTitle>Unable to load vendors</AlertTitle>
+          <AlertDescription>
+            Something went wrong loading vendors. Please try again.
+          </AlertDescription>
+        </Alert>
       )}
 
       {vendors && <VendorList vendors={vendors} />}

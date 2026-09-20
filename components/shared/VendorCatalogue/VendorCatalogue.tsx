@@ -2,8 +2,10 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Loader2, ShoppingCart } from "lucide-react"
+import { ArrowLeft, CircleAlert, ShoppingCart } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { EmptyState } from "@/components/shared/EmptyState"
 import { StorefrontProductCard } from "@/components/shared/StorefrontProductCard"
+import { VendorCatalogueSkeleton } from "@/components/shared/VendorCatalogueSkeleton"
 import { useVendor, useVendorCatalogue } from "@/hooks/useVendors"
 import { useCartStore } from "@/store/cartStore"
 import type { Product } from "@/types/product"
@@ -66,13 +69,20 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
             <ArrowLeft className="size-3.5" />
             Back to vendors
           </Link>
-          <h1 className="text-xl font-semibold">
-            {isVendorPending ? "Loading…" : vendor?.name ?? "Vendor"}
-          </h1>
-          {vendor && (
-            <p className="text-sm text-muted-foreground">
-              {vendor.categories.join(", ")}
-            </p>
+          {isVendorPending ? (
+            <>
+              <Skeleton className="h-7 w-48" />
+              <Skeleton className="h-5 w-40" />
+            </>
+          ) : (
+            <>
+              <h1 className="text-xl font-semibold">{vendor?.name ?? "Vendor"}</h1>
+              {vendor && (
+                <p className="text-sm text-muted-foreground">
+                  {vendor.categories.join(", ")}
+                </p>
+              )}
+            </>
           )}
         </div>
         <Link href="/storefront/cart">
@@ -83,18 +93,17 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
         </Link>
       </div>
 
-      {isPending && (
-        <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" />
-          Loading catalogue…
-        </div>
-      )}
+      {isPending && <VendorCatalogueSkeleton />}
 
       {isError && (
-        <p className="text-sm text-destructive">
-          Something went wrong loading this vendor&apos;s catalogue. Please try
-          again.
-        </p>
+        <Alert variant="destructive">
+          <CircleAlert />
+          <AlertTitle>Unable to load catalogue</AlertTitle>
+          <AlertDescription>
+            Something went wrong loading this vendor&apos;s catalogue. Please try
+            again.
+          </AlertDescription>
+        </Alert>
       )}
 
       {products && products.length === 0 && (

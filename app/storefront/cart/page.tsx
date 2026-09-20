@@ -1,10 +1,11 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { Fragment, useMemo, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Minus, Plus, Trash2 } from "lucide-react"
+import { ArrowLeft, CircleAlert, Minus, Plus, Trash2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { CartSummary } from "@/components/shared/CartSummary"
 import { DeliveryWindowSelector } from "@/components/shared/DeliveryWindowSelector"
@@ -107,49 +108,62 @@ export default function CartPage() {
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            {items.map((item) => (
-              <div
-                key={item.productId}
-                className="flex items-center justify-between gap-3 rounded-lg border border-border p-3"
-              >
-                <div className="flex flex-col">
-                  <span className="font-medium">{item.name}</span>
-                  <span className="text-sm text-muted-foreground">
-                    {formatPrice(item.price)} each
-                  </span>
+            {items.map((item) => {
+              const actions = [
+                {
+                  key: "decrease",
+                  label: `Decrease quantity of ${item.name}`,
+                  icon: <Minus />,
+                  onClick: () => updateQuantity(item.productId, item.quantity - 1),
+                },
+                {
+                  key: "increase",
+                  label: `Increase quantity of ${item.name}`,
+                  icon: <Plus />,
+                  onClick: () => updateQuantity(item.productId, item.quantity + 1),
+                },
+                {
+                  key: "remove",
+                  label: `Remove ${item.name} from cart`,
+                  icon: <Trash2 className="text-destructive" />,
+                  onClick: () => removeItem(item.productId),
+                },
+              ]
+
+              return (
+                <div
+                  key={item.productId}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-border p-3"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-medium">{item.name}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {formatPrice(item.price)} each
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {actions.map((action) => (
+                      <Fragment key={action.key}>
+                        {action.key === "increase" && (
+                          <span className="w-6 text-center text-sm">
+                            {item.quantity}
+                          </span>
+                        )}
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={action.label}
+                          onClick={action.onClick}
+                        >
+                          {action.icon}
+                        </Button>
+                      </Fragment>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label={`Decrease quantity of ${item.name}`}
-                    onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                  >
-                    <Minus />
-                  </Button>
-                  <span className="w-6 text-center text-sm">{item.quantity}</span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label={`Increase quantity of ${item.name}`}
-                    onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                  >
-                    <Plus />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label={`Remove ${item.name} from cart`}
-                    onClick={() => removeItem(item.productId)}
-                  >
-                    <Trash2 className="text-destructive" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <DeliveryWindowSelector
@@ -169,9 +183,13 @@ export default function CartPage() {
           />
 
           {placeOrder.isError && (
-            <p role="alert" className="text-sm text-destructive">
-              Something went wrong placing your order. Please try again.
-            </p>
+            <Alert variant="destructive">
+              <CircleAlert />
+              <AlertTitle>Unable to place order</AlertTitle>
+              <AlertDescription>
+                Something went wrong placing your order. Please try again.
+              </AlertDescription>
+            </Alert>
           )}
         </form>
       )}

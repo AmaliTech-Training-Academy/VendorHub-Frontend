@@ -2,20 +2,11 @@
 
 import { CircleAlert } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
 import { EmptyState } from "@/components/shared/EmptyState"
+import { OrdersTable } from "@/components/shared/OrdersTable"
 import { OrdersTableSkeleton } from "@/components/shared/OrdersTableSkeleton"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { useVendorOrders } from "@/hooks/useOrders"
 import { MOCK_VENDOR_ID } from "@/lib/constants"
-import { formatPrice } from "@/lib/utils"
 
 export default function OrdersPage() {
   const vendorId = MOCK_VENDOR_ID
@@ -49,38 +40,7 @@ export default function OrdersPage() {
         />
       )}
 
-      {orders && orders.length > 0 && (
-        <div className="rounded-lg border border-border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Reference</TableHead>
-                <TableHead>Items</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {orders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell className="font-mono text-sm">
-                    {order.reference}
-                  </TableCell>
-                  <TableCell>
-                    {order.items.reduce((sum, item) => sum + item.quantity, 0)} items
-                  </TableCell>
-                  <TableCell>{formatPrice(order.total)}</TableCell>
-                  <TableCell>
-                    <Badge variant={order.status === "pending" ? "secondary" : "success"}>
-                      {order.status}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+      {orders && orders.length > 0 && <OrdersTable orders={orders} />}
     </div>
   )
 }
