@@ -51,17 +51,6 @@ function ProductsTable({
     null
   )
 
-  if (products.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border py-16 text-center">
-        <p className="text-sm font-medium">No products yet</p>
-        <p className="text-sm text-muted-foreground">
-          Add your first product to start selling.
-        </p>
-      </div>
-    )
-  }
-
   return (
     <>
       <div className="rounded-lg border border-border">

@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Loader2, Plus } from "lucide-react"
+import { CircleAlert, Plus } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -12,13 +13,12 @@ import {
 } from "@/components/ui/dialog"
 import { ProductForm } from "@/components/shared/ProductForm"
 import { ProductsTable } from "@/components/shared/ProductsTable"
-import {
-  useAddProduct,
-  useDeleteProduct,
-  useEditProduct,
-  useProducts,
-  useToggleProductStock,
-} from "@/hooks/useProducts"
+import { ProductsTableSkeleton } from "@/components/shared/ProductsTableSkeleton"
+import { useAddProduct } from "@/hooks/useAddProduct"
+import { useDeleteProduct } from "@/hooks/useDeleteProduct"
+import { useEditProduct } from "@/hooks/useEditProduct"
+import { useProducts } from "@/hooks/useProducts"
+import { useToggleProductStock } from "@/hooks/useToggleProductStock"
 import { MOCK_VENDOR_ID } from "@/lib/constants"
 import type { Product, ProductFormValues } from "@/types/product"
 
@@ -28,7 +28,7 @@ export default function ProductsPage() {
   const vendorId = MOCK_VENDOR_ID
   const [dialogState, setDialogState] = useState<DialogState>(null)
 
-  const { data: products, isPending, isError } = useProducts(vendorId)
+  const { data: products, status } = useProducts(vendorId)
   const addProduct = useAddProduct(vendorId)
   const editProduct = useEditProduct(vendorId)
   const deleteProduct = useDeleteProduct(vendorId)
@@ -70,20 +70,28 @@ export default function ProductsPage() {
         </Button>
       </div>
 
-      {isPending && (
-        <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" />
-          Loading products…
+      {status === "pending" && <ProductsTableSkeleton />}
+
+      {status === "error" && (
+        <Alert variant="destructive">
+          <CircleAlert />
+          <AlertTitle>Unable to load products</AlertTitle>
+          <AlertDescription>
+            Something went wrong loading your products. Please try again.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {status === "success" && products.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border py-16 text-center">
+          <p className="text-sm font-medium">No products yet</p>
+          <p className="text-sm text-muted-foreground">
+            Add your first product to start selling.
+          </p>
         </div>
       )}
 
-      {isError && (
-        <p className="text-sm text-destructive">
-          Something went wrong loading your products. Please try again.
-        </p>
-      )}
-
-      {products && (
+      {status === "success" && products.length > 0 && (
         <ProductsTable
           products={products}
           onEdit={(product) => openDialog({ mode: "edit", product })}

@@ -2,7 +2,8 @@
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
+import { CircleAlert, Loader2 } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -150,12 +151,11 @@ function ProductForm({
       </div>
 
       {submitError && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
-        >
-          {submitError}
-        </p>
+        <Alert variant="destructive">
+          <CircleAlert />
+          <AlertTitle>Unable to save product</AlertTitle>
+          <AlertDescription>{submitError}</AlertDescription>
+        </Alert>
       )}
 
       <DialogFooter className={cn("mt-2")}>
