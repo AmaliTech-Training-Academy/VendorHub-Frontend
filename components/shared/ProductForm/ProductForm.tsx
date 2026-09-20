@@ -18,10 +18,10 @@ import {
   type ProductFormValues,
 } from "@/types/product"
 
-const DEFAULT_VALUES: ProductFormValues = {
+const DEFAULT_VALUES: ProductFormInput = {
   name: "",
   description: "",
-  price: 0,
+  price: "",
   category: PRODUCT_CATEGORIES[0],
   inStock: true,
 }
@@ -30,12 +30,16 @@ function ProductForm({
   defaultValues,
   isSubmitting,
   submitLabel,
+  submittingLabel,
+  submitError,
   onSubmit,
   onCancel,
 }: {
   defaultValues?: ProductFormValues
   isSubmitting?: boolean
   submitLabel: string
+  submittingLabel: string
+  submitError?: string
   onSubmit: (values: ProductFormValues) => void
   onCancel?: () => void
 }) {
@@ -48,6 +52,7 @@ function ProductForm({
   } = useForm<ProductFormInput, unknown, ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: defaultValues ?? DEFAULT_VALUES,
+    mode: "onTouched",
   })
 
   const inStock = watch("inStock")
@@ -64,6 +69,7 @@ function ProductForm({
           id="product-name"
           placeholder="e.g. Jollof Rice (1kg)"
           aria-invalid={!!errors.name}
+          disabled={isSubmitting}
           {...register("name")}
         />
         {errors.name && (
@@ -79,6 +85,7 @@ function ProductForm({
           id="product-description"
           placeholder="Briefly describe the product"
           aria-invalid={!!errors.description}
+          disabled={isSubmitting}
           {...register("description")}
         />
         {errors.description && (
@@ -98,6 +105,7 @@ function ProductForm({
             min="0"
             placeholder="0.00"
             aria-invalid={!!errors.price}
+            disabled={isSubmitting}
             {...register("price")}
           />
           {errors.price && (
@@ -112,6 +120,7 @@ function ProductForm({
           <Select
             id="product-category"
             aria-invalid={!!errors.category}
+            disabled={isSubmitting}
             {...register("category")}
           >
             {PRODUCT_CATEGORIES.map((category) => (
@@ -135,19 +144,34 @@ function ProductForm({
         <Switch
           id="product-in-stock"
           checked={inStock}
+          disabled={isSubmitting}
           onCheckedChange={(checked) => setValue("inStock", checked)}
         />
       </div>
 
+      {submitError && (
+        <p
+          role="alert"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+        >
+          {submitError}
+        </p>
+      )}
+
       <DialogFooter className={cn("mt-2")}>
         {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel}>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isSubmitting}
+            onClick={onCancel}
+          >
             Cancel
           </Button>
         )}
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="size-4 animate-spin" />}
-          {submitLabel}
+          {isSubmitting ? submittingLabel : submitLabel}
         </Button>
       </DialogFooter>
     </form>

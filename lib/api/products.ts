@@ -1,4 +1,4 @@
-import type { Product, ProductFormValues } from "@/types/product";
+import { productSchema, type Product, type ProductFormValues } from "@/types/product";
 
 /**
  * In-memory mock data layer. There is no backend yet, so this simulates one:
@@ -47,6 +47,15 @@ function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
 }
 
+/** Server-side validation stand-in: never store anything the form schema would reject. */
+function parseProductInput(input: unknown): ProductFormValues {
+  const result = productSchema.safeParse(input);
+  if (!result.success) {
+    throw new Error(result.error.issues[0]?.message ?? "Invalid product data");
+  }
+  return result.data;
+}
+
 export async function fetchProducts(vendorId: string): Promise<Product[]> {
   const vendorProducts = products.filter((product) => product.vendorId === vendorId);
   return delay(clone(vendorProducts));
@@ -56,9 +65,10 @@ export async function addProduct(
   vendorId: string,
   input: ProductFormValues
 ): Promise<Product> {
+  const data = parseProductInput(input);
   const now = new Date().toISOString();
   const product: Product = {
-    ...input,
+    ...data,
     id: crypto.randomUUID(),
     vendorId,
     createdAt: now,
@@ -72,13 +82,14 @@ export async function editProduct(
   productId: string,
   input: ProductFormValues
 ): Promise<Product> {
+  const data = parseProductInput(input);
   const existing = products.find((product) => product.id === productId);
   if (!existing) {
     throw new Error("Product not found");
   }
   const updated: Product = {
     ...existing,
-    ...input,
+    ...data,
     updatedAt: new Date().toISOString(),
   };
   products = products.map((product) => (product.id === productId ? updated : product));

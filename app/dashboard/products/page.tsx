@@ -46,6 +46,14 @@ export default function ProductsPage() {
   }
 
   const isSubmitting = addProduct.isPending || editProduct.isPending
+  const submitError = (dialogState?.mode === "edit" ? editProduct : addProduct).error
+    ?.message
+
+  function openDialog(state: NonNullable<DialogState>) {
+    addProduct.reset()
+    editProduct.reset()
+    setDialogState(state)
+  }
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -56,7 +64,7 @@ export default function ProductsPage() {
             Manage the products in your catalogue.
           </p>
         </div>
-        <Button onClick={() => setDialogState({ mode: "add" })}>
+        <Button onClick={() => openDialog({ mode: "add" })}>
           <Plus />
           Add product
         </Button>
@@ -78,7 +86,7 @@ export default function ProductsPage() {
       {products && (
         <ProductsTable
           products={products}
-          onEdit={(product) => setDialogState({ mode: "edit", product })}
+          onEdit={(product) => openDialog({ mode: "edit", product })}
           onDelete={(product) => deleteProduct.mutate(product.id)}
           onToggleStock={(product, inStock) =>
             toggleStock.mutate({ id: product.id, inStock })
@@ -93,7 +101,7 @@ export default function ProductsPage() {
       <Dialog
         open={!!dialogState}
         onOpenChange={(open) => {
-          if (!open) setDialogState(null)
+          if (!open && !isSubmitting) setDialogState(null)
         }}
       >
         <DialogContent>
@@ -114,6 +122,8 @@ export default function ProductsPage() {
                 dialogState.mode === "edit" ? dialogState.product : undefined
               }
               submitLabel={dialogState.mode === "edit" ? "Save changes" : "Add product"}
+              submittingLabel={dialogState.mode === "edit" ? "Saving…" : "Adding…"}
+              submitError={submitError}
               isSubmitting={isSubmitting}
               onSubmit={handleSubmit}
               onCancel={() => setDialogState(null)}
