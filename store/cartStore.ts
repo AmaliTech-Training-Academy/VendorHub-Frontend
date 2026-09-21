@@ -19,10 +19,22 @@ type CartState = {
    *  decides whether to block or confirm-clear via `clearCart`. */
   addItem: (item: AddCartItemInput) => AddItemResult;
   removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  /** Removes the item entirely when its quantity would drop below 1. */
+  decreaseQuantity: (productId: string) => void;
+  increaseQuantity: (productId: string) => void;
   setDeliveryWindow: (deliveryWindowId: string) => void;
   clearCart: () => void;
 };
+
+/** Drops an item; an emptied cart also forgets its vendor and delivery window. */
+function withoutItem(state: CartState, productId: string) {
+  const items = state.items.filter((i) => i.productId !== productId);
+  return {
+    items,
+    vendorId: items.length > 0 ? state.vendorId : null,
+    deliveryWindowId: items.length > 0 ? state.deliveryWindowId : null,
+  };
+}
 
 export const useCartStore = create<CartState>((set, get) => ({
   vendorId: null,
@@ -47,29 +59,26 @@ export const useCartStore = create<CartState>((set, get) => ({
     return { blocked: false };
   },
 
-  removeItem: (productId) =>
+  removeItem: (productId) => set((state) => withoutItem(state, productId)),
+
+  decreaseQuantity: (productId) =>
     set((state) => {
-      const items = state.items.filter((i) => i.productId !== productId);
+      const item = state.items.find((i) => i.productId === productId);
+      if (!item) return state;
+      if (item.quantity <= 1) return withoutItem(state, productId);
       return {
-        items,
-        vendorId: items.length > 0 ? state.vendorId : null,
-        deliveryWindowId: items.length > 0 ? state.deliveryWindowId : null,
+        items: state.items.map((i) =>
+          i.productId === productId ? { ...i, quantity: i.quantity - 1 } : i
+        ),
       };
     }),
 
-  updateQuantity: (productId, quantity) =>
+  increaseQuantity: (productId) =>
     set((state) => {
-      if (quantity <= 0) {
-        const items = state.items.filter((i) => i.productId !== productId);
-        return {
-          items,
-          vendorId: items.length > 0 ? state.vendorId : null,
-          deliveryWindowId: items.length > 0 ? state.deliveryWindowId : null,
-        };
-      }
+      if (!state.items.some((i) => i.productId === productId)) return state;
       return {
         items: state.items.map((i) =>
-          i.productId === productId ? { ...i, quantity } : i
+          i.productId === productId ? { ...i, quantity: i.quantity + 1 } : i
         ),
       };
     }),
