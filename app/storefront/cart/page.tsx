@@ -1,12 +1,13 @@
 "use client"
 
-import { Fragment, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, CircleAlert, Minus, Plus, Trash2 } from "lucide-react"
+import { ArrowLeft, CircleAlert } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { CartLineItem } from "@/components/shared/CartLineItem"
 import { CartSummary } from "@/components/shared/CartSummary"
 import { DeliveryWindowSelector } from "@/components/shared/DeliveryWindowSelector"
 import { EmptyState } from "@/components/shared/EmptyState"
@@ -16,7 +17,6 @@ import { usePlaceOrder } from "@/hooks/useOrders"
 import { useVendor } from "@/hooks/useVendors"
 import { useCartStore } from "@/store/cartStore"
 import { MOCK_EMPLOYEE_ID } from "@/lib/constants"
-import { formatPrice } from "@/lib/utils"
 import type { ConfirmOrderValues, Order } from "@/types/order"
 import { confirmOrderSchema } from "@/types/orderSchema"
 
@@ -106,62 +106,15 @@ export default function CartPage() {
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            {items.map((item) => {
-              const actions = [
-                {
-                  key: "decrease",
-                  label: `Decrease quantity of ${item.name}`,
-                  icon: <Minus />,
-                  onClick: () => decreaseQuantity(item.productId),
-                },
-                {
-                  key: "increase",
-                  label: `Increase quantity of ${item.name}`,
-                  icon: <Plus />,
-                  onClick: () => increaseQuantity(item.productId),
-                },
-                {
-                  key: "remove",
-                  label: `Remove ${item.name} from cart`,
-                  icon: <Trash2 className="text-destructive" />,
-                  onClick: () => removeItem(item.productId),
-                },
-              ]
-
-              return (
-                <div
-                  key={item.productId}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-border p-3"
-                >
-                  <div className="flex flex-col">
-                    <span className="font-medium">{item.name}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {formatPrice(item.price)} each
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {actions.map((action) => (
-                      <Fragment key={action.key}>
-                        {action.key === "increase" && (
-                          <span className="w-6 text-center text-sm">
-                            {item.quantity}
-                          </span>
-                        )}
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          aria-label={action.label}
-                          onClick={action.onClick}
-                        >
-                          {action.icon}
-                        </Button>
-                      </Fragment>
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
+            {items.map((item) => (
+              <CartLineItem
+                key={item.productId}
+                item={item}
+                onDecrease={decreaseQuantity}
+                onIncrease={increaseQuantity}
+                onRemove={removeItem}
+              />
+            ))}
           </div>
 
           <DeliveryWindowSelector
