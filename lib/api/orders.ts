@@ -1,5 +1,6 @@
 import { getVendorByIdSync } from "@/lib/api/vendors";
-import { placeOrderSchema, type Order, type PlaceOrderInput } from "@/types/order";
+import type { Order, PlaceOrderInput } from "@/types/order";
+import { placeOrderSchema } from "@/types/orderSchema";
 
 let orders: Order[] = [];
 
