@@ -21,6 +21,7 @@ import { useProducts } from "@/hooks/useProducts"
 import { useToggleProductStock } from "@/hooks/useToggleProductStock"
 import { MOCK_VENDOR_ID } from "@/lib/constants"
 import type { Product, ProductFormValues } from "@/types/product"
+import { Status } from "@/types/status"
 
 type DialogState = { mode: "add" } | { mode: "edit"; product: Product } | null
 
@@ -70,9 +71,9 @@ export default function ProductsPage() {
         </Button>
       </div>
 
-      {status === "pending" && <ProductsTableSkeleton />}
+      {status === Status.PENDING && <ProductsTableSkeleton />}
 
-      {status === "error" && (
+      {status === Status.ERROR && (
         <Alert variant="destructive">
           <CircleAlert />
           <AlertTitle>Unable to load products</AlertTitle>
@@ -82,7 +83,7 @@ export default function ProductsPage() {
         </Alert>
       )}
 
-      {status === "success" && products.length === 0 && (
+      {status === Status.SUCCESS && products.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border py-16 text-center">
           <p className="text-sm font-medium">No products yet</p>
           <p className="text-sm text-muted-foreground">
@@ -91,7 +92,7 @@ export default function ProductsPage() {
         </div>
       )}
 
-      {status === "success" && products.length > 0 && (
+      {status === Status.SUCCESS && products.length > 0 && (
         <ProductsTable
           products={products}
           onEdit={(product) => openDialog({ mode: "edit", product })}
