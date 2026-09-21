@@ -1,16 +1,5 @@
 import { productSchema, type Product, type ProductFormValues } from "@/types/product";
 
-/**
- * In-memory mock data layer. There is no backend yet, so this simulates one:
- * a module-level "table" plus artificial latency. Every function below is
- * async and returns/accepts the same shapes a real HTTP client would, so
- * swapping this out for real requests later shouldn't require touching the
- * React Query hooks that call it.
- *
- * Deleting a product removes it from this single source of truth, so it
- * disappears from both the vendor dashboard and the employee storefront
- * (whichever screen reads it) at the same time.
- */
 
 let products: Product[] = [
   {

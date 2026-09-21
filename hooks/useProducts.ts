@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { productsQueryKey } from "@/hooks/productQueries";
-import { fetchProducts } from "@/lib/api/products";
+import { fetchProducts } from "@/lib/api/products-mock";
 
 export function useProducts(vendorId: string) {
   return useQuery({

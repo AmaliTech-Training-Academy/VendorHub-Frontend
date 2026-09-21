@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { invalidateProducts, productsQueryKey } from "@/hooks/productQueries";
-import { toggleProductStock } from "@/lib/api/products";
+import { toggleProductStock } from "@/lib/api/products-mock";
 import type { Product } from "@/types/product";
 
 export function useToggleProductStock(vendorId: string) {
