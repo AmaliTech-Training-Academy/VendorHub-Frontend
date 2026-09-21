@@ -1,4 +1,5 @@
-import { productSchema, type Product, type ProductFormValues } from "@/types/product";
+import type { Product, ProductFormValues } from "@/types/product";
+import { productSchema } from "@/types/productSchema";
 
 
 let products: Product[] = [

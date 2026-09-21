@@ -12,12 +12,8 @@ import { Select } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { DialogFooter } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
-import {
-  PRODUCT_CATEGORIES,
-  productSchema,
-  type ProductFormInput,
-  type ProductFormValues,
-} from "@/types/product"
+import type { ProductFormInput, ProductFormValues } from "@/types/product"
+import { PRODUCT_CATEGORIES, productSchema } from "@/types/productSchema"
 
 const DEFAULT_VALUES: ProductFormInput = {
   name: "",
