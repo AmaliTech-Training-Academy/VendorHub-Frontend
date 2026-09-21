@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
+import { EmptyState } from "@/components/shared/EmptyState"
 import { ProductForm } from "@/components/shared/ProductForm"
 import { ProductsTable } from "@/components/shared/ProductsTable"
 import { ProductsTableSkeleton } from "@/components/shared/ProductsTableSkeleton"
@@ -84,12 +85,10 @@ export default function ProductsPage() {
       )}
 
       {status === Status.SUCCESS && products.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border py-16 text-center">
-          <p className="text-sm font-medium">No products yet</p>
-          <p className="text-sm text-muted-foreground">
-            Add your first product to start selling.
-          </p>
-        </div>
+        <EmptyState
+          title="No products yet"
+          description="Add your first product to start selling."
+        />
       )}
 
       {status === Status.SUCCESS && products.length > 0 && (
