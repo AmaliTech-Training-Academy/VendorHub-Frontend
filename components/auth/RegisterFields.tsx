@@ -1,18 +1,28 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import type { RegisterFieldsProps } from "@/types/interfaces";
-import type { RegisterFormData } from "@/types/types";
+import type {
+  UseFormRegister,
+  FieldErrors,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
+import { RegisterFormData } from "@/schemas/registerSchema";
+import { RegisterFormValues } from "@/types/types";
 
-export function RegisterFields({
-  register,
-  errors,
-  setValue,
-  watch,
-}: RegisterFieldsProps) {
-  const selectedRole = watch("role");
+type Props = {
+  register: UseFormRegister<RegisterFormValues>;
+  errors: FieldErrors<RegisterFormValues>;
+  setValue: UseFormSetValue<RegisterFormValues>;
+  watch: UseFormWatch<RegisterFormValues>;
+};
+
+export function RegisterFields({ register, errors, setValue, watch }: Props) {
+  const selectedRole = watch("role") || "vendor";
 
   return (
     <>
@@ -28,10 +38,7 @@ export function RegisterFields({
           value={selectedRole ? [selectedRole] : []}
           onValueChange={(value) => {
             const role = value[0] as RegisterFormData["role"] | undefined;
-            if (role)
-              setValue("role", role, {
-                shouldValidate: true,
-              });
+            if (role) setValue("role", role, { shouldValidate: true });
           }}
           aria-labelledby="role-label"
           className="grid grid-cols-2 gap-2 bg-gray-100 p-1 rounded-xl"
@@ -57,15 +64,84 @@ export function RegisterFields({
           </ToggleGroupItem>
         </ToggleGroup>
 
-        {/* Hidden input keeps role registered with React Hook Form for validation */}
         <input type="hidden" {...register("role")} />
 
         {errors.role?.message && (
           <Alert variant="destructive" className="px-3 py-2 text-xs">
-            <AlertDescription>{errors.role.message}</AlertDescription>
+            <AlertDescription>{String(errors.role.message)}</AlertDescription>
           </Alert>
         )}
       </div>
+
+      {/* Fields conditionally rendered based on the selected role */}
+      {selectedRole === "vendor" && (
+        <>
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="businessName"
+              className="text-xs font-bold uppercase tracking-wider"
+            >
+              Business Name
+            </Label>
+            <Input
+              {...register("businessName")}
+              id="businessName"
+              placeholder="Akosua's Kitchen"
+            />
+            {errors.businessName?.message && (
+              <Alert variant="destructive" className="px-3 py-2 text-xs">
+                <AlertDescription>
+                  {String(errors.businessName.message)}
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label
+              htmlFor="ownerName"
+              className="text-xs font-bold uppercase tracking-wider"
+            >
+              Owner Name
+            </Label>
+            <Input
+              {...register("ownerName")}
+              id="ownerName"
+              placeholder="Enter full owner name"
+            />
+            {errors.ownerName?.message && (
+              <Alert variant="destructive" className="px-3 py-2 text-xs">
+                <AlertDescription>
+                  {String(errors.ownerName.message)}
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
+        </>
+      )}
+
+      {selectedRole === "employee" && (
+        <div className="flex flex-col gap-1.5">
+          <Label
+            htmlFor="fullName"
+            className="text-xs font-bold uppercase tracking-wider"
+          >
+            Full Name
+          </Label>
+          <Input
+            {...register("fullName")}
+            id="fullName"
+            placeholder="Enter your full name"
+          />
+          {errors.fullName?.message && (
+            <Alert variant="destructive" className="px-3 py-2 text-xs">
+              <AlertDescription>
+                {String(errors.fullName.message)}
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
+      )}
 
       <div className="flex flex-col gap-1.5">
         <Label
@@ -82,7 +158,7 @@ export function RegisterFields({
         />
         {errors.email?.message && (
           <Alert variant="destructive" className="px-3 py-2 text-xs">
-            <AlertDescription>{errors.email.message}</AlertDescription>
+            <AlertDescription>{String(errors.email.message)}</AlertDescription>
           </Alert>
         )}
       </div>
@@ -102,7 +178,9 @@ export function RegisterFields({
         />
         {errors.password?.message && (
           <Alert variant="destructive" className="px-3 py-2 text-xs">
-            <AlertDescription>{errors.password.message}</AlertDescription>
+            <AlertDescription>
+              {String(errors.password.message)}
+            </AlertDescription>
           </Alert>
         )}
       </div>
