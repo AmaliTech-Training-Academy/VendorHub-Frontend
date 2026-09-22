@@ -22,7 +22,7 @@ type Props = {
 };
 
 export function RegisterFields({ register, errors, setValue, watch }: Props) {
-  const selectedRole = watch("role") || "vendor";
+  const selectedRole = watch("role") || "VENDOR";
 
   return (
     <>
@@ -44,23 +44,23 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
           className="grid grid-cols-2 gap-2 bg-gray-100 p-1 rounded-xl"
         >
           <ToggleGroupItem
-            value="vendor"
+            value="VENDOR"
             className={cn(
-              "py-2.5 rounded-lg text-sm font-semibold",
+              "py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide",
               "aria-pressed:bg-white aria-pressed:text-blue-900 aria-pressed:shadow-sm",
             )}
           >
-            Vendor
+            VENDOR
           </ToggleGroupItem>
 
           <ToggleGroupItem
-            value="employee"
+            value="EMPLOYEE"
             className={cn(
-              "py-2.5 rounded-lg text-sm font-semibold",
+              "py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide",
               "aria-pressed:bg-white aria-pressed:text-blue-900 aria-pressed:shadow-sm",
             )}
           >
-            Employee
+            EMPLOYEE
           </ToggleGroupItem>
         </ToggleGroup>
 
@@ -74,7 +74,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
       </div>
 
       {/* Fields conditionally rendered based on the selected role */}
-      {selectedRole === "vendor" && (
+      {selectedRole === "VENDOR" && (
         <>
           <div className="flex flex-col gap-1.5">
             <Label
@@ -120,7 +120,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
         </>
       )}
 
-      {selectedRole === "employee" && (
+      {selectedRole === "EMPLOYEE" && (
         <div className="flex flex-col gap-1.5">
           <Label
             htmlFor="fullName"

@@ -4,15 +4,13 @@ import { loginSchema } from "@/schemas/loginSchema";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { UseUserLoginOptions } from "@/types/interfaces";
 import type { LoginFormData } from "@/types/types";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "@/lib/api/auth";
 
 export const useUserLogin = ({
   onSuccess,
   onError,
 }: UseUserLoginOptions = {}) => {
-  const login = useAuthStore((state) => state.login);
-  const isLoading = useAuthStore((state) => state.isLoading);
-  const error = useAuthStore((state) => state.error);
-
   const {
     register,
     handleSubmit,
@@ -21,24 +19,28 @@ export const useUserLogin = ({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    const success = await login(data);
+  const mutation = useMutation({
+    mutationFn: (data: LoginFormData) => loginUser(data),
+    onSuccess: (response) => {
+      useAuthStore
+        .getState()
+        .setAuth(response.role, response.access, response.refresh);
+      onSuccess?.(response.role);
+    },
+    onError: (err: Error) => {
+      onError?.(err.message || "Login failed. Please try again.");
+    },
+  });
 
-    if (success) {
-      const role = useAuthStore.getState().role;
-      if (onSuccess) onSuccess(role);
-    } else {
-      const errorMessage =
-        useAuthStore.getState().error || "Login failed. Please try again.";
-      if (onError) onError(errorMessage);
-    }
+  const onSubmit = (data: LoginFormData) => {
+    mutation.mutate(data);
   };
 
   return {
     register,
     errors,
-    isLoading,
-    error,
+    isLoading: mutation.isPending,
+    error: mutation.error?.message,
     handleSubmit: handleSubmit(onSubmit),
   };
 };

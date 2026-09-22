@@ -16,19 +16,17 @@ export interface User {
   id: string;
   email: string;
   password: string;
-  role: "vendor" | "employee";
+  role: "VENDOR" | "EMPLOYEE";
   businessName?: string;
   ownerName?: string;
   fullName?: string;
 }
 
 export interface AuthState {
-  users: User[];
-  isLoading: boolean;
-  error: string;
   role: UserRole | null;
-  register: (formData: RegisterFormValues) => Promise<boolean>;
-  login: (formData: LoginFormData) => Promise<boolean>;
+  accessToken: string | null;
+  setAuth: (role: UserRole, accessToken: string, refreshToken: string) => void;
+  logout: () => void;
 }
 
 export interface UseUserLoginOptions {
@@ -47,10 +45,10 @@ export interface LoginFieldsProps {
 }
 
 export interface RegisterFieldsProps {
-  register: UseFormRegister<RegisterFormData>;
-  errors: FieldErrors<RegisterFormData>;
-  setValue: UseFormSetValue<RegisterFormData>;
-  watch: UseFormWatch<RegisterFormData>;
+  register: UseFormRegister<RegisterFormValues>;
+  errors: FieldErrors<RegisterFormValues>;
+  setValue: UseFormSetValue<RegisterFormValues>;
+  watch: UseFormWatch<RegisterFormValues>;
 }
 
 export interface GraphicImage {
@@ -80,4 +78,18 @@ export interface AuthConfig {
   alternateLabel: string;
   alternateHref: string;
   panelClassName: string;
+}
+
+export interface RegisterResponse {
+  id: number;
+  email: string;
+  role: "VENDOR" | "EMPLOYEE";
+}
+
+export interface LoginResponse {
+  access: string;
+  refresh: string;
+  id: number;
+  email: string;
+  role: "VENDOR" | "EMPLOYEE";
 }

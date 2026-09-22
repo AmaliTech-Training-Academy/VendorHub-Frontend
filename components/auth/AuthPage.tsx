@@ -67,7 +67,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
   const loginForm = useUserLogin({
     onSuccess: (role) => {
       toast.success("Welcome back!");
-      router.push(role === "vendor" ? "/dashboard" : "/storefront");
+      router.push(role === "VENDOR" ? "/dashboard/products" : "/storefront");
     },
     onError: (errorMessage) => {
       toast.error(errorMessage);
@@ -77,7 +77,9 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
   const registrationForm = useUserRegistration({
     onSuccess: (data) => {
       toast.success("Account created! Redirecting...");
-      router.push(data.role === "vendor" ? "/dashboard" : "/storefront");
+      router.push(
+        data.role === "VENDOR" ? "/dashboard/products" : "/storefront",
+      );
     },
     onError: (errorMessage) => {
       toast.error(errorMessage);

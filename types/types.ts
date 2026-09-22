@@ -1,11 +1,11 @@
-export type UserRole = "vendor" | "employee";
+export type UserRole = "VENDOR" | "EMPLOYEE";
 export type LoginFormData = {
   email: string;
   password: string;
 };
 
 export type RegisterFormValues = {
-  role: "vendor" | "employee";
+  role: "VENDOR" | "EMPLOYEE";
   email: string;
   password: string;
   businessName?: string;

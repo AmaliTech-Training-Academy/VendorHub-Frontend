@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 export const vendorRegisterSchema = z.object({
-  role: z.literal("vendor"),
+  role: z.literal("VENDOR"),
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   businessName: z.string().min(1, "Business name is required").max(255),
@@ -10,7 +10,7 @@ export const vendorRegisterSchema = z.object({
 });
 
 export const employeeRegisterSchema = z.object({
-  role: z.literal("employee"),
+  role: z.literal("EMPLOYEE"),
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   fullName: z.string().min(1, "Full name is required").max(255),
