@@ -18,9 +18,9 @@ import type { AuthMode } from "@/types/types";
 const authConfig: Record<AuthMode, AuthConfig> = {
   login: {
     images: [
-      { src: "/happy.jpg", alt: "Employee at their desk" },
-      { src: "/happy-2.jpg", alt: "Employee ordering lunch" },
-      { src: "/happy-3.jpg", alt: "Vendor smiling" },
+      { src: "/ve1.jpg", alt: "Employee at their desk" },
+      { src: "/v5.jpg", alt: "Employee ordering lunch" },
+      { src: "/v2.jpg", alt: "Vendor smiling" },
     ],
     onboardingHeading: "Welcome",
     onboardingHighlight: "back",
@@ -38,9 +38,9 @@ const authConfig: Record<AuthMode, AuthConfig> = {
   },
   register: {
     images: [
-      { src: "/vendor-1.jpg", alt: "Vendor preparing food" },
-      { src: "/vendor-3.jpg", alt: "Vendor at their stall" },
-      { src: "/vendor-2.jpg", alt: "Vendor smiling" },
+      { src: "/v1.jpg", alt: "Vendor preparing food" },
+      { src: "/v3.jpg", alt: "Vendor at their stall" },
+      { src: "/v2.jpg", alt: "Vendor smiling" },
     ],
     onboardingHeading: "Welcome to",
     onboardingHighlight: "VendorHub",

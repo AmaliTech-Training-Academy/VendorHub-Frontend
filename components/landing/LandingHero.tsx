@@ -70,7 +70,7 @@ export default function LandingHero() {
           <div className="absolute bottom-0 right-0 w-3/5 h-3/5 rounded-3xl shadow-2xl border-4 border-white z-20 bg-orange-100">
             <div className="relative w-full h-full rounded-[20px] overflow-hidden">
               <Image
-                src="/happy-2.jpg"
+                src="/v3.jpg"
                 alt="Delicious office vendor meal food"
                 fill
                 sizes="(max-width: 768px) 60vw, 330px"

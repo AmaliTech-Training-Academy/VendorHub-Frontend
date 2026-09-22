@@ -24,7 +24,7 @@ export default function HowItWorks() {
 
   const data = {
     vendors: {
-      image: "/vendor-2.jpg",
+      image: "/v2.jpg",
       imageAlt: "Vendor managing office meal orders",
       steps: [
         {
@@ -45,7 +45,7 @@ export default function HowItWorks() {
       ],
     },
     employees: {
-      image: "/happy-3.jpg",
+      image: "/ve1.jpg",
       imageAlt: "Employee tracking their lunch order",
       steps: [
         {
