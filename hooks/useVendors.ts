@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchVendorCatalogue } from "@/lib/api/products";
+import { fetchVendorCatalogue } from "@/lib/api/products-mock";
 import { fetchVendorById, fetchVendors } from "@/lib/api/vendors";
 
 export function useVendors() {
