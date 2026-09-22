@@ -5,7 +5,7 @@ import type {
   deliveryWindowSchema,
   orderSchema,
   placeOrderSchema,
-} from "@/types/orderSchema";
+} from "@/lib/schemas/orderSchema";
 
 export type DeliveryWindow = z.infer<typeof deliveryWindowSchema>;
 export type CartItem = z.infer<typeof cartItemSchema>;
