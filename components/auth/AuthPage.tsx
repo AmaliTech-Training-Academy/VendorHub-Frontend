@@ -91,6 +91,8 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
     ? loginForm.handleSubmit
     : registrationForm.handleSubmit;
   const isLoading = isLogin ? loginForm.isLoading : registrationForm.isLoading;
+  const registrationRole = !isLogin ? registrationForm.watch("role") : null;
+  const shouldShowSubmitButton = isLogin || !!registrationRole;
 
   return (
     <div className="w-full min-h-screen md:h-screen md:p-4 bg-orange-100 flex justify-center items-center">
@@ -151,13 +153,15 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
                 />
               )}
 
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-linear-to-r from-orange-500 to-amber-500 text-white font-semibold py-3 px-6 rounded-xl shadow-md shadow-orange-500/20 hover:opacity-95 active:scale-[0.99] transition-all duration-100 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {isLoading ? config.loadingLabel : config.submitLabel}
-              </Button>
+              {shouldShowSubmitButton && (
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-linear-to-r from-orange-500 to-amber-500 text-white font-semibold py-3 px-6 rounded-xl shadow-md shadow-orange-500/20 hover:opacity-95 active:scale-[0.99] transition-all duration-100 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? config.loadingLabel : config.submitLabel}
+                </Button>
+              )}
 
               <p className="text-sm text-center">
                 {config.alternatePrompt}{" "}
