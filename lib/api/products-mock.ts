@@ -1,5 +1,5 @@
 import type { Product, ProductFormValues } from "@/types/product";
-import { productSchema } from "@/types/productSchema";
+import { productSchema } from "@/lib/schemas/productSchema";
 
 
 let products: Product[] = [

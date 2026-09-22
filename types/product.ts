@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import type { productSchema } from "@/types/productSchema";
+import type { productSchema } from "@/lib/schemas/productSchema";
 
 export type ProductFormValues = z.infer<typeof productSchema>;
 export type ProductFormInput = z.input<typeof productSchema>;
