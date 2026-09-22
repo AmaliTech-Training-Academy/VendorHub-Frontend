@@ -1,22 +1,28 @@
 "use client";
 
-import Image from "next/image";
+import FeatureHighlights from "@/components/landing/FeatureHighlights";
+import LandingHero from "@/components/landing/LandingHero";
+import HowItWorks from "@/components/landing/HowItWorks";
+import LandingNavbar from "@/components/landing/LandingNavbar";
+import TestimonialsSection from "@/components/landing/TestimonialsSection";
+import PainPointsSection from "@/components/landing/PainPointsSection";
+import CTASection from "@/components/landing/CTASection";
+import LandingFooter from "@/components/landing/LandingFooter";
 
 export default function Home() {
   return (
-    <div className="w-full  h-screen flex flex-col gap-4 justify-center items-center">
-      <Image
-        loading="eager"
-        src={"/logo.png"}
-        alt={" website logo"}
-        height={150}
-        width={150}
-        className="rounded-3xl animate-ping ease-in-out transition-all "
-      />
-      <h1 className="text-6xl text-black font-extrabold font-sans">
-        Welcome to Vendor
-        <span className="text-orange-600 ">Hub</span>
-      </h1>
+    <div className="w-full min-h-screen flex flex-col items-center gap-4 bg-orange-50 scroll-smooth">
+      <LandingNavbar />
+
+      <main className="flex flex-col items-center justify-start  h-auto w-full">
+        <LandingHero />
+        <PainPointsSection />
+        <HowItWorks />
+        <FeatureHighlights />
+        <TestimonialsSection />
+        <CTASection />
+        <LandingFooter />
+      </main>
     </div>
   );
 }
