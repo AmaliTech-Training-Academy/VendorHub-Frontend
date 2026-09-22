@@ -5,13 +5,21 @@ import type {
   UseFormWatch,
 } from "react-hook-form";
 
-import type { LoginFormData, RegisterFormData, UserRole } from "@/types/types";
+import type {
+  LoginFormData,
+  RegisterFormValues,
+  UserRole,
+} from "@/types/types";
 
+// types/interfaces.ts
 export interface User {
   id: string;
   email: string;
   password: string;
-  role: UserRole;
+  role: "vendor" | "employee";
+  businessName?: string;
+  ownerName?: string;
+  fullName?: string;
 }
 
 export interface AuthState {
@@ -19,7 +27,7 @@ export interface AuthState {
   isLoading: boolean;
   error: string;
   role: UserRole | null;
-  register: (formData: RegisterFormData) => Promise<boolean>;
+  register: (formData: RegisterFormValues) => Promise<boolean>;
   login: (formData: LoginFormData) => Promise<boolean>;
 }
 
@@ -29,7 +37,7 @@ export interface UseUserLoginOptions {
 }
 
 export interface UseUserRegistrationOptions {
-  onSuccess?: (data: RegisterFormData) => void;
+  onSuccess?: (data: RegisterFormValues) => void;
   onError?: (error: string) => void;
 }
 

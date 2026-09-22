@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "@/schemas/registerSchema";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { UseUserRegistrationOptions } from "@/types/interfaces";
-import type { RegisterFormData } from "@/types/types";
+import { RegisterFormValues } from "@/types/types";
 
 export const useUserRegistration = ({
   onSuccess,
@@ -19,11 +19,11 @@ export const useUserRegistration = ({
     watch,
     setValue,
     formState: { errors },
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema) as Resolver<RegisterFormValues>,
   });
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const onSubmit = async (data: RegisterFormValues) => {
     const success = await registerUser(data);
 
     if (success && onSuccess) {

@@ -4,11 +4,13 @@ export type LoginFormData = {
   password: string;
 };
 
-export type RegisterFormData = {
+export type RegisterFormValues = {
+  role: "vendor" | "employee";
   email: string;
   password: string;
-  role: UserRole;
+  businessName?: string;
+  ownerName?: string;
+  fullName?: string;
 };
-
 export type AuthMode = "login" | "register";
 export type AudienceTab = "employees" | "vendors";
