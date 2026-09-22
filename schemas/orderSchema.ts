@@ -24,16 +24,26 @@ export const placeOrderSchema = z.object({
 /** Validated by the cart page's form — the only field the employee edits directly. */
 export const confirmOrderSchema = placeOrderSchema.pick({ deliveryWindowId: true });
 
+export const ORDER_STATUSES = [
+  "placed",
+  "confirmed",
+  "preparing",
+  "ready_for_collection",
+  "collected",
+] as const;
+
 export const orderSchema = z.object({
   id: z.string(),
   reference: z.string(),
   vendorId: z.string(),
+  /** Snapshotted at order time so a later vendor rename doesn't rewrite history. */
+  vendorName: z.string(),
   employeeId: z.string(),
   items: z.array(cartItemSchema),
   deliveryWindowId: z.string(),
   subtotal: z.number().nonnegative(),
   deliveryFee: z.number().nonnegative(),
   total: z.number().nonnegative(),
-  status: z.enum(["pending", "confirmed"]),
+  status: z.enum(ORDER_STATUSES),
   createdAt: z.string(),
 });

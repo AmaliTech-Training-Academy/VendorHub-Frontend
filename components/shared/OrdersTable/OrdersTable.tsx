@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge"
+import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge"
 import {
   Table,
   TableBody,
@@ -31,9 +31,7 @@ function OrdersTable({ orders }: { orders: Order[] }) {
               </TableCell>
               <TableCell>{formatPrice(order.total)}</TableCell>
               <TableCell>
-                <Badge variant={order.status === "pending" ? "secondary" : "success"}>
-                  {order.status}
-                </Badge>
+                <OrderStatusBadge status={order.status} />
               </TableCell>
             </TableRow>
           ))}
