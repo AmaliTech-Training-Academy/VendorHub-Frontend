@@ -20,7 +20,7 @@ import { EmptyState } from "@/components/shared/EmptyState"
 import { StorefrontProductCard } from "@/components/shared/StorefrontProductCard"
 import { VendorCatalogueSkeleton } from "@/components/shared/VendorCatalogueSkeleton"
 import { useVendor, useVendorCatalogue } from "@/hooks/useVendors"
-import { useCartStore } from "@/store/cartStore"
+import { useCartItemCount, useCartStore } from "@/store/cartStore"
 import type { Product } from "@/types/product"
 
 function VendorCatalogue({ vendorId }: { vendorId: string }) {
@@ -56,7 +56,7 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
     setPendingSwitchProduct(null)
   }
 
-  const cartCount = items.reduce((sum, item) => sum + item.quantity, 0)
+  const cartCount = useCartItemCount()
 
   return (
     <div className="flex flex-col gap-6 p-6">

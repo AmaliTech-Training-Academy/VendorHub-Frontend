@@ -87,3 +87,10 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   clearCart: () => set({ vendorId: null, items: [], deliveryWindowId: null }),
 }));
+
+/** Total quantity across all cart items, e.g. for a cart button's badge count. */
+export function useCartItemCount() {
+  return useCartStore((state) =>
+    state.items.reduce((sum, item) => sum + item.quantity, 0)
+  );
+}
