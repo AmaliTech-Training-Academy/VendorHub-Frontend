@@ -1,6 +1,6 @@
 "use client"
 
-import { CircleAlert } from "lucide-react"
+import { CircleAlert, ClipboardList } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { EmptyState } from "@/components/shared/EmptyState"
 import { OrdersTable } from "@/components/shared/OrdersTable"
@@ -35,6 +35,7 @@ export default function OrdersPage() {
 
       {orders && orders.length === 0 && (
         <EmptyState
+          icon={ClipboardList}
           title="No orders yet"
           description="New orders from the storefront will appear here immediately."
         />

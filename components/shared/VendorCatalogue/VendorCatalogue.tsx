@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, CircleAlert, ShoppingCart } from "lucide-react"
+import { ArrowLeft, CircleAlert, PackageX, ShoppingCart } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -108,6 +108,7 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
 
       {products && products.length === 0 && (
         <EmptyState
+          icon={PackageX}
           title="No products in stock"
           description="This vendor has no available products right now."
         />

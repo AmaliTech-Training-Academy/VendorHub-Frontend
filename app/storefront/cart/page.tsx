@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, CircleAlert } from "lucide-react"
+import { ArrowLeft, CircleAlert, ShoppingCart } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -93,6 +93,7 @@ export default function CartPage() {
 
       {items.length === 0 ? (
         <EmptyState
+          icon={ShoppingCart}
           title="Your cart is empty"
           description="Browse vendors to add products to your order."
           action={

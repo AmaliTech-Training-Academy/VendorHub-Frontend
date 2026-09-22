@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { CircleAlert, Plus } from "lucide-react"
+import { CircleAlert, PackageOpen, Plus } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -86,6 +86,7 @@ export default function ProductsPage() {
 
       {status === Status.SUCCESS && products.length === 0 && (
         <EmptyState
+          icon={PackageOpen}
           title="No products yet"
           description="Add your first product to start selling."
         />

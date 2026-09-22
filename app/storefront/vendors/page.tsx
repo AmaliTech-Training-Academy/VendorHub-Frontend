@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { CircleAlert, ShoppingCart } from "lucide-react"
+import { CircleAlert, ShoppingCart, Store } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { EmptyState } from "@/components/shared/EmptyState"
@@ -44,6 +44,7 @@ export default function VendorsPage() {
 
       {vendors && vendors.length === 0 && (
         <EmptyState
+          icon={Store}
           title="No vendors available"
           description="Check back later for active vendors."
         />
