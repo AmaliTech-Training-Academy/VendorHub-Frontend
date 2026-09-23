@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { CircleAlert, Loader2 } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Select } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { DialogFooter } from "@/components/ui/dialog"
-import { PRODUCT_CATEGORIES, productSchema } from "@/lib/schemas/productSchema"
-import { cn } from "@/lib/utils"
-import type { ProductFormInput, ProductFormValues } from "@/types/product"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CircleAlert, Loader2 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { DialogFooter } from "@/components/ui/dialog";
+import { PRODUCT_CATEGORIES, productSchema } from "@/schemas/productSchema";
+import { cn } from "@/lib/utils";
+import type { ProductFormInput, ProductFormValues } from "@/types/product";
 
 const DEFAULT_VALUES: ProductFormInput = {
   name: "",
@@ -21,7 +21,7 @@ const DEFAULT_VALUES: ProductFormInput = {
   price: "",
   category: PRODUCT_CATEGORIES[0],
   inStock: true,
-}
+};
 
 function ProductForm({
   defaultValues,
@@ -32,13 +32,13 @@ function ProductForm({
   onSubmit,
   onCancel,
 }: {
-  defaultValues?: ProductFormValues
-  isSubmitting?: boolean
-  submitLabel: string
-  submittingLabel: string
-  submitError?: string
-  onSubmit: (values: ProductFormValues) => void
-  onCancel?: () => void
+  defaultValues?: ProductFormValues;
+  isSubmitting?: boolean;
+  submitLabel: string;
+  submittingLabel: string;
+  submitError?: string;
+  onSubmit: (values: ProductFormValues) => void;
+  onCancel?: () => void;
 }) {
   const {
     register,
@@ -50,9 +50,9 @@ function ProductForm({
     resolver: zodResolver(productSchema),
     defaultValues: defaultValues ?? DEFAULT_VALUES,
     mode: "onTouched",
-  })
+  });
 
-  const inStock = watch("inStock")
+  const inStock = watch("inStock");
 
   return (
     <form
@@ -171,7 +171,7 @@ function ProductForm({
         </Button>
       </DialogFooter>
     </form>
-  )
+  );
 }
 
-export { ProductForm }
+export { ProductForm };
