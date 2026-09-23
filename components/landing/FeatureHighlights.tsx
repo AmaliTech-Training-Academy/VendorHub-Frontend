@@ -58,9 +58,9 @@ export default function FeatureHighlights() {
           - 4 columns on desktop monitors (lg:grid-cols-4)
         */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-          {features.map((item, index) => (
+          {features.map((item) => (
             <div
-              key={index}
+              key={item.title}
               // Translucent hover container that responds smoothly to movement
               className="group relative bg-white/2 border border-white/5 p-6 rounded-2xl transition-all duration-300 hover:bg-white/5 hover:-translate-y-2 hover:shadow-xl hover:border-white/10 flex flex-col gap-4"
             >

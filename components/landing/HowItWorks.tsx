@@ -10,9 +10,9 @@ import {
   ShoppingBag,
   BellRing,
 } from "lucide-react";
-import { clsx } from "cn";
 import { Button } from "@/components/ui/button";
-import type { AudienceTab } from "@/types/types";
+import { cn } from "@/lib/utils";
+import type { AudienceTab } from "@/types/type";
 
 const audienceTabs = [
   { id: "employees", label: "Employees" },
@@ -93,7 +93,7 @@ export default function HowItWorks() {
                 variant="ghost"
                 aria-pressed={activeTab === tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={clsx(
+                className={cn(
                   "w-1/2 py-2.5 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-300 hover:bg-transparent",
                   {
                     "bg-blue-900 text-white shadow-sm hover:text-white":
@@ -119,11 +119,11 @@ export default function HowItWorks() {
           >
             {data[activeTab].steps.map((step, index) => (
               <div
-                key={index}
+                key={step.title}
                 className="group flex gap-4 p-4 rounded-2xl transition-all duration-300 hover:bg-white/5 hover:translate-x-2 border border-transparent hover:border-white/10"
               >
                 <div
-                  className={clsx(
+                  className={cn(
                     "w-12 h-12 rounded-xl flex shrink-0 items-center justify-center font-bold text-lg transition-transform duration-300 group-hover:scale-105",
                     {
                       "bg-sky-500/10": activeTab === "employees",
@@ -156,7 +156,7 @@ export default function HowItWorks() {
           >
             <div className="relative w-full max-w-120 lg:max-w-130 h-87.5 sm:h-112.5 md:h-105 lg:h-125">
               <div
-                className={clsx(
+                className={cn(
                   "absolute -right-4 -bottom-4 w-full h-full rounded-3xl -z-10 border-4 border-dashed transition-colors duration-300",
                   {
                     "border-sky-500/20 bg-sky-500/5": activeTab === "employees",

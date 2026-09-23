@@ -1,47 +1,13 @@
 "use client";
 
-import { Star, Quote, Building2, Utensils, Sparkles } from "lucide-react";
+import { Star, Quote } from "lucide-react";
+
 import { Badge } from "../ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { Card, CardContent, CardFooter } from "../ui/card";
+import { testimonials } from "./testimonials.mock";
 
 export default function TestimonialsSection() {
-  const reviews = [
-    {
-      quote:
-        "Our team used to spend 15 minutes every day debating what to order and arguing in group chats. Now we just check the schedule and order right from our desks. Absolute game changer.",
-      author: "Sarah K.",
-      role: "Operations Lead",
-      tag: "Corporate Team",
-      avatarUrl: "",
-      icon: <Building2 className="w-3.5 h-3.5 text-sky-400" />,
-      gridSpan: "md:col-span-2 lg:col-span-7",
-      accentGlow: "from-sky-500/10 to-transparent",
-    },
-    {
-      quote:
-        "As a vendor, guessing how much food to prepare for an office visit was a nightmare. VendorHub lets me lock in orders before I even park my truck.",
-      author: "Chef Marcus",
-      role: "Owner, StreetEats Catering",
-      tag: "Food Vendor",
-      avatarUrl: "",
-      icon: <Utensils className="w-3.5 h-3.5 text-orange-400" />,
-      gridSpan: "md:col-span-1 lg:col-span-5",
-      accentGlow: "from-orange-500/10 to-transparent",
-    },
-    {
-      quote:
-        "No more walking down three flights of stairs just to find out my favorite wrap is sold out. Seeing live stock levels saves me so much time every single afternoon.",
-      author: "David L.",
-      role: "Software Engineer",
-      tag: "Employee",
-      avatarUrl: "",
-      icon: <Sparkles className="w-3.5 h-3.5 text-emerald-400" />,
-      gridSpan: "md:col-span-3 lg:col-span-12",
-      accentGlow: "from-emerald-500/5 to-transparent",
-    },
-  ];
-
   return (
     <section className="w-full bg-slate-900 flex justify-center items-center py-20 md:py-28 overflow-hidden relative border-t border-slate-800">
       <div className="absolute top-1/4 left-1/4 w-112.5 h-112.5 bg-blue-600/4 rounded-full blur-[130px] pointer-events-none -z-10" />
@@ -63,8 +29,8 @@ export default function TestimonialsSection() {
 
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-1">
             <div className="flex items-center gap-0.5 text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-orange-500" />
+              {["one", "two", "three", "four", "five"].map((star) => (
+                <Star key={star} className="w-4 h-4 fill-orange-500" />
               ))}
             </div>
             <span className="text-sm font-medium text-slate-300">
@@ -74,9 +40,9 @@ export default function TestimonialsSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-12 gap-6 w-full">
-          {reviews.map((item, index) => (
+          {testimonials.map((item) => (
             <Card
-              key={index}
+              key={item.id}
               className={`group relative bg-transparent bg-linear-to-b from-white/3 to-white/1 border border-white/5 p-8 rounded-3xl shadow-xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:border-white/10 flex flex-col justify-between overflow-hidden backdrop-blur-sm ${item.gridSpan}`}
             >
               <div
