@@ -8,12 +8,13 @@ import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import OnboardingGraphics from "@/components/shared/OnboardingGraphics";
-import LoginFields from "@/components/auth/LoginFields";
+
 import { RegisterFields } from "@/components/auth/RegisterFields";
 import { useUserLogin } from "@/hooks/useUserLogin";
 import { useUserRegistration } from "@/hooks/useUserRegistration";
 import type { AuthConfig } from "@/types/interfaces";
 import type { AuthMode } from "@/types/types";
+import LoginFields from "./LoginFields";
 
 const authConfig: Record<AuthMode, AuthConfig> = {
   login: {
