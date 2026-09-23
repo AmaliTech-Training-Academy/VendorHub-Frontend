@@ -1,12 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginFormData, loginSchema } from "@/types/loginSchema";
+import { loginSchema } from "@/schemas/loginSchema";
 import { useAuthStore } from "@/store/useAuthStore";
-
-interface UseUserLoginOptions {
-  onSuccess?: (role: string | null) => void;
-  onError?: (error: string) => void;
-}
+import type { UseUserLoginOptions } from "@/types/interfaces";
+import type { LoginFormData } from "@/types/types";
 
 export const useUserLogin = ({
   onSuccess,

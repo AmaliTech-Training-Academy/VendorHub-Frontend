@@ -1,34 +1,7 @@
 // store/useAuthStore.ts
 import { create } from "zustand";
-
-export type UserRole = "vendor" | "employee";
-
-interface User {
-  id: string;
-  email: string;
-  password: string;
-  role: UserRole;
-}
-
-export interface RegisterFormData {
-  email: string;
-  password: string;
-  role: UserRole;
-}
-
-export interface LoginFormData {
-  email: string;
-  password: string;
-}
-
-interface AuthState {
-  users: User[];
-  isLoading: boolean;
-  error: string;
-  role: UserRole | null;
-  register: (formData: RegisterFormData) => Promise<boolean>;
-  login: (formData: LoginFormData) => Promise<boolean>;
-}
+import type { AuthState, User } from "@/types/interfaces";
+import type { LoginFormData, RegisterFormData } from "@/types/types";
 
 const getInitialUsers = (): User[] => {
   try {
