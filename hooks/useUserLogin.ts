@@ -6,7 +6,7 @@ import type { UseUserLoginOptions } from "@/types/interfaces";
 import type { LoginFormData } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "@/lib/api/auth";
-import { loginSchema } from "@/types/loginSchema";
+import { loginSchema } from "@/schemas/loginSchema";
 
 export const useUserLogin = ({
   onSuccess,

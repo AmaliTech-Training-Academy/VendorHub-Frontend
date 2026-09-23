@@ -1,6 +1,5 @@
 import type { Product, ProductFormValues } from "@/types/product";
-import { productSchema } from "@/lib/schemas/productSchema";
-
+import { productSchema } from "@/types/productSchema";
 
 let products: Product[] = [
   {
@@ -47,13 +46,15 @@ function parseProductInput(input: unknown): ProductFormValues {
 }
 
 export async function fetchProducts(vendorId: string): Promise<Product[]> {
-  const vendorProducts = products.filter((product) => product.vendorId === vendorId);
+  const vendorProducts = products.filter(
+    (product) => product.vendorId === vendorId,
+  );
   return delay(clone(vendorProducts));
 }
 
 export async function addProduct(
   vendorId: string,
-  input: ProductFormValues
+  input: ProductFormValues,
 ): Promise<Product> {
   const data = parseProductInput(input);
   const now = new Date().toISOString();
@@ -70,7 +71,7 @@ export async function addProduct(
 
 export async function editProduct(
   productId: string,
-  input: ProductFormValues
+  input: ProductFormValues,
 ): Promise<Product> {
   const data = parseProductInput(input);
   const existing = products.find((product) => product.id === productId);
@@ -82,24 +83,34 @@ export async function editProduct(
     ...data,
     updatedAt: new Date().toISOString(),
   };
-  products = products.map((product) => (product.id === productId ? updated : product));
+  products = products.map((product) =>
+    product.id === productId ? updated : product,
+  );
   return delay(clone(updated));
 }
 
-export async function deleteProduct(productId: string): Promise<{ id: string }> {
+export async function deleteProduct(
+  productId: string,
+): Promise<{ id: string }> {
   products = products.filter((product) => product.id !== productId);
   return delay({ id: productId });
 }
 
 export async function toggleProductStock(
   productId: string,
-  inStock: boolean
+  inStock: boolean,
 ): Promise<Product> {
   const existing = products.find((product) => product.id === productId);
   if (!existing) {
     throw new Error("Product not found");
   }
-  const updated: Product = { ...existing, inStock, updatedAt: new Date().toISOString() };
-  products = products.map((product) => (product.id === productId ? updated : product));
+  const updated: Product = {
+    ...existing,
+    inStock,
+    updatedAt: new Date().toISOString(),
+  };
+  products = products.map((product) =>
+    product.id === productId ? updated : product,
+  );
   return delay(clone(updated));
 }
