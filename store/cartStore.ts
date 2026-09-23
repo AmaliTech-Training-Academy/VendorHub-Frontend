@@ -94,3 +94,10 @@ export function useCartItemCount() {
     state.items.reduce((sum, item) => sum + item.quantity, 0)
   );
 }
+
+/** Sum of price × quantity across all cart items, before the delivery fee. */
+export function useCartSubtotal() {
+  return useCartStore((state) =>
+    state.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  );
+}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { ArrowLeft, CircleAlert, ShoppingCart } from "lucide-react"
 import { useForm } from "react-hook-form"
@@ -15,7 +15,7 @@ import { OrderConfirmation } from "@/components/shared/OrderConfirmation"
 import { useDeliveryWindows } from "@/hooks/useDeliveryWindows"
 import { usePlaceOrder } from "@/hooks/useOrders"
 import { useVendor } from "@/hooks/useVendors"
-import { useCartStore } from "@/store/cartStore"
+import { useCartStore, useCartSubtotal } from "@/store/cartStore"
 import { MOCK_EMPLOYEE_ID } from "@/lib/constants"
 import { confirmOrderSchema } from "@/lib/schemas/orderSchema"
 import type { ConfirmOrderValues, Order } from "@/types/order"
@@ -47,10 +47,7 @@ export default function CartPage() {
     defaultValues: { deliveryWindowId: deliveryWindowId ?? "" },
   })
 
-  const subtotal = useMemo(
-    () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-    [items]
-  )
+  const subtotal = useCartSubtotal()
 
   function onSubmit(data: ConfirmOrderValues) {
     if (!vendorId) return
