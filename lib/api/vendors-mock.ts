@@ -1,7 +1,7 @@
 import type { Vendor } from "@/types/vendor";
 
 /**
- * In-memory mock data layer, same pattern as lib/api/products.ts: a
+ * In-memory mock data layer, same pattern as lib/api/products-mock.ts: a
  * module-level "table" plus artificial latency standing in for a backend.
  */
 

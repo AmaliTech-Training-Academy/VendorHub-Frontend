@@ -1,4 +1,4 @@
-import { getVendorByIdSync } from "@/lib/api/vendors";
+import { getVendorByIdSync } from "@/lib/api/vendors-mock";
 import type { Order, PlaceOrderInput } from "@/types/order";
 import { placeOrderSchema } from "@/lib/schemas/orderSchema";
 

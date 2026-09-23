@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchOrdersByVendor, placeOrder } from "@/lib/api/orders";
+import { fetchOrdersByVendor, placeOrder } from "@/lib/api/orders-mock";
 import type { PlaceOrderInput } from "@/types/order";
 
 export function ordersQueryKey(vendorId: string) {
