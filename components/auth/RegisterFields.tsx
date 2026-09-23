@@ -26,32 +26,29 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
   const selectedRole = watch("role");
 
   return (
-    <div className="space-y-6">
-      {/* Role Selection */}
+    <>
       <div className="flex flex-col gap-3">
-        <div>
+        <div className="space-y-1">
           <Label
             id="role-label"
-            className="text-sm font-semibold text-slate-900"
+            className="text-xs font-bold uppercase tracking-wider text-slate-700"
           >
             I am a...
           </Label>
 
-          <p className="mt-1 text-xs text-slate-500">
-            Select an account type to continue.
+          <p className="text-xs text-slate-500">
+            Choose an account type to continue.
           </p>
         </div>
 
         <ToggleGroup
-          type="single"
-          value={selectedRole ?? ""}
+          value={selectedRole ? [selectedRole] : []}
           onValueChange={(value) => {
-            if (value) {
-              const role = value as RegisterFormData["role"];
+            const role = value[0] as RegisterFormData["role"] | undefined;
 
+            if (role) {
               setValue("role", role, {
                 shouldValidate: true,
-                shouldDirty: true,
               });
             }
           }}
@@ -61,19 +58,18 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
           {/* Vendor */}
           <ToggleGroupItem
             value="VENDOR"
-            aria-label="Register as a vendor"
             className={cn(
-              "group relative flex min-h-[90px] flex-col items-center justify-center gap-2 rounded-2xl border-2 bg-white p-4 text-sm font-semibold transition-all duration-200",
-              "border-slate-200 text-slate-600",
-              "hover:border-orange-300 hover:bg-orange-50/40 hover:text-orange-600",
+              "relative flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border-2 bg-white text-sm font-bold transition-all duration-200",
+              "border-slate-200 text-slate-500",
+              "hover:border-orange-300 hover:bg-orange-50/50 hover:text-orange-600",
               "data-[state=on]:border-orange-500 data-[state=on]:bg-orange-500 data-[state=on]:text-white",
               "data-[state=on]:shadow-lg data-[state=on]:shadow-orange-500/20",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2",
+              "focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2",
             )}
           >
             <div
               className={cn(
-                "flex size-10 items-center justify-center rounded-xl transition-colors",
+                "flex size-10 items-center justify-center rounded-xl transition-all",
                 selectedRole === "VENDOR"
                   ? "bg-white/20 text-white"
                   : "bg-orange-50 text-orange-500",
@@ -86,7 +82,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
 
             {selectedRole === "VENDOR" && (
               <span className="absolute right-3 top-3 flex size-5 items-center justify-center rounded-full bg-white text-orange-500">
-                <Check className="size-3.5" strokeWidth={3} />
+                <Check className="size-3" strokeWidth={3} />
               </span>
             )}
           </ToggleGroupItem>
@@ -94,32 +90,31 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
           {/* Employee */}
           <ToggleGroupItem
             value="EMPLOYEE"
-            aria-label="Register as an employee"
             className={cn(
-              "group relative flex min-h-[90px] flex-col items-center justify-center gap-2 rounded-2xl border-2 bg-white p-4 text-sm font-semibold transition-all duration-200",
-              "border-slate-200 text-slate-600",
-              "hover:border-orange-300 hover:bg-orange-50/40 hover:text-orange-600",
+              "relative flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border-2 bg-white text-sm font-semibold transition-all duration-200",
+              "border-slate-200 text-slate-500",
+              "hover:border-orange-300 hover:bg-orange-50/50 hover:text-orange-600",
               "data-[state=on]:border-orange-500 data-[state=on]:bg-orange-500 data-[state=on]:text-white",
               "data-[state=on]:shadow-lg data-[state=on]:shadow-orange-500/20",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2",
+              "focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2",
             )}
           >
             <div
               className={cn(
-                "flex size-10 items-center justify-center rounded-xl transition-colors",
+                "flex size-10 items-center justify-center rounded-xl transition-all",
                 selectedRole === "EMPLOYEE"
                   ? "bg-white/20 text-white"
                   : "bg-slate-100 text-slate-500",
               )}
             >
-              <User className="size-5" strokeWidth={2.3} />
+              <User className="size-5" strokeWidth={2.2} />
             </div>
 
             <span>Employee</span>
 
             {selectedRole === "EMPLOYEE" && (
               <span className="absolute right-3 top-3 flex size-5 items-center justify-center rounded-full bg-white text-orange-500">
-                <Check className="size-3.5" strokeWidth={3} />
+                <Check className="size-3" strokeWidth={3} />
               </span>
             )}
           </ToggleGroupItem>
@@ -134,23 +129,12 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
         )}
       </div>
 
-      {/* 
-        Don't show ANY fields until a role has been selected.
-      */}
-      {!selectedRole && (
-        <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-5 text-center">
-          <p className="text-xs text-slate-500">
-            Choose an account type above to continue.
-          </p>
-        </div>
-      )}
-
-      {/* Fields only appear after selecting a role */}
-      {selectedRole && (
-        <div className="space-y-5">
+      {/* Nothing below the tabs until a role is selected */}
+      {!selectedRole ? null : (
+        <>
           {/* Vendor Fields */}
           {selectedRole === "VENDOR" && (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="mt-5 grid grid-cols-1 gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-4 sm:grid-cols-2">
               <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="businessName"
@@ -163,11 +147,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
                   {...register("businessName")}
                   id="businessName"
                   placeholder="Akosua's Kitchen"
-                  className={cn(
-                    "h-11 rounded-xl",
-                    errors.businessName &&
-                      "border-red-500 focus-visible:ring-red-500",
-                  )}
+                  className="h-11 rounded-xl border-slate-200 bg-white focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
                 />
 
                 {errors.businessName?.message && (
@@ -191,11 +171,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
                   {...register("ownerName")}
                   id="ownerName"
                   placeholder="Enter full owner name"
-                  className={cn(
-                    "h-11 rounded-xl",
-                    errors.ownerName &&
-                      "border-red-500 focus-visible:ring-red-500",
-                  )}
+                  className="h-11 rounded-xl border-slate-200 bg-white focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
                 />
 
                 {errors.ownerName?.message && (
@@ -211,7 +187,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
 
           {/* Employee Fields */}
           {selectedRole === "EMPLOYEE" && (
-            <div className="flex flex-col gap-1.5">
+            <div className="mt-5 flex flex-col gap-1.5 rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
               <Label
                 htmlFor="fullName"
                 className="text-xs font-bold uppercase tracking-wider text-slate-600"
@@ -223,11 +199,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
                 {...register("fullName")}
                 id="fullName"
                 placeholder="Enter your full name"
-                className={cn(
-                  "h-11 rounded-xl",
-                  errors.fullName &&
-                    "border-red-500 focus-visible:ring-red-500",
-                )}
+                className="h-11 rounded-xl border-slate-200 bg-white focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
               />
 
               {errors.fullName?.message && (
@@ -241,14 +213,13 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
           )}
 
           {/* Common Fields */}
-          <div className="space-y-4 border-t border-slate-100 pt-5">
+          <div className="mt-5 flex flex-col gap-4 border-t border-slate-200 pt-5">
             <div>
-              <p className="text-sm font-semibold text-slate-900">
+              <p className="text-sm font-bold text-slate-800">
                 Account details
               </p>
-
               <p className="mt-1 text-xs text-slate-500">
-                These details will be used to access your account.
+                Use these details to access your account.
               </p>
             </div>
 
@@ -265,10 +236,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
                 id="email"
                 type="email"
                 placeholder="name@example.com"
-                className={cn(
-                  "h-11 rounded-xl",
-                  errors.email && "border-red-500 focus-visible:ring-red-500",
-                )}
+                className="h-11 rounded-xl border-slate-200 focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
               />
 
               {errors.email?.message && (
@@ -293,11 +261,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                className={cn(
-                  "h-11 rounded-xl",
-                  errors.password &&
-                    "border-red-500 focus-visible:ring-red-500",
-                )}
+                className="h-11 rounded-xl border-slate-200 focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
               />
 
               {errors.password?.message && (
@@ -309,8 +273,8 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
               )}
             </div>
           </div>
-        </div>
+        </>
       )}
-    </div>
+    </>
   );
 }
