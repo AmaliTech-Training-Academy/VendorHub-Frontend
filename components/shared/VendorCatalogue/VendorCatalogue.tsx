@@ -20,6 +20,8 @@ import { EmptyState } from "@/components/shared/EmptyState"
 import { StorefrontProductCard } from "@/components/shared/StorefrontProductCard"
 import { VendorCatalogueSkeleton } from "@/components/shared/VendorCatalogueSkeleton"
 import { useVendor, useVendorCatalogue } from "@/hooks/useVendors"
+import { WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema"
+import { formatPrice } from "@/lib/utils"
 import { useCartItemCount, useCartStore } from "@/store/cartStore"
 import type { Product } from "@/types/product"
 
@@ -78,9 +80,19 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
             <>
               <h1 className="text-xl font-semibold">{vendor?.name ?? "Vendor"}</h1>
               {vendor && (
-                <p className="text-sm text-muted-foreground">
-                  {vendor.categories.join(", ")}
-                </p>
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    {vendor.categories.join(", ")}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Delivery: {formatPrice(vendor.deliveryFee)} ·{" "}
+                    {vendor.availableDays.map((day) => WEEKDAY_LABELS[day]).join(", ")}{" "}
+                    ·{" "}
+                    {vendor.timeWindows
+                      .map((window) => `${window.startTime}–${window.endTime}`)
+                      .join(", ")}
+                  </p>
+                </>
               )}
             </>
           )}
