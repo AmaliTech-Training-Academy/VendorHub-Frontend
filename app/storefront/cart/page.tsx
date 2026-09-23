@@ -17,7 +17,7 @@ import { usePlaceOrder } from "@/hooks/useOrders"
 import { useVendor } from "@/hooks/useVendors"
 import { useCartStore, useCartSubtotal } from "@/store/cartStore"
 import { MOCK_EMPLOYEE_ID } from "@/lib/constants"
-import { confirmOrderSchema } from "@/lib/schemas/orderSchema"
+import { confirmOrderSchema } from "@/schemas/orderSchema"
 import type { ConfirmOrderValues, Order } from "@/types/order"
 
 export default function CartPage() {
