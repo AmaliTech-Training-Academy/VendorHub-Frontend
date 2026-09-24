@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { CircleAlert, ShoppingCart, Store } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
-import { EmptyState } from "@/components/shared/EmptyState"
-import { VendorCard } from "@/components/shared/VendorCard"
-import { VendorList } from "@/components/shared/VendorList"
-import { VendorListSkeleton } from "@/components/shared/VendorListSkeleton"
-import { useVendors } from "@/hooks/useVendors"
+import Link from "next/link";
+import { CircleAlert, ShoppingCart, Store } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { VendorCard } from "@/components/shared/VendorCard";
+import { VendorList } from "@/components/shared/VendorList";
+import { VendorListSkeleton } from "@/components/shared/VendorListSkeleton";
+import { useVendors } from "@/hooks/useVendors";
 
 export default function VendorsPage() {
-  const { data: vendors, isPending, isError } = useVendors()
+  const { data: vendors, isPending, isError } = useVendors();
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -22,12 +22,6 @@ export default function VendorsPage() {
             Browse active vendors and start an order.
           </p>
         </div>
-        <Link href="/storefront/cart">
-          <Button variant="outline">
-            <ShoppingCart />
-            Cart
-          </Button>
-        </Link>
       </div>
 
       {isPending && <VendorListSkeleton />}
@@ -58,5 +52,5 @@ export default function VendorsPage() {
         </VendorList>
       )}
     </div>
-  )
+  );
 }
