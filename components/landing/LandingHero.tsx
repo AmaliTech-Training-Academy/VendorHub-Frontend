@@ -6,7 +6,7 @@ import Link from "next/link";
 const heroActions = [
   {
     label: "Get Started",
-    href: "/register",
+    href: "/login",
     className: "bg-blue-900 text-white shadow-md hover:shadow-xl",
   },
   {
