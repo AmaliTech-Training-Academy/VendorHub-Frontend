@@ -13,14 +13,8 @@ const navigationLinks = [
 
 const actionLinks = [
   {
-    label: "Login",
-    href: "/login",
-    className: "bg-orange-500",
-    mobileClassName: "bg-amber-500",
-  },
-  {
     label: "Get Started",
-    href: "/register",
+    href: "/login",
     className: "bg-blue-900",
     mobileClassName: "bg-blue-900",
   },
@@ -46,7 +40,6 @@ export default function LandingNavbar() {
   }, []);
 
   return (
-    
     <header
       className={`sticky top-0 sm:top-5 z-50 w-full transition-all duration-300 flex flex-col justify-center px-4 sm:px-6 py-4
         ${
