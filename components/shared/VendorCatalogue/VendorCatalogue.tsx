@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { ArrowLeft, CircleAlert, PackageX, ShoppingCart } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowLeft, CircleAlert, PackageX, ShoppingCart } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,24 +15,23 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { EmptyState } from "@/components/shared/EmptyState"
-import { StorefrontProductCard } from "@/components/shared/StorefrontProductCard"
-import { VendorCatalogueSkeleton } from "@/components/shared/VendorCatalogueSkeleton"
-import { useVendor, useVendorCatalogue } from "@/hooks/useVendors"
-import { WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema"
-import { formatPrice } from "@/lib/utils"
-import { useCartItemCount, useCartStore } from "@/store/cartStore"
-import type { Product } from "@/types/product"
+} from "@/components/ui/alert-dialog";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { StorefrontProductCard } from "@/components/shared/StorefrontProductCard";
+import { VendorCatalogueSkeleton } from "@/components/shared/VendorCatalogueSkeleton";
+import { useVendor, useVendorCatalogue } from "@/hooks/useVendors";
+import { WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema";
+import { formatPrice } from "@/lib/utils";
+import { useCartItemCount, useCartStore } from "@/store/cartStore";
+import type { Product } from "@/types/product";
 
 function VendorCatalogue({ vendorId }: { vendorId: string }) {
-  const { data: vendor, isPending: isVendorPending } = useVendor(vendorId)
-  const { data: products, isPending, isError } = useVendorCatalogue(vendorId)
-  const { items, addItem, clearCart } = useCartStore()
+  const { data: vendor, isPending: isVendorPending } = useVendor(vendorId);
+  const { data: products, isPending, isError } = useVendorCatalogue(vendorId);
+  const { items, addItem, clearCart } = useCartStore();
 
-  const [pendingSwitchProduct, setPendingSwitchProduct] = useState<Product | null>(
-    null
-  )
+  const [pendingSwitchProduct, setPendingSwitchProduct] =
+    useState<Product | null>(null);
 
   function handleAdd(product: Product) {
     const result = addItem({
@@ -40,25 +39,23 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
       vendorId: product.vendorId,
       name: product.name,
       price: product.price,
-    })
+    });
     if (result.blocked) {
-      setPendingSwitchProduct(product)
+      setPendingSwitchProduct(product);
     }
   }
 
   function confirmSwitchVendor() {
-    if (!pendingSwitchProduct) return
-    clearCart()
+    if (!pendingSwitchProduct) return;
+    clearCart();
     addItem({
       productId: pendingSwitchProduct.id,
       vendorId: pendingSwitchProduct.vendorId,
       name: pendingSwitchProduct.name,
       price: pendingSwitchProduct.price,
-    })
-    setPendingSwitchProduct(null)
+    });
+    setPendingSwitchProduct(null);
   }
-
-  const cartCount = useCartItemCount()
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -78,7 +75,9 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
             </>
           ) : (
             <>
-              <h1 className="text-xl font-semibold">{vendor?.name ?? "Vendor"}</h1>
+              <h1 className="text-xl font-semibold">
+                {vendor?.name ?? "Vendor"}
+              </h1>
               {vendor && (
                 <>
                   <p className="text-sm text-muted-foreground">
@@ -86,7 +85,9 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Delivery: {formatPrice(vendor.deliveryFee)} ·{" "}
-                    {vendor.availableDays.map((day) => WEEKDAY_LABELS[day]).join(", ")}{" "}
+                    {vendor.availableDays
+                      .map((day) => WEEKDAY_LABELS[day])
+                      .join(", ")}{" "}
                     ·{" "}
                     {vendor.timeWindows
                       .map((window) => `${window.startTime}–${window.endTime}`)
@@ -97,12 +98,6 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
             </>
           )}
         </div>
-        <Link href="/storefront/cart">
-          <Button variant="outline">
-            <ShoppingCart />
-            Cart{cartCount > 0 ? ` (${cartCount})` : ""}
-          </Button>
-        </Link>
       </div>
 
       {isPending && <VendorCatalogueSkeleton />}
@@ -112,8 +107,8 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
           <CircleAlert />
           <AlertTitle>Unable to load catalogue</AlertTitle>
           <AlertDescription>
-            Something went wrong loading this vendor&apos;s catalogue. Please try
-            again.
+            Something went wrong loading this vendor&apos;s catalogue. Please
+            try again.
           </AlertDescription>
         </Alert>
       )}
@@ -133,7 +128,8 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
               key={product.id}
               product={product}
               quantityInCart={
-                items.find((item) => item.productId === product.id)?.quantity ?? 0
+                items.find((item) => item.productId === product.id)?.quantity ??
+                0
               }
               onAdd={handleAdd}
             />
@@ -144,7 +140,7 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
       <AlertDialog
         open={!!pendingSwitchProduct}
         onOpenChange={(open) => {
-          if (!open) setPendingSwitchProduct(null)
+          if (!open) setPendingSwitchProduct(null);
         }}
       >
         <AlertDialogContent>
@@ -165,7 +161,7 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )
+  );
 }
 
-export { VendorCatalogue }
+export { VendorCatalogue };

@@ -54,7 +54,7 @@
 
 :root {
   /* VendorHub brand: warm cream background, orange primary, deep navy text */
-  --background: oklch(0.97 0.025 65);
+  /* --background: oklch(0.97 0.025 65); */
   --foreground: oklch(0.26 0.06 265);
   --card: oklch(0.995 0.008 70);
   --card-foreground: oklch(0.26 0.06 265);
