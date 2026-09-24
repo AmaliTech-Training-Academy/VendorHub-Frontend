@@ -6,7 +6,7 @@ import Link from "next/link";
 const heroActions = [
   {
     label: "Get Started",
-    href: "/register",
+    href: "/login",
     className: "bg-blue-900 text-white shadow-md hover:shadow-xl",
   },
   {
@@ -57,7 +57,7 @@ export default function LandingHero() {
           <div className="absolute top-0 left-0 w-3/4 h-4/5 rounded-3xl shadow-xl border-4 border-white z-10 bg-orange-50 ">
             <div className="relative w-full h-full rounded-[20px] overflow-hidden">
               <Image
-                src="/vendor-2.jpg"
+                src="/e2.jpg"
                 alt="Happy person ordering lunch"
                 fill
                 sizes="(max-width: 768px) 75vw, 412px"
@@ -70,7 +70,7 @@ export default function LandingHero() {
           <div className="absolute bottom-0 right-0 w-3/5 h-3/5 rounded-3xl shadow-2xl border-4 border-white z-20 bg-orange-100">
             <div className="relative w-full h-full rounded-[20px] overflow-hidden">
               <Image
-                src="/happy-2.jpg"
+                src="/ve2.jpg"
                 alt="Delicious office vendor meal food"
                 fill
                 sizes="(max-width: 768px) 60vw, 330px"

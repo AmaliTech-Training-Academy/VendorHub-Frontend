@@ -69,19 +69,19 @@ export default function CTASection() {
             href="/register"
             className="group w-full sm:w-auto px-8 py-4 rounded-2xl bg-linear-to-r from-blue-900 to-blue-950 hover:from-orange-500 hover:to-orange-600 text-white font-bold tracking-wide shadow-xl shadow-blue-950/50 hover:shadow-blue-900/30 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-3 text-base"
           >
-            Create your account
+            Enter Your Hub
             {/* Arrow icon slides outward smoothly on hover */}
             <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
 
           {/* Quick secondary sign-in anchor link */}
           <p className="text-sm text-blue-900 font-light">
-            Already have an account?{" "}
+            you&apos;re new here?{" "}
             <Link
-              href="/login"
+              href="/register"
               className="text-orange-500 font-medium hover:text-white underline underline-offset-4 transition-colors"
             >
-              Log in here
+              register an account
             </Link>
           </p>
         </div>

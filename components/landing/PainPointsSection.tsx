@@ -29,14 +29,14 @@ export default function PainPointsSection() {
       id="story"
     >
       <div className="w-11/12 max-w-7xl flex flex-col md:flex-row gap-12 lg:gap-20 items-center justify-between">
-        <div className="relative w-full max-w-112.5 lg:max-w-125 h-87.5 md:h-125 border-8 border-orange-100 rounded-2xl overflow-hidden shadow-xl animate-slide-in-left transition-transform duration-500 hover:scale-[1.02]">
+        <div className="relative w-full max-w-112.5 lg:max-w-125 h-87.5 md:h-125  rounded-2xl overflow-hidden  animate-slide-in-left transition-transform duration-500 hover:scale-[1.02]">
           <Image
-            src="/vendor-3.jpg"
+            src="/e1.jpg"
             alt="Delicious office vendor meal food"
             fill
             sizes="(max-width: 768px) 100vw, 500px"
             priority
-            className="object-cover transition-transform duration-700 hover:scale-110"
+            className="object-fit transition-transform duration-700 hover:scale-110"
           />
         </div>
 

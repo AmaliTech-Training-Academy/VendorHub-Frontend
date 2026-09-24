@@ -19,9 +19,9 @@ import LoginFields from "./LoginFields";
 const authConfig: Record<AuthMode, AuthConfig> = {
   login: {
     images: [
-      { src: "/happy.jpg", alt: "Employee at their desk" },
-      { src: "/happy-2.jpg", alt: "Employee ordering lunch" },
-      { src: "/happy-3.jpg", alt: "Vendor smiling" },
+      { src: "/e2.jpg", alt: "Employee at their desk" },
+      { src: "/ve2.jpg", alt: "Employee ordering lunch" },
+      { src: "/ev.jpg", alt: "Vendor smiling" },
     ],
     onboardingHeading: "Welcome",
     onboardingHighlight: "back",
@@ -39,9 +39,9 @@ const authConfig: Record<AuthMode, AuthConfig> = {
   },
   register: {
     images: [
-      { src: "/vendor-1.jpg", alt: "Vendor preparing food" },
-      { src: "/vendor-3.jpg", alt: "Vendor at their stall" },
-      { src: "/vendor-2.jpg", alt: "Vendor smiling" },
+      { src: "/ev.jpg", alt: "Vendor preparing food" },
+      { src: "/ve3.jpg", alt: "Vendor at their stall" },
+      { src: "/ve4.jpg", alt: "Vendor smiling" },
     ],
     onboardingHeading: "Welcome to",
     onboardingHighlight: "VendorHub",
