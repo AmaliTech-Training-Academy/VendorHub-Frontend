@@ -1,7 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { CircleAlert, PackageOpen, Plus } from "lucide-react"
+import {
+  CircleAlert,
+  CircleCheck,
+  Package,
+  PackageOpen,
+  PackageX,
+  Plus,
+} from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,6 +20,7 @@ import {
 } from "@/components/ui/dialog"
 import { EmptyState } from "@/components/shared/EmptyState"
 import { ProductForm } from "@/components/shared/ProductForm"
+import { StatCard } from "@/components/shared/StatCard"
 import { ProductsTable } from "@/components/shared/ProductsTable"
 import { ProductsTableSkeleton } from "@/components/shared/ProductsTableSkeleton"
 import { useAddProduct } from "@/hooks/useAddProduct"
@@ -58,19 +66,42 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold">My Products</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage the products in your catalogue.
-          </p>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-gradient-to-br from-accent via-accent/60 to-transparent p-5">
+        <div className="flex items-center gap-4">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+            <Package aria-hidden="true" className="size-6" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">My Products</h1>
+            <p className="text-sm text-muted-foreground">
+              Manage the products in your catalogue.
+            </p>
+          </div>
         </div>
-        <Button onClick={() => openDialog({ mode: "add" })}>
+        <Button className="rounded-full" onClick={() => openDialog({ mode: "add" })}>
           <Plus />
           Add product
         </Button>
       </div>
+
+      {status === Status.SUCCESS && products.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <StatCard icon={Package} label="Total products" value={products.length} />
+          <StatCard
+            icon={CircleCheck}
+            tone="success"
+            label="In stock"
+            value={products.filter((product) => product.inStock).length}
+          />
+          <StatCard
+            icon={PackageX}
+            tone="warning"
+            label="Out of stock"
+            value={products.filter((product) => !product.inStock).length}
+          />
+        </div>
+      )}
 
       {status === Status.PENDING && <ProductsTableSkeleton />}
 
