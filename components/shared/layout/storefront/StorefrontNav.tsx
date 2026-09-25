@@ -32,8 +32,8 @@ export function StorefrontNav() {
   };
 
   return (
-    <div className="p-4">
-      <div className="bg-blue-950  mx-auto flex items-center justify-between px-4 py-7 md:px-6 rounded-lg">
+    <div className=" w-full z-100 shadow-sm ">
+      <div className="w-full fixed bg-blue-950   mx-auto flex items-center justify-between px-4 py-7 md:px-16  ">
         {/* Logo */}
         <Link
           href="/storefront/vendors"
@@ -42,13 +42,13 @@ export function StorefrontNav() {
           <Image
             src="/logo.png"
             alt="VendorHub logo"
-            width={28}
-            height={28}
+            width={50}
+            height={50}
             className="object-contain rounded-full bg-white p-1"
           />
           <span className="font-bold text-base  sm:inline ">
-            <span className="text-white">Vendor</span>
-            <span className="text-orange-400">Hub</span>
+            <span className="text-white text-xl">Vendor</span>
+            <span className="text-orange-400 text-2xl">Hub</span>
           </span>
         </Link>
 
@@ -61,15 +61,14 @@ export function StorefrontNav() {
               <Button
                 key={tab.href}
                 variant="ghost"
-                size="sm"
                 className={cn(
-                  "text-white/70 hover:text-white hover:bg-white/10",
+                  "text-white/70 hover:text-white hover:bg-white/10 py-4 px-5",
                   isActive &&
                     "bg-white text-blue-950 hover:bg-white hover:text-blue-950",
                 )}
               >
                 <Link href={tab.href} className="flex items-center gap-2">
-                  <Icon className="size-4" />
+                  <Icon className="size-7" />
                   <span className="font-semibold text-sm">{tab.label}</span>
                 </Link>
               </Button>
@@ -85,11 +84,11 @@ export function StorefrontNav() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white hover:bg-white/10 hover:text-white rounded-full"
+                  className="text-white hover:bg-white/10 hover:text-white rounded-full p-6  bg-amber-500"
                 />
               }
             >
-              <User />
+              <User className="size-7 text-blue-950 " />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleLogout}>
