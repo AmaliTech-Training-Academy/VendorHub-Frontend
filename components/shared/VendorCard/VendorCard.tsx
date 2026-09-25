@@ -6,6 +6,7 @@ import {
   Croissant,
   House,
   Leaf,
+  PackageCheck,
   ShoppingBasket,
   Store,
   Truck,
@@ -90,7 +91,12 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
     >
       <div className={`relative h-20 bg-gradient-to-br ${theme.banner}`}>
         <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-card/90 px-2.5 py-1 text-xs font-medium text-foreground shadow-sm">
-          <Truck aria-hidden="true" className="size-3.5 text-primary" />
+          {/* On hover/focus the truck drives off and the delivered package arrives.
+              Both states only swap when motion is allowed; otherwise the truck stays. */}
+          <span aria-hidden="true" className="relative size-3.5 overflow-hidden">
+            <Truck className="absolute inset-0 size-3.5 text-primary transition-all duration-500 ease-in-out motion-safe:group-hover:translate-x-4 motion-safe:group-hover:opacity-0 motion-safe:group-focus-visible:translate-x-4 motion-safe:group-focus-visible:opacity-0" />
+            <PackageCheck className="absolute inset-0 size-3.5 -translate-x-4 text-emerald-600 opacity-0 transition-all duration-500 ease-in-out motion-safe:group-hover:translate-x-0 motion-safe:group-hover:opacity-100 motion-safe:group-focus-visible:translate-x-0 motion-safe:group-focus-visible:opacity-100 dark:text-emerald-400" />
+          </span>
           {formatPrice(vendor.deliveryFee)}
         </span>
         <div className="absolute bottom-0 left-4 flex size-12 translate-y-1/2 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
