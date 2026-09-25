@@ -69,15 +69,15 @@ export default function CartPage() {
 
   if (confirmedOrder) {
     return (
-      <div className="mx-auto flex max-w-lg flex-col gap-6 p-6">
+      <div className="mx-auto flex w-full max-w-lg flex-col gap-6 p-6">
         <OrderConfirmation order={confirmedOrder} />
       </div>
     )
   }
 
   return (
-    <div className="mx-auto flex max-w-lg flex-col gap-6 p-6">
-      <div className="flex flex-col gap-1">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-6">
+      <div className="flex flex-col gap-3">
         <Link
           href="/storefront/vendors"
           className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -85,7 +85,17 @@ export default function CartPage() {
           <ArrowLeft className="size-3.5" />
           Back to vendors
         </Link>
-        <h1 className="text-xl font-semibold">Your cart</h1>
+        <div className="flex items-center gap-4 rounded-2xl bg-gradient-to-br from-accent via-accent/60 to-transparent p-5">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+            <ShoppingCart aria-hidden="true" className="size-6" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Your cart</h1>
+            <p className="text-sm text-muted-foreground">
+              Check your items, pick a delivery window, and you&apos;re done.
+            </p>
+          </div>
+        </div>
       </div>
 
       {items.length === 0 ? (
@@ -102,44 +112,51 @@ export default function CartPage() {
           }
         />
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            {items.map((item) => (
-              <CartLineItem
-                key={item.productId}
-                item={item}
-                onDecrease={decreaseQuantity}
-                onIncrease={increaseQuantity}
-                onRemove={removeItem}
-              />
-            ))}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid items-start gap-6 lg:grid-cols-[1fr_20rem]"
+        >
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              {items.map((item) => (
+                <CartLineItem
+                  key={item.productId}
+                  item={item}
+                  onDecrease={decreaseQuantity}
+                  onIncrease={increaseQuantity}
+                  onRemove={removeItem}
+                />
+              ))}
+            </div>
+
+            <DeliveryWindowSelector
+              windows={deliveryWindows ?? []}
+              value={watch("deliveryWindowId")}
+              onChange={(id) => {
+                setValue("deliveryWindowId", id, { shouldValidate: true })
+                setDeliveryWindow(id)
+              }}
+              error={errors.deliveryWindowId?.message}
+            />
           </div>
 
-          <DeliveryWindowSelector
-            windows={deliveryWindows ?? []}
-            value={watch("deliveryWindowId")}
-            onChange={(id) => {
-              setValue("deliveryWindowId", id, { shouldValidate: true })
-              setDeliveryWindow(id)
-            }}
-            error={errors.deliveryWindowId?.message}
-          />
+          <div className="flex flex-col gap-4">
+            <CartSummary
+              subtotal={subtotal}
+              deliveryFee={vendor?.deliveryFee ?? 0}
+              isSubmitting={placeOrder.isPending}
+            />
 
-          <CartSummary
-            subtotal={subtotal}
-            deliveryFee={vendor?.deliveryFee ?? 0}
-            isSubmitting={placeOrder.isPending}
-          />
-
-          {placeOrder.isError && (
-            <Alert variant="destructive">
-              <CircleAlert />
-              <AlertTitle>Unable to place order</AlertTitle>
-              <AlertDescription>
-                Something went wrong placing your order. Please try again.
-              </AlertDescription>
-            </Alert>
-          )}
+            {placeOrder.isError && (
+              <Alert variant="destructive">
+                <CircleAlert />
+                <AlertTitle>Unable to place order</AlertTitle>
+                <AlertDescription>
+                  Something went wrong placing your order. Please try again.
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
         </form>
       )}
     </div>
