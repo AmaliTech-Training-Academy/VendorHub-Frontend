@@ -62,7 +62,7 @@ export default function VendorsPage() {
             <div
               role="group"
               aria-label="Filter vendors by category"
-              className="flex flex-wrap gap-2"
+              className="sticky top-0 z-10 -mx-6 flex flex-wrap gap-2 bg-background/85 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70"
             >
               <Button
                 size="sm"
@@ -106,7 +106,7 @@ export default function VendorsPage() {
                   {group.vendors.length === 1 ? "vendor" : "vendors"}
                 </span>
               </div>
-              <VendorList>
+              <VendorList count={group.vendors.length}>
                 {group.vendors.map((vendor, index) => (
                   <VendorCard key={vendor.id} vendor={vendor} index={index} />
                 ))}
