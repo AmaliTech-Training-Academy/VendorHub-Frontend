@@ -1,15 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import { CircleAlert, Store } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { VendorCard } from "@/components/shared/VendorCard";
 import { VendorList } from "@/components/shared/VendorList";
 import { VendorListSkeleton } from "@/components/shared/VendorListSkeleton";
 import { useVendors } from "@/hooks/useVendors";
+import { groupVendorsByCategory } from "@/lib/vendors";
 
 export default function VendorsPage() {
   const { data: vendors, isPending, isError } = useVendors();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const groups = vendors ? groupVendorsByCategory(vendors) : [];
+  const visibleGroups = groups.filter(
+    (group) => !selectedCategory || group.category === selectedCategory,
+  );
 
   return (
     <div className="flex w-full flex-col gap-6 p-6">
@@ -48,11 +57,63 @@ export default function VendorsPage() {
       )}
 
       {vendors && vendors.length > 0 && (
-        <VendorList>
-          {vendors.map((vendor, index) => (
-            <VendorCard key={vendor.id} vendor={vendor} index={index} />
+        <div className="flex flex-col gap-8">
+          {groups.length > 1 && (
+            <div
+              role="group"
+              aria-label="Filter vendors by category"
+              className="flex flex-wrap gap-2"
+            >
+              <Button
+                size="sm"
+                className="rounded-full"
+                variant={selectedCategory ? "outline" : "default"}
+                aria-pressed={!selectedCategory}
+                onClick={() => setSelectedCategory(null)}
+              >
+                All ({vendors.length})
+              </Button>
+              {groups.map((group) => (
+                <Button
+                  key={group.category}
+                  size="sm"
+                  className="rounded-full"
+                  variant={selectedCategory === group.category ? "default" : "outline"}
+                  aria-pressed={selectedCategory === group.category}
+                  onClick={() => setSelectedCategory(group.category)}
+                >
+                  {group.category} ({group.vendors.length})
+                </Button>
+              ))}
+            </div>
+          )}
+
+          {visibleGroups.map((group) => (
+            <section
+              key={group.category}
+              aria-labelledby={`vendors-${group.category}`}
+              className="flex flex-col gap-3"
+            >
+              <div className="flex items-baseline justify-between px-1">
+                <h2
+                  id={`vendors-${group.category}`}
+                  className="text-lg font-semibold tracking-tight"
+                >
+                  {group.category}
+                </h2>
+                <span className="text-sm text-muted-foreground">
+                  {group.vendors.length}{" "}
+                  {group.vendors.length === 1 ? "vendor" : "vendors"}
+                </span>
+              </div>
+              <VendorList>
+                {group.vendors.map((vendor, index) => (
+                  <VendorCard key={vendor.id} vendor={vendor} index={index} />
+                ))}
+              </VendorList>
+            </section>
           ))}
-        </VendorList>
+        </div>
       )}
     </div>
   );
