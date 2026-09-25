@@ -1,14 +1,7 @@
 import { memo } from "react"
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge"
-import { formatPrice } from "@/lib/utils"
+import { formatDate, formatPrice } from "@/lib/utils"
 import type { Order } from "@/types/order"
-
-function formatDate(iso: string) {
-  return new Intl.DateTimeFormat("en-GH", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(iso))
-}
 
 function OrderHistoryCardComponent({ order }: { order: Order }) {
   return (
