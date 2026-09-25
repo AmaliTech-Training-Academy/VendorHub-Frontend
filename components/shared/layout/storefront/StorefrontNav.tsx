@@ -33,7 +33,7 @@ export function StorefrontNav() {
 
   return (
     <div className="p-4">
-      <div className="bg-blue-950 max-w-6xl mx-auto flex items-center justify-between px-4 py-3 md:px-6 rounded-lg">
+      <div className="bg-blue-950  mx-auto flex items-center justify-between px-4 py-7 md:px-6 rounded-lg">
         {/* Logo */}
         <Link
           href="/storefront/vendors"
