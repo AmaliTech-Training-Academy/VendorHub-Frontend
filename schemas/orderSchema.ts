@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ORDER_STATUSES } from "@/lib/constants";
 
 export const deliveryWindowSchema = z.object({
   id: z.string(),
@@ -23,14 +24,6 @@ export const placeOrderSchema = z.object({
 
 /** Validated by the cart page's form — the only field the employee edits directly. */
 export const confirmOrderSchema = placeOrderSchema.pick({ deliveryWindowId: true });
-
-export const ORDER_STATUSES = [
-  "placed",
-  "confirmed",
-  "preparing",
-  "ready_for_collection",
-  "collected",
-] as const;
 
 export const orderSchema = z.object({
   id: z.string(),

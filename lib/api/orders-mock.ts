@@ -1,6 +1,7 @@
 import { getVendorByIdSync } from "@/lib/api/vendors-mock";
 import type { Order, OrderStatus, PlaceOrderInput } from "@/types/order";
-import { ORDER_STATUSES, placeOrderSchema } from "@/schemas/orderSchema";
+import { ORDER_STATUSES } from "@/lib/constants";
+import { placeOrderSchema } from "@/schemas/orderSchema";
 
 let orders: Order[] = [];
 
