@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ORDER_STATUSES } from "@/lib/constants";
 
 export const deliveryWindowSchema = z.object({
   id: z.string(),
@@ -28,12 +29,14 @@ export const orderSchema = z.object({
   id: z.string(),
   reference: z.string(),
   vendorId: z.string(),
+  /** Snapshotted at order time so a later vendor rename doesn't rewrite history. */
+  vendorName: z.string(),
   employeeId: z.string(),
   items: z.array(cartItemSchema),
   deliveryWindowId: z.string(),
   subtotal: z.number().nonnegative(),
   deliveryFee: z.number().nonnegative(),
   total: z.number().nonnegative(),
-  status: z.enum(["pending", "confirmed"]),
+  status: z.enum(ORDER_STATUSES),
   createdAt: z.string(),
 });
