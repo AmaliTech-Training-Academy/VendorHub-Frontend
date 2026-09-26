@@ -32,21 +32,21 @@ export function StorefrontNav() {
   };
 
   return (
-    <div className="p-4">
-      <div className="bg-blue-950 max-w-6xl mx-auto flex items-center justify-between px-4 py-3 md:px-6 rounded-lg">
+    <header className="sticky top-0 z-40 w-full bg-blue-950 shadow-sm">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-4 px-6">
         {/* Logo */}
         <Link
           href="/storefront/vendors"
-          className="flex items-center gap-2 shrink-0"
+          className="flex items-center gap-3 shrink-0 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-white/40"
         >
           <Image
             src="/logo.png"
             alt="VendorHub logo"
-            width={28}
-            height={28}
+            width={44}
+            height={44}
             className="object-contain rounded-full bg-white p-1"
           />
-          <span className="font-bold text-base  sm:inline ">
+          <span className="font-bold text-xl">
             <span className="text-white">Vendor</span>
             <span className="text-orange-400">Hub</span>
           </span>
@@ -61,15 +61,14 @@ export function StorefrontNav() {
               <Button
                 key={tab.href}
                 variant="ghost"
-                size="sm"
                 className={cn(
-                  "text-white/70 hover:text-white hover:bg-white/10",
+                  "h-10 px-5 text-white/70 hover:text-white hover:bg-white/10",
                   isActive &&
                     "bg-white text-blue-950 hover:bg-white hover:text-blue-950",
                 )}
               >
-                <Link href={tab.href} className="flex items-center gap-2">
-                  <Icon className="size-4" />
+                <Link href={tab.href} className="flex items-center gap-2.5">
+                  <Icon className="size-5" />
                   <span className="font-semibold text-sm">{tab.label}</span>
                 </Link>
               </Button>
@@ -85,11 +84,12 @@ export function StorefrontNav() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white hover:bg-white/10 hover:text-white rounded-full"
+                  aria-label="Account menu"
+                  className="size-11 rounded-full bg-amber-500 text-blue-950 hover:bg-amber-400 hover:text-blue-950"
                 />
               }
             >
-              <User />
+              <User className="size-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleLogout}>
@@ -144,6 +144,6 @@ export function StorefrontNav() {
           </SheetContent>
         </Sheet>
       </div>
-    </div>
+    </header>
   );
 }
