@@ -10,7 +10,7 @@ export default function StorefrontLayout({
     <AuthGuard allowedRoles={["EMPLOYEE"]}>
       <div className="flex  flex-col space-y-30  md:space-y-25 mad:p-4 ">
         <StorefrontNav />
-        <main className="mx-auto flex w-full justify-center md:max-w-7xl">
+        <main className="w-full  flex justify-start md:px-15 md:py-3 overflow-hidden">
           {children}
         </main>
         <FloatingCart />
