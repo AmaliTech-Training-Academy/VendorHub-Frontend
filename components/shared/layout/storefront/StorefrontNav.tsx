@@ -32,8 +32,8 @@ export function StorefrontNav() {
   };
 
   return (
-    <header className=" w-full z-100 shadow-sm ">
-      <div className="w-full fixed bg-blue-950   mx-auto flex items-center justify-between px-4 py-7 md:px-16  ">
+    <header className="w-full shadow-sm">
+      <div className="fixed z-40 w-full bg-blue-950 mx-auto flex items-center justify-between px-4 py-7 md:px-16">
         {/* Logo */}
         <Link
           href="/storefront/vendors"
@@ -77,22 +77,22 @@ export function StorefrontNav() {
         </div>
 
         {/* Account — desktop */}
-        <div className="hidden md:flex items-center shrink-0">
+        <div className="hidden md:flex items-center shrink-0 z-100">
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white hover:bg-white/10 hover:text-white rounded-full p-6  bg-amber-500"
+                  className="text-orange-500 hover:bg-white/10 hover:text-white rounded-full p-6  bg-white/20 cursor-pointer"
                 />
               }
             >
-              <User className="size-7 text-blue-950 " />
+              <User className="size-7 text-orange-500 " />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleLogout}>
-                <LogOut className="size-4" />
+                <LogOut className="size-4 " />
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
