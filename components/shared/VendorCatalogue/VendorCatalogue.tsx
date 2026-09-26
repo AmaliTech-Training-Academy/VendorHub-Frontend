@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CircleAlert, PackageX, ShoppingCart } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  CircleAlert,
+  Clock,
+  PackageX,
+  Store,
+  Truck,
+} from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,7 +36,8 @@ import type { Product } from "@/types/product";
 function VendorCatalogue({ vendorId }: { vendorId: string }) {
   const { data: vendor, isPending: isVendorPending } = useVendor(vendorId);
   const { data: products, isPending, isError } = useVendorCatalogue(vendorId);
-  const { items, addItem, clearCart } = useCartStore();
+  const { items, addItem, clearCart, increaseQuantity, decreaseQuantity } =
+    useCartStore();
 
   const [pendingSwitchProduct, setPendingSwitchProduct] =
     useState<Product | null>(null);
@@ -58,46 +67,75 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-1">
-          <Link
-            href="/storefront/vendors"
-            className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="size-3.5" />
-            Back to vendors
-          </Link>
-          {isVendorPending ? (
-            <>
-              <Skeleton className="h-7 w-48" />
-              <Skeleton className="h-5 w-40" />
-            </>
-          ) : (
-            <>
-              <h1 className="text-xl font-semibold">
-                {vendor?.name ?? "Vendor"}
-              </h1>
-              {vendor && (
-                <>
-                  <p className="text-sm text-muted-foreground">
-                    {vendor.categories.join(", ")}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Delivery: {formatPrice(vendor.deliveryFee)} ·{" "}
+    <div className="flex w-full flex-col gap-6 p-6">
+      <div className="flex flex-col gap-3">
+        <Link
+          href="/storefront/vendors"
+          className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="size-3.5" />
+          Back to vendors
+        </Link>
+
+        {isVendorPending ? (
+          <Skeleton className="h-36 w-full rounded-2xl" />
+        ) : (
+          vendor && (
+            <div className="flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-accent via-accent/60 to-transparent p-5">
+              <div className="flex items-center gap-4">
+                <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-card text-primary shadow-sm">
+                  <Store aria-hidden="true" className="size-7" />
+                </div>
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <h1 className="text-2xl font-semibold tracking-tight">
+                    {vendor.name}
+                  </h1>
+                  <div className="flex flex-wrap gap-1.5">
+                    {vendor.categories.map((category) => (
+                      <span
+                        key={category}
+                        className="rounded-full bg-card/80 px-2 py-0.5 text-xs font-medium text-accent-foreground"
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <dl className="flex flex-wrap gap-2 text-sm">
+                <div className="flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5">
+                  <dt className="sr-only">Delivery fee</dt>
+                  <Truck aria-hidden="true" className="size-4 text-primary" />
+                  <dd className="font-medium">
+                    {formatPrice(vendor.deliveryFee)} delivery
+                  </dd>
+                </div>
+                <div className="flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5">
+                  <dt className="sr-only">Delivery days</dt>
+                  <CalendarDays
+                    aria-hidden="true"
+                    className="size-4 text-primary"
+                  />
+                  <dd>
                     {vendor.availableDays
                       .map((day) => WEEKDAY_LABELS[day])
-                      .join(", ")}{" "}
-                    ·{" "}
+                      .join(", ")}
+                  </dd>
+                </div>
+                <div className="flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5">
+                  <dt className="sr-only">Delivery times</dt>
+                  <Clock aria-hidden="true" className="size-4 text-primary" />
+                  <dd>
                     {vendor.timeWindows
                       .map((window) => `${window.startTime}–${window.endTime}`)
                       .join(", ")}
-                  </p>
-                </>
-              )}
-            </>
-          )}
-        </div>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          )
+        )}
       </div>
 
       {isPending && <VendorCatalogueSkeleton />}
@@ -122,8 +160,8 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
       )}
 
       {products && products.length > 0 && (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {products.map((product, index) => (
             <StorefrontProductCard
               key={product.id}
               product={product}
@@ -131,7 +169,10 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
                 items.find((item) => item.productId === product.id)?.quantity ??
                 0
               }
+              index={index}
               onAdd={handleAdd}
+              onIncrease={increaseQuantity}
+              onDecrease={decreaseQuantity}
             />
           ))}
         </div>

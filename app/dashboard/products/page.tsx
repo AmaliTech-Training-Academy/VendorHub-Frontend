@@ -1,76 +1,116 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { CircleAlert, PackageOpen, Plus } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import {
+  CircleAlert,
+  CircleCheck,
+  Package,
+  PackageOpen,
+  PackageX,
+  Plus,
+} from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog"
-import { EmptyState } from "@/components/shared/EmptyState"
-import { ProductForm } from "@/components/shared/ProductForm"
-import { ProductsTable } from "@/components/shared/ProductsTable"
-import { ProductsTableSkeleton } from "@/components/shared/ProductsTableSkeleton"
-import { useAddProduct } from "@/hooks/useAddProduct"
-import { useDeleteProduct } from "@/hooks/useDeleteProduct"
-import { useEditProduct } from "@/hooks/useEditProduct"
-import { useProducts } from "@/hooks/useProducts"
-import { useToggleProductStock } from "@/hooks/useToggleProductStock"
-import { MOCK_VENDOR_ID } from "@/lib/constants"
-import type { Product, ProductFormValues } from "@/types/product"
-import { Status } from "@/types/status"
+} from "@/components/ui/dialog";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ProductForm } from "@/components/shared/ProductForm";
+import { StatCard } from "@/components/shared/StatCard";
+import { ProductsTable } from "@/components/shared/ProductsTable";
+import { ProductsTableSkeleton } from "@/components/shared/ProductsTableSkeleton";
+import { useAddProduct } from "@/hooks/useAddProduct";
+import { useDeleteProduct } from "@/hooks/useDeleteProduct";
+import { useEditProduct } from "@/hooks/useEditProduct";
+import { useProducts } from "@/hooks/useProducts";
+import { useToggleProductStock } from "@/hooks/useToggleProductStock";
+import { MOCK_VENDOR_ID } from "@/lib/constants";
+import type { Product, ProductFormValues } from "@/types/product";
+import { Status } from "@/types/status";
 
-type DialogState = { mode: "add" } | { mode: "edit"; product: Product } | null
+type DialogState = { mode: "add" } | { mode: "edit"; product: Product } | null;
 
 export default function ProductsPage() {
-  const vendorId = MOCK_VENDOR_ID
-  const [dialogState, setDialogState] = useState<DialogState>(null)
+  const vendorId = MOCK_VENDOR_ID;
+  const [dialogState, setDialogState] = useState<DialogState>(null);
 
-  const { data: products, status } = useProducts(vendorId)
-  const addProduct = useAddProduct(vendorId)
-  const editProduct = useEditProduct(vendorId)
-  const deleteProduct = useDeleteProduct(vendorId)
-  const toggleStock = useToggleProductStock(vendorId)
+  const { data: products, status } = useProducts(vendorId);
+  const addProduct = useAddProduct(vendorId);
+  const editProduct = useEditProduct(vendorId);
+  const deleteProduct = useDeleteProduct(vendorId);
+  const toggleStock = useToggleProductStock(vendorId);
 
   function handleSubmit(values: ProductFormValues) {
     if (dialogState?.mode === "edit") {
       editProduct.mutate(
         { id: dialogState.product.id, input: values },
-        { onSuccess: () => setDialogState(null) }
-      )
-      return
+        { onSuccess: () => setDialogState(null) },
+      );
+      return;
     }
-    addProduct.mutate(values, { onSuccess: () => setDialogState(null) })
+    addProduct.mutate(values, { onSuccess: () => setDialogState(null) });
   }
 
-  const isSubmitting = addProduct.isPending || editProduct.isPending
-  const submitError = (dialogState?.mode === "edit" ? editProduct : addProduct).error
-    ?.message
+  const isSubmitting = addProduct.isPending || editProduct.isPending;
+  const submitError = (dialogState?.mode === "edit" ? editProduct : addProduct)
+    .error?.message;
 
   function openDialog(state: NonNullable<DialogState>) {
-    addProduct.reset()
-    editProduct.reset()
-    setDialogState(state)
+    addProduct.reset();
+    editProduct.reset();
+    setDialogState(state);
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold">My Products</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage the products in your catalogue.
-          </p>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-gradient-to-br from-accent via-accent/60 to-transparent p-5">
+        <div className="flex items-center gap-4">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-950 text-orange-400 shadow-sm dark:ring-1 dark:ring-white/15">
+            <Package aria-hidden="true" className="size-6" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              My Products
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Manage the products in your catalogue.
+            </p>
+          </div>
         </div>
-        <Button onClick={() => openDialog({ mode: "add" })}>
+        <Button
+          className="rounded-full"
+          onClick={() => openDialog({ mode: "add" })}
+        >
           <Plus />
           Add product
         </Button>
       </div>
+
+      {status === Status.SUCCESS && products.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <StatCard
+            icon={Package}
+            label="Total products"
+            value={products.length}
+          />
+          <StatCard
+            icon={CircleCheck}
+            tone="success"
+            label="In stock"
+            value={products.filter((product) => product.inStock).length}
+          />
+          <StatCard
+            icon={PackageX}
+            tone="warning"
+            label="Out of stock"
+            value={products.filter((product) => !product.inStock).length}
+          />
+        </div>
+      )}
 
       {status === Status.PENDING && <ProductsTableSkeleton />}
 
@@ -110,7 +150,7 @@ export default function ProductsPage() {
       <Dialog
         open={!!dialogState}
         onOpenChange={(open) => {
-          if (!open && !isSubmitting) setDialogState(null)
+          if (!open && !isSubmitting) setDialogState(null);
         }}
       >
         <DialogContent>
@@ -130,8 +170,12 @@ export default function ProductsPage() {
               defaultValues={
                 dialogState.mode === "edit" ? dialogState.product : undefined
               }
-              submitLabel={dialogState.mode === "edit" ? "Save changes" : "Add product"}
-              submittingLabel={dialogState.mode === "edit" ? "Saving…" : "Adding…"}
+              submitLabel={
+                dialogState.mode === "edit" ? "Save changes" : "Add product"
+              }
+              submittingLabel={
+                dialogState.mode === "edit" ? "Saving…" : "Adding…"
+              }
               submitError={submitError}
               isSubmitting={isSubmitting}
               onSubmit={handleSubmit}
@@ -141,5 +185,5 @@ export default function ProductsPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

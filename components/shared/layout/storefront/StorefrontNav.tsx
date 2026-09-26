@@ -32,23 +32,23 @@ export function StorefrontNav() {
   };
 
   return (
-    <div className=" w-full z-100 shadow-sm ">
-      <div className="w-full fixed bg-blue-950   mx-auto flex items-center justify-between px-4 py-7 md:px-16  ">
+    <header className="sticky top-0 z-40 w-full bg-blue-950 shadow-sm">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-4 px-6">
         {/* Logo */}
         <Link
           href="/storefront/vendors"
-          className="flex items-center gap-2 shrink-0"
+          className="flex items-center gap-3 shrink-0 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-white/40"
         >
           <Image
             src="/logo.png"
             alt="VendorHub logo"
-            width={50}
-            height={50}
+            width={44}
+            height={44}
             className="object-contain rounded-full bg-white p-1"
           />
-          <span className="font-bold text-base  sm:inline ">
-            <span className="text-white text-xl">Vendor</span>
-            <span className="text-orange-400 text-2xl">Hub</span>
+          <span className="font-bold text-xl">
+            <span className="text-white">Vendor</span>
+            <span className="text-orange-400">Hub</span>
           </span>
         </Link>
 
@@ -62,13 +62,13 @@ export function StorefrontNav() {
                 key={tab.href}
                 variant="ghost"
                 className={cn(
-                  "text-white/70 hover:text-white hover:bg-white/10 py-4 px-5",
+                  "h-10 px-5 text-white/70 hover:text-white hover:bg-white/10",
                   isActive &&
                     "bg-white text-blue-950 hover:bg-white hover:text-blue-950",
                 )}
               >
-                <Link href={tab.href} className="flex items-center gap-2">
-                  <Icon className="size-7" />
+                <Link href={tab.href} className="flex items-center gap-2.5">
+                  <Icon className="size-5" />
                   <span className="font-semibold text-sm">{tab.label}</span>
                 </Link>
               </Button>
@@ -84,11 +84,12 @@ export function StorefrontNav() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white hover:bg-white/10 hover:text-white rounded-full p-6  bg-amber-500"
+                  aria-label="Account menu"
+                  className="size-11 rounded-full bg-amber-500 text-blue-950 hover:bg-amber-400 hover:text-blue-950"
                 />
               }
             >
-              <User className="size-7 text-blue-950 " />
+              <User className="size-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleLogout}>
@@ -143,6 +144,6 @@ export function StorefrontNav() {
           </SheetContent>
         </Sheet>
       </div>
-    </div>
+    </header>
   );
 }

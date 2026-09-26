@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Loader2, Pencil, Trash2 } from "lucide-react"
+import { Loader2, Package, Pencil, Trash2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -47,9 +47,9 @@ function ProductsTable({
 
   return (
     <>
-      <div className="rounded-lg border border-border">
+      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/50">
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Category</TableHead>
@@ -62,17 +62,22 @@ function ProductsTable({
             {products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>
-                  <div className="flex flex-col">
-                    <span className="font-medium">{product.name}</span>
-                    <span className="max-w-xs truncate text-sm text-muted-foreground">
-                      {product.description}
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <Package aria-hidden="true" className="size-5" />
+                    </div>
+                    <div className="flex min-w-0 flex-col">
+                      <span className="font-semibold">{product.name}</span>
+                      <span className="max-w-xs truncate text-sm text-muted-foreground">
+                        {product.description}
+                      </span>
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline">{product.category}</Badge>
                 </TableCell>
-                <TableCell>{formatPrice(product.price)}</TableCell>
+                <TableCell className="font-semibold">{formatPrice(product.price)}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Switch
