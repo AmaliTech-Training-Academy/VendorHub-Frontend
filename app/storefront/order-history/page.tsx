@@ -1,15 +1,19 @@
-"use client"
+"use client";
 
-import { ClipboardList, CircleAlert } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { EmptyState } from "@/components/shared/EmptyState"
-import { OrderHistoryCard } from "@/components/shared/OrderHistoryCard"
-import { OrderHistorySkeleton } from "@/components/shared/OrderHistorySkeleton"
-import { useEmployeeOrders } from "@/hooks/useOrders"
-import { MOCK_EMPLOYEE_ID } from "@/lib/constants"
+import { ClipboardList, CircleAlert } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { OrderHistoryCard } from "@/components/shared/OrderHistoryCard";
+import { OrderHistorySkeleton } from "@/components/shared/OrderHistorySkeleton";
+import { useEmployeeOrders } from "@/hooks/useOrders";
+import { MOCK_EMPLOYEE_ID } from "@/lib/constants";
 
 export default function OrderHistoryPage() {
-  const { data: orders, isPending, isError } = useEmployeeOrders(MOCK_EMPLOYEE_ID)
+  const {
+    data: orders,
+    isPending,
+    isError,
+  } = useEmployeeOrders(MOCK_EMPLOYEE_ID);
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
@@ -53,5 +57,5 @@ export default function OrderHistoryPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

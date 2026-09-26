@@ -113,9 +113,14 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
                 </div>
                 <div className="flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5">
                   <dt className="sr-only">Delivery days</dt>
-                  <CalendarDays aria-hidden="true" className="size-4 text-primary" />
+                  <CalendarDays
+                    aria-hidden="true"
+                    className="size-4 text-primary"
+                  />
                   <dd>
-                    {vendor.availableDays.map((day) => WEEKDAY_LABELS[day]).join(", ")}
+                    {vendor.availableDays
+                      .map((day) => WEEKDAY_LABELS[day])
+                      .join(", ")}
                   </dd>
                 </div>
                 <div className="flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5">
