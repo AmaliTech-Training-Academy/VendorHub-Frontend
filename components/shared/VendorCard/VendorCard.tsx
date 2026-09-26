@@ -16,44 +16,37 @@ import { WEEKDAYS, WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema"
 import { formatPrice } from "@/lib/utils"
 import type { Vendor } from "@/types/vendor"
 
-type Theme = { icon: LucideIcon; banner: string; iconColor: string }
+type Theme = { icon: LucideIcon; iconColor: string }
 
 const CATEGORY_THEMES: Record<string, Theme> = {
   Groceries: {
     icon: ShoppingBasket,
-    banner: "from-orange-200 via-orange-100 to-amber-50 dark:from-orange-500/25 dark:via-orange-500/10 dark:to-transparent",
     iconColor: "text-orange-600 dark:text-orange-300",
   },
   Beverages: {
     icon: ShoppingBasket,
-    banner: "from-orange-200 via-orange-100 to-amber-50 dark:from-orange-500/25 dark:via-orange-500/10 dark:to-transparent",
     iconColor: "text-orange-600 dark:text-orange-300",
   },
   Produce: {
     icon: Leaf,
-    banner: "from-emerald-200 via-emerald-100 to-lime-50 dark:from-emerald-500/25 dark:via-emerald-500/10 dark:to-transparent",
     iconColor: "text-emerald-600 dark:text-emerald-300",
   },
   Dairy: {
     icon: Leaf,
-    banner: "from-emerald-200 via-emerald-100 to-lime-50 dark:from-emerald-500/25 dark:via-emerald-500/10 dark:to-transparent",
     iconColor: "text-emerald-600 dark:text-emerald-300",
   },
   Bakery: {
     icon: Croissant,
-    banner: "from-amber-200 via-yellow-100 to-orange-50 dark:from-amber-500/25 dark:via-amber-500/10 dark:to-transparent",
     iconColor: "text-amber-600 dark:text-amber-300",
   },
   Household: {
     icon: House,
-    banner: "from-sky-200 via-sky-100 to-indigo-50 dark:from-sky-500/25 dark:via-sky-500/10 dark:to-transparent",
     iconColor: "text-sky-600 dark:text-sky-300",
   },
 }
 
 const FALLBACK_THEME: Theme = {
   icon: Store,
-  banner: "from-primary/25 via-primary/10 to-transparent",
   iconColor: "text-primary",
 }
 
@@ -89,36 +82,26 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
       style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
       className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm outline-none transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/10 focus-visible:ring-3 focus-visible:ring-ring/50"
     >
-      <div className={`relative h-20 bg-gradient-to-br ${theme.banner}`}>
-        <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-card/90 px-2.5 py-1 text-xs font-medium text-foreground shadow-sm">
-          {/* On hover/focus the truck drives off and the delivered package arrives.
-              Both states only swap when motion is allowed; otherwise the truck stays. */}
-          <span aria-hidden="true" className="relative size-3.5 overflow-hidden">
-            <Truck className="absolute inset-0 size-3.5 text-primary transition-all duration-500 ease-in-out motion-safe:group-hover:translate-x-4 motion-safe:group-hover:opacity-0 motion-safe:group-focus-visible:translate-x-4 motion-safe:group-focus-visible:opacity-0" />
-            <PackageCheck className="absolute inset-0 size-3.5 -translate-x-4 text-emerald-600 opacity-0 transition-all duration-500 ease-in-out motion-safe:group-hover:translate-x-0 motion-safe:group-hover:opacity-100 motion-safe:group-focus-visible:translate-x-0 motion-safe:group-focus-visible:opacity-100 dark:text-emerald-400" />
-          </span>
-          {formatPrice(vendor.deliveryFee)}
-        </span>
-        <div className="absolute bottom-0 left-4 flex size-12 translate-y-1/2 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
-          <Icon
-            aria-hidden="true"
-            className={`size-6 transition-transform duration-300 group-hover:scale-110 ${theme.iconColor}`}
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-1 flex-col gap-3 p-4 pt-9">
-        <div className="flex flex-col gap-1.5">
-          <h3 className="text-base font-semibold">{vendor.name}</h3>
-          <div className="flex flex-wrap gap-1.5">
-            {vendor.categories.map((category) => (
-              <span
-                key={category}
-                className="rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground"
-              >
-                {category}
-              </span>
-            ))}
+      <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
+        <div className="flex items-center gap-3">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/50">
+            <Icon
+              aria-hidden="true"
+              className={`size-6 transition-transform duration-300 group-hover:scale-110 ${theme.iconColor}`}
+            />
+          </div>
+          <div className="flex min-w-0 flex-col gap-1.5">
+            <h3 className="truncate text-base font-semibold">{vendor.name}</h3>
+            <div className="flex flex-wrap gap-1.5">
+              {vendor.categories.map((category) => (
+                <span
+                  key={category}
+                  className="rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground"
+                >
+                  {category}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -140,13 +123,24 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
           )}
         </dl>
 
-        <span className="mt-auto inline-flex items-center gap-1 pt-1 text-sm font-medium text-primary">
-          Browse menu
-          <ArrowRight
-            aria-hidden="true"
-            className="size-4 transition-transform duration-300 group-hover:translate-x-1"
-          />
-        </span>
+        <div className="mt-auto flex items-center justify-between gap-3 pt-1">
+          <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
+            Browse menu
+            <ArrowRight
+              aria-hidden="true"
+              className="size-4 transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </span>
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border bg-muted/40 px-2.5 text-xs font-medium text-foreground">
+            {/* On hover/focus the truck grows and drives off to the right while the delivered
+                package slides in and grows. Under reduced motion the swap is instant. */}
+            <span aria-hidden="true" className="relative h-7 w-16 overflow-hidden">
+              <Truck className="absolute top-1/2 left-1 size-4 origin-left -translate-y-1/2 text-primary transition-all delay-100 duration-800 ease-in-out motion-reduce:transition-none group-hover:translate-x-16 group-hover:scale-[1.75] group-hover:opacity-0 group-focus-visible:translate-x-16 group-focus-visible:scale-[1.75] group-focus-visible:opacity-0" />
+              <PackageCheck className="absolute top-1/2 left-1 size-4 origin-left -translate-y-1/2 translate-x-16 scale-75 text-blue-950 dark:text-orange-400 opacity-0 transition-all delay-100 duration-700 ease-in-out motion-reduce:transition-none group-hover:translate-x-0 group-hover:scale-150 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:scale-150 group-focus-visible:opacity-100" />
+            </span>
+            {formatPrice(vendor.deliveryFee)}
+          </span>
+        </div>
       </div>
     </Link>
   )
