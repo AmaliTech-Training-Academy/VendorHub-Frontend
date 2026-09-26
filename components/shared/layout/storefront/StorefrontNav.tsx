@@ -37,7 +37,7 @@ export function StorefrontNav() {
         {/* Logo */}
         <Link
           href="/storefront/vendors"
-          className="flex items-center gap-2 shrink-0"
+          className="flex items-center gap-3 shrink-0 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-white/40"
         >
           <Image
             src="/logo.png"
@@ -143,6 +143,6 @@ export function StorefrontNav() {
           </SheetContent>
         </Sheet>
       </div>
-    </div>
+    </header>
   );
 }
