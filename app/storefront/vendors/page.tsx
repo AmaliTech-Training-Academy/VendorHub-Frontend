@@ -6,19 +6,20 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { VendorCard } from "@/components/shared/VendorCard";
 import { VendorListSkeleton } from "@/components/shared/VendorListSkeleton";
 import { useVendors } from "@/hooks/useVendors";
+import { groupVendorsByCategory } from "@/lib/vendors";
+import { useState } from "react";
+import { VendorList } from "@/components/shared/VendorList";
+import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/StorefrontHeader";
-
-const DISPLAY_CATEGORIES = [
-  "Groceries",
-  "Beverages",
-  "Produce",
-  "Bakery",
-  "Dairy",
-  "Household",
-];
 
 export default function VendorsPage() {
   const { data: vendors, isPending, isError } = useVendors();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const groups = vendors ? groupVendorsByCategory(vendors) : [];
+  const visibleGroups = groups.filter(
+    (group) => !selectedCategory || group.category === selectedCategory,
+  );
 
   const vendorsByCategory = vendors
     ? vendors.reduce<Record<string, typeof vendors>>((acc, vendor) => {
@@ -31,8 +32,7 @@ export default function VendorsPage() {
     : {};
 
   return (
-    <div className="flex w-full flex-col gap-6 md:gap-8  mx-auto p-4 md:p-6 overflow-hidden">
-      {/* Header Area Wrapper */}
+    <div className="flex w-full flex-col gap-6 p-6">
       <PageHeader
         title="Hungry? Here's who's open"
         description="Pick a local vendor, fill your workspace basket, and we'll coordinate delivery to your desk."
@@ -40,7 +40,7 @@ export default function VendorsPage() {
         badgeText="Fast Desk Delivery"
         badgeIcon={Clock}
       />
-      {/* Main Content Layout  */}
+
       {isPending && <VendorListSkeleton />}
       {isError && (
         <Alert variant="destructive" className="rounded-xl">
@@ -61,40 +61,64 @@ export default function VendorsPage() {
 
       {/* Netflix Horizontal Row Layout */}
       {vendors && vendors.length > 0 && (
-        <div className="flex flex-col gap-6 md:gap-8">
-          {DISPLAY_CATEGORIES.map((category) => {
-            const currentGroupVendors = vendorsByCategory[category] || [];
+        <div className="flex flex-col gap-8">
+          {groups.length > 1 && (
+            <div
+              role="group"
+              aria-label="Filter vendors by category"
+              className="sticky top-0 z-10 -mx-6 flex flex-wrap gap-2 bg-background/85 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70"
+            >
+              <Button
+                size="sm"
+                className="rounded-full"
+                variant={selectedCategory ? "outline" : "default"}
+                aria-pressed={!selectedCategory}
+                onClick={() => setSelectedCategory(null)}
+              >
+                All ({vendors.length})
+              </Button>
+              {groups.map((group) => (
+                <Button
+                  key={group.category}
+                  size="sm"
+                  className="rounded-full"
+                  variant={
+                    selectedCategory === group.category ? "default" : "outline"
+                  }
+                  aria-pressed={selectedCategory === group.category}
+                  onClick={() => setSelectedCategory(group.category)}
+                >
+                  {group.category} ({group.vendors.length})
+                </Button>
+              ))}
+            </div>
+          )}
 
-            if (currentGroupVendors.length === 0) return null;
-
-            return (
-              <div key={category} className="flex flex-col gap-2.5">
-                {/* Category Header Section */}
-                <div className="flex items-baseline justify-between px-1">
-                  <h2 className="text-base font-bold tracking-tight text-blue-950 dark:text-slate-50 sm:text-lg">
-                    {category}
-                  </h2>
-                  <span className="text-[11px] font-medium text-slate-400">
-                    {currentGroupVendors.length} active
-                  </span>
-                </div>
-
-                {/* Slider Component Window Area */}
-                <div className="relative w-full">
-                  <div className="flex w-full gap-3.5 overflow-x-auto pb-2 pt-1 snap-x scroll-smooth scrollbar-none [&::-webkit-scrollbar]:hidden">
-                    {currentGroupVendors.map((vendor, index) => (
-                      <div
-                        key={vendor.id}
-                        className="w-70 sm:w-85 shrink-0 snap-start"
-                      >
-                        <VendorCard vendor={vendor} index={index} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
+          {visibleGroups.map((group) => (
+            <section
+              key={group.category}
+              aria-labelledby={`vendors-${group.category}`}
+              className="flex flex-col gap-3"
+            >
+              <div className="flex items-baseline justify-between px-1">
+                <h2
+                  id={`vendors-${group.category}`}
+                  className="text-lg font-semibold tracking-tight"
+                >
+                  {group.category}
+                </h2>
+                <span className="text-sm text-muted-foreground">
+                  {group.vendors.length}{" "}
+                  {group.vendors.length === 1 ? "vendor" : "vendors"}
+                </span>
               </div>
-            );
-          })}
+              <VendorList count={group.vendors.length}>
+                {group.vendors.map((vendor, index) => (
+                  <VendorCard key={vendor.id} vendor={vendor} index={index} />
+                ))}
+              </VendorList>
+            </section>
+          ))}
         </div>
       )}
     </div>
