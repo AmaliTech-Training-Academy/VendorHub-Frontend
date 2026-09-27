@@ -2,12 +2,12 @@
 
 import { useFieldArray, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CircleAlert, Loader2, Plus, Trash2 } from "lucide-react"
+import { CircleAlert, Clock, Eye, Loader2, Plus, Trash2 } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { cn } from "@/lib/utils"
+import { cn, formatDays, formatPrice } from "@/lib/utils"
 import {
   WEEKDAYS,
   WEEKDAY_LABELS,
@@ -50,6 +50,8 @@ function DeliverySettingsForm({
 
   const { fields, append, remove } = useFieldArray({ control, name: "timeWindows" })
   const availableDays = watch("availableDays")
+  const timeWindows = watch("timeWindows")
+  const deliveryFee = watch("deliveryFee")
 
   function toggleDay(day: (typeof WEEKDAYS)[number]) {
     const next = availableDays.includes(day)
@@ -57,6 +59,16 @@ function DeliverySettingsForm({
       : [...availableDays, day]
     setValue("availableDays", next, { shouldValidate: true })
   }
+
+  const previewDays = availableDays.length
+    ? formatDays(availableDays)
+    : "no days selected yet"
+  const previewWindows = timeWindows
+    .filter((window) => window.startTime && window.endTime)
+    .map((window) => `${window.startTime}–${window.endTime}`)
+    .join(", ")
+  const parsedFee = Number(deliveryFee)
+  const previewFee = deliveryFee !== "" && !Number.isNaN(parsedFee) ? formatPrice(parsedFee) : "—"
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
@@ -68,6 +80,7 @@ function DeliverySettingsForm({
               key={day}
               type="button"
               size="sm"
+              className="rounded-full"
               disabled={isSubmitting}
               variant={availableDays.includes(day) ? "default" : "outline"}
               aria-pressed={availableDays.includes(day)}
@@ -91,6 +104,7 @@ function DeliverySettingsForm({
             type="button"
             variant="outline"
             size="sm"
+            className="rounded-full"
             disabled={isSubmitting}
             onClick={() => append({ label: "", startTime: "", endTime: "" })}
           >
@@ -103,8 +117,12 @@ function DeliverySettingsForm({
           {fields.map((field, index) => (
             <div
               key={field.id}
-              className="flex flex-col gap-2 rounded-lg border border-border p-3 sm:flex-row sm:items-start"
+              className="flex flex-col gap-3 rounded-xl border border-border bg-muted/30 p-3 sm:flex-row sm:items-start"
             >
+              <div className="hidden shrink-0 items-center justify-center rounded-lg bg-primary/10 p-2 text-primary sm:flex">
+                <Clock aria-hidden="true" className="size-4" />
+              </div>
+
               <div className="flex flex-1 flex-col gap-1.5">
                 <Label htmlFor={`window-${index}-label`} className="sr-only">
                   Window name
@@ -183,22 +201,41 @@ function DeliverySettingsForm({
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="delivery-fee">Delivery fee (GHS)</Label>
-        <Input
-          id="delivery-fee"
-          type="number"
-          step="0.01"
-          min="0"
-          placeholder="0.00"
-          className="max-w-40"
-          aria-invalid={!!errors.deliveryFee}
-          disabled={isSubmitting}
-          {...register("deliveryFee")}
-        />
+        <div className="relative max-w-40">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-muted-foreground"
+          >
+            GH₵
+          </span>
+          <Input
+            id="delivery-fee"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            className="pl-10"
+            aria-invalid={!!errors.deliveryFee}
+            disabled={isSubmitting}
+            {...register("deliveryFee")}
+          />
+        </div>
         {errors.deliveryFee && (
           <p role="alert" className="text-sm text-destructive">
             {errors.deliveryFee.message}
           </p>
         )}
+      </div>
+
+      <div className="flex items-start gap-3 rounded-xl bg-accent/60 p-3.5 text-sm">
+        <Eye aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-primary" />
+        <p className="text-accent-foreground">
+          Employees will see:{" "}
+          <span className="font-medium">
+            {previewDays}
+            {previewWindows && ` · ${previewWindows}`} · {previewFee} delivery
+          </span>
+        </p>
       </div>
 
       {submitError && (
@@ -210,7 +247,7 @@ function DeliverySettingsForm({
       )}
 
       <div className={cn("flex justify-end")}>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" className="rounded-full" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="size-4 animate-spin" />}
           {isSubmitting ? "Saving…" : "Save changes"}
         </Button>
