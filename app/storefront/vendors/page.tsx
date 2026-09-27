@@ -62,7 +62,7 @@ export default function VendorsPage() {
             <div
               role="group"
               aria-label="Filter vendors by category"
-              className="sticky top-0 z-10 -mx-6 flex flex-wrap gap-2 bg-background/85 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70"
+              className="sticky top-18 z-10 -mx-6 flex flex-wrap gap-2 bg-background/85 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70"
             >
               <Button
                 size="sm"
