@@ -50,10 +50,12 @@ export default function CartPage() {
   const subtotal = useCartSubtotal();
 
   function onSubmit(data: ConfirmOrderValues) {
-    if (!vendorId) return;
+    if (!vendorId || !vendor) return;
     placeOrder.mutate(
       {
         vendorId,
+        vendorName: vendor.name,
+        deliveryFee: vendor.deliveryFee,
         employeeId: MOCK_EMPLOYEE_ID,
         items,
         deliveryWindowId: data.deliveryWindowId,

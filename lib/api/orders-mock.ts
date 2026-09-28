@@ -1,4 +1,3 @@
-import { getVendorByIdSync } from "@/lib/api/vendors-mock";
 import type { Order, OrderStatus, PlaceOrderInput } from "@/types/order";
 import { ORDER_STATUSES } from "@/lib/constants";
 import { placeOrderSchema } from "@/schemas/orderSchema";
@@ -44,28 +43,23 @@ function scheduleStatusProgression(orderId: string) {
 
 export async function placeOrder(input: PlaceOrderInput): Promise<Order> {
   const parsed = placeOrderSchema.parse(input);
-  const vendor = getVendorByIdSync(parsed.vendorId);
-  if (!vendor) {
-    throw new Error("Vendor not found");
-  }
 
   const subtotal = parsed.items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const deliveryFee = vendor.deliveryFee;
 
   const order: Order = {
     id: crypto.randomUUID(),
     reference: generateReference(),
     vendorId: parsed.vendorId,
-    vendorName: vendor.name,
+    vendorName: parsed.vendorName,
     employeeId: parsed.employeeId,
     items: parsed.items,
     deliveryWindowId: parsed.deliveryWindowId,
     subtotal,
-    deliveryFee,
-    total: subtotal + deliveryFee,
+    deliveryFee: parsed.deliveryFee,
+    total: subtotal + parsed.deliveryFee,
     status: "placed",
     createdAt: new Date().toISOString(),
   };
