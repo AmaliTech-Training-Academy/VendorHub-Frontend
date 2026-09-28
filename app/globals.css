@@ -54,7 +54,9 @@
 
 :root {
   /* VendorHub brand: warm cream background, orange primary, deep navy text */
-  /* --background: oklch(0.97 0.025 65); */
+  /* Plain white keeps pages (and the auth screens) white while giving bg-background
+     surfaces (dialogs, outline buttons, the switch thumb) a real colour. */
+  --background: oklch(1 0 0);
   --foreground: oklch(0.26 0.06 265);
   --card: oklch(0.995 0.008 70);
   --card-foreground: oklch(0.26 0.06 265);
