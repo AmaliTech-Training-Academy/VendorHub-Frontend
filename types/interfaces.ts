@@ -25,7 +25,14 @@ export interface User {
 export interface AuthState {
   role: UserRole | null;
   accessToken: string | null;
-  setAuth: (role: UserRole, accessToken: string, refreshToken: string) => void;
+  /** The authenticated vendor or employee's own id, from LoginOutput.id. */
+  userId: number | null;
+  setAuth: (
+    role: UserRole,
+    accessToken: string,
+    refreshToken: string,
+    userId: number,
+  ) => void;
   logout: () => void;
 }
 
