@@ -2,7 +2,7 @@ import { create } from "zustand";
 import type { CartItem } from "@/types/order";
 
 export type AddCartItemInput = {
-  productId: string;
+  productId: number;
   vendorId: string;
   name: string;
   price: number;
@@ -18,16 +18,16 @@ type CartState = {
    *  to a different vendor than what's already in the cart — the caller
    *  decides whether to block or confirm-clear via `clearCart`. */
   addItem: (item: AddCartItemInput) => AddItemResult;
-  removeItem: (productId: string) => void;
+  removeItem: (productId: number) => void;
   /** Removes the item entirely when its quantity would drop below 1. */
-  decreaseQuantity: (productId: string) => void;
-  increaseQuantity: (productId: string) => void;
+  decreaseQuantity: (productId: number) => void;
+  increaseQuantity: (productId: number) => void;
   setDeliveryWindow: (deliveryWindowId: string) => void;
   clearCart: () => void;
 };
 
 /** Drops an item; an emptied cart also forgets its vendor and delivery window. */
-function withoutItem(state: CartState, productId: string) {
+function withoutItem(state: CartState, productId: number) {
   const items = state.items.filter((i) => i.productId !== productId);
   return {
     items,

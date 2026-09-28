@@ -31,7 +31,7 @@ import { useVendor, useVendorCatalogue } from "@/hooks/useVendors";
 import { WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema";
 import { formatPrice } from "@/lib/utils";
 import { useCartItemCount, useCartStore } from "@/store/cartStore";
-import type { Product } from "@/types/product";
+import type { VendorProduct } from "@/types/product";
 
 function VendorCatalogue({ vendorId }: { vendorId: string }) {
   const { data: vendor, isPending: isVendorPending } = useVendor(vendorId);
@@ -40,12 +40,12 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
     useCartStore();
 
   const [pendingSwitchProduct, setPendingSwitchProduct] =
-    useState<Product | null>(null);
+    useState<VendorProduct | null>(null);
 
-  function handleAdd(product: Product) {
+  function handleAdd(product: VendorProduct) {
     const result = addItem({
       productId: product.id,
-      vendorId: product.vendorId,
+      vendorId,
       name: product.name,
       price: product.price,
     });
@@ -59,7 +59,7 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
     clearCart();
     addItem({
       productId: pendingSwitchProduct.id,
-      vendorId: pendingSwitchProduct.vendorId,
+      vendorId,
       name: pendingSwitchProduct.name,
       price: pendingSwitchProduct.price,
     });

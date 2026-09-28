@@ -14,12 +14,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
-import type { Product } from "@/types/product";
+import type { VendorProduct } from "@/types/product";
 
-const CATEGORY_TILES: Record<
-  Product["category"],
-  { icon: LucideIcon; tile: string }
-> = {
+const CATEGORY_TILES: Record<string, { icon: LucideIcon; tile: string }> = {
   Groceries: {
     icon: ShoppingBasket,
     tile: "bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-300",
@@ -55,12 +52,12 @@ function StorefrontProductCard({
   onIncrease,
   onDecrease,
 }: {
-  product: Product;
+  product: VendorProduct;
   quantityInCart?: number;
   index?: number;
-  onAdd: (product: Product) => void;
-  onIncrease?: (productId: string) => void;
-  onDecrease?: (productId: string) => void;
+  onAdd: (product: VendorProduct) => void;
+  onIncrease?: (productId: number) => void;
+  onDecrease?: (productId: number) => void;
 }) {
   const { icon: Icon, tile } =
     CATEGORY_TILES[product.category] ?? CATEGORY_TILES.Other;

@@ -8,7 +8,7 @@ export const deliveryWindowSchema = z.object({
 });
 
 export const cartItemSchema = z.object({
-  productId: z.string(),
+  productId: z.number(),
   vendorId: z.string(),
   name: z.string(),
   price: z.number().gt(0),
