@@ -85,7 +85,7 @@ export default function CartPage() {
           <ArrowLeft className="size-3.5" />
           Back to vendors
         </Link>
-        <div className="flex items-center gap-4 rounded-2xl bg-gradient-to-br from-accent via-accent/60 to-transparent p-5">
+        <div className="flex items-center gap-4 rounded-2xl bg-linear-to-br from-accent via-accent/60 to-transparent p-5">
           <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-950 text-orange-400 shadow-sm dark:ring-1 dark:ring-white/15">
             <ShoppingCart aria-hidden="true" className="size-6" />
           </div>
@@ -129,32 +129,33 @@ export default function CartPage() {
               ))}
             </div>
 
-          <DeliveryWindowSelector
-            windows={deliveryWindows ?? []}
-            value={watch("deliveryWindowId")}
-            onChange={(id) => {
-              setValue("deliveryWindowId", id, { shouldValidate: true });
-              setDeliveryWindow(id);
-            }}
-            error={errors.deliveryWindowId?.message}
-          />
-
-          <div className="flex flex-col gap-4">
-            <CartSummary
-              subtotal={subtotal}
-              deliveryFee={vendor?.deliveryFee ?? 0}
-              isSubmitting={placeOrder.isPending}
+            <DeliveryWindowSelector
+              windows={deliveryWindows ?? []}
+              value={watch("deliveryWindowId")}
+              onChange={(id) => {
+                setValue("deliveryWindowId", id, { shouldValidate: true });
+                setDeliveryWindow(id);
+              }}
+              error={errors.deliveryWindowId?.message}
             />
 
-            {placeOrder.isError && (
-              <Alert variant="destructive">
-                <CircleAlert />
-                <AlertTitle>Unable to place order</AlertTitle>
-                <AlertDescription>
-                  Something went wrong placing your order. Please try again.
-                </AlertDescription>
-              </Alert>
-            )}
+            <div className="flex flex-col gap-4">
+              <CartSummary
+                subtotal={subtotal}
+                deliveryFee={vendor?.deliveryFee ?? 0}
+                isSubmitting={placeOrder.isPending}
+              />
+
+              {placeOrder.isError && (
+                <Alert variant="destructive">
+                  <CircleAlert />
+                  <AlertTitle>Unable to place order</AlertTitle>
+                  <AlertDescription>
+                    Something went wrong placing your order. Please try again.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
           </div>
         </form>
       )}
