@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchOrdersByEmployee, fetchOrdersByVendor, placeOrder } from "@/lib/api/orders-mock";
+import { placeOrder } from "@/lib/api/orders";
+import {
+  fetchOrdersByEmployee,
+  fetchOrdersByVendor,
+  seedMockOrder,
+} from "@/lib/api/orders-mock";
 import type { PlaceOrderInput } from "@/types/order";
 
 export function ordersQueryKey(vendorId: string) {
@@ -40,6 +45,7 @@ export function usePlaceOrder() {
   return useMutation({
     mutationFn: (input: PlaceOrderInput) => placeOrder(input),
     onSuccess: (order) => {
+      seedMockOrder(order);
       queryClient.invalidateQueries({ queryKey: ordersQueryKey(order.vendorId) });
       queryClient.invalidateQueries({
         queryKey: employeeOrdersQueryKey(order.employeeId),

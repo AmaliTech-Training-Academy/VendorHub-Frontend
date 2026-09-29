@@ -1,10 +1,13 @@
 import { z } from "zod";
+import { parseDecimal } from "@/lib/api/mapping";
 import { ORDER_STATUSES } from "@/lib/constants";
 
+/** A vendor's delivery window, as listed on the vendor (see vendorSchema). */
 export const deliveryWindowSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   label: z.string(),
-  available: z.boolean(),
+  startTime: z.string(),
+  endTime: z.string(),
 });
 
 export const cartItemSchema = z.object({
@@ -15,32 +18,91 @@ export const cartItemSchema = z.object({
   quantity: z.number().int().positive(),
 });
 
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * What the cart hands to placeOrder. The employee comes from the JWT and the
+ * prices/totals are computed by the backend, so neither is sent.
+ */
 export const placeOrderSchema = z.object({
   vendorId: z.string().min(1, "Select a vendor"),
-  /** Passed by the caller (already has the vendor loaded) rather than looked
-   *  up here, so the orders mock doesn't need to depend on the vendors API. */
-  vendorName: z.string().min(1),
-  deliveryFee: z.number().nonnegative(),
-  employeeId: z.string().min(1),
   items: z.array(cartItemSchema).min(1, "Your cart is empty"),
-  deliveryWindowId: z.string().min(1, "Select a delivery window"),
+  deliveryWindowId: z
+    .number({ error: "Select a delivery window" })
+    .int()
+    .positive("Select a delivery window"),
+  /** YYYY-MM-DD, one of the vendor's available days. */
+  deliveryDate: z
+    .string({ error: "Select a delivery date" })
+    .regex(DATE_RE, "Select a delivery date"),
 });
 
-/** Validated by the cart page's form — the only field the employee edits directly. */
-export const confirmOrderSchema = placeOrderSchema.pick({ deliveryWindowId: true });
+/** Validated by the cart page's form — the only fields the employee edits directly. */
+export const confirmOrderSchema = placeOrderSchema.pick({
+  deliveryWindowId: true,
+  deliveryDate: true,
+});
 
-export const orderSchema = z.object({
-  id: z.string(),
-  reference: z.string(),
-  vendorId: z.string(),
+/** POST /api/orders/ response (OrderCreateOutput). */
+const orderApiSchema = z.object({
+  id: z.number(),
+  order_code: z.string(),
+  employee: z.number(),
+  vendor: z.number(),
+  vendor_name: z.string(),
+  delivery_window: z.number(),
+  delivery_date: z.string(),
+  selected_window_name: z.string(),
+  selected_start_time: z.string(),
+  selected_end_time: z.string(),
+  items: z.array(
+    z.object({
+      id: z.number(),
+      product_id: z.number(),
+      product_name: z.string(),
+      quantity: z.number(),
+      unit_price: z.string(),
+      subtotal: z.string(),
+    }),
+  ),
+  subtotal: z.string(),
+  delivery_fee: z.string(),
+  total_amount: z.string(),
+  status: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+/**
+ * The spec types status as a free string. An order that's already been
+ * created server-side must never fail to parse (the employee would retry and
+ * double-order), so an unrecognised status falls back to "placed".
+ */
+function toOrderStatus(status: string) {
+  const normalised = status.toLowerCase();
+  return ORDER_STATUSES.find((s) => s === normalised) ?? "placed";
+}
+
+export const orderSchema = orderApiSchema.transform((raw) => ({
+  id: String(raw.id),
+  reference: raw.order_code,
+  vendorId: String(raw.vendor),
   /** Snapshotted at order time so a later vendor rename doesn't rewrite history. */
-  vendorName: z.string(),
-  employeeId: z.string(),
-  items: z.array(cartItemSchema),
-  deliveryWindowId: z.string(),
-  subtotal: z.number().nonnegative(),
-  deliveryFee: z.number().nonnegative(),
-  total: z.number().nonnegative(),
-  status: z.enum(ORDER_STATUSES),
-  createdAt: z.string(),
-});
+  vendorName: raw.vendor_name,
+  employeeId: String(raw.employee),
+  items: raw.items.map((item) => ({
+    productId: item.product_id,
+    vendorId: String(raw.vendor),
+    name: item.product_name,
+    price: parseDecimal(item.unit_price),
+    quantity: item.quantity,
+  })),
+  deliveryWindowId: raw.delivery_window,
+  deliveryWindowLabel: `${raw.selected_window_name} · ${raw.selected_start_time.slice(0, 5)}–${raw.selected_end_time.slice(0, 5)}`,
+  deliveryDate: raw.delivery_date,
+  subtotal: parseDecimal(raw.subtotal),
+  deliveryFee: parseDecimal(raw.delivery_fee),
+  total: parseDecimal(raw.total_amount),
+  status: toOrderStatus(raw.status),
+  createdAt: raw.created_at,
+}));

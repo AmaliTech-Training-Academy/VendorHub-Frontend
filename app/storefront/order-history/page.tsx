@@ -6,14 +6,15 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { OrderHistoryCard } from "@/components/shared/OrderHistoryCard";
 import { OrderHistorySkeleton } from "@/components/shared/OrderHistorySkeleton";
 import { useEmployeeOrders } from "@/hooks/useOrders";
-import { MOCK_EMPLOYEE_ID } from "@/lib/constants";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function OrderHistoryPage() {
+  const userId = useAuthStore((state) => state.userId);
   const {
     data: orders,
     isPending,
     isError,
-  } = useEmployeeOrders(MOCK_EMPLOYEE_ID);
+  } = useEmployeeOrders(userId === null ? "" : String(userId));
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">

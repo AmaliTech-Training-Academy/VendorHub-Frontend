@@ -25,6 +25,9 @@ function OrderConfirmation({ order }: { order: Order }) {
         </span>
       </div>
       <p className="text-sm text-muted-foreground">
+        Delivery: {order.deliveryDate} · {order.deliveryWindowLabel}
+      </p>
+      <p className="text-sm text-muted-foreground">
         Total charged:{" "}
         <span className="font-semibold text-foreground">
           {formatPrice(order.total)}

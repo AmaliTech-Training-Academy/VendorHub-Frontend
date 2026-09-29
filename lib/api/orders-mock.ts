@@ -1,6 +1,5 @@
-import type { Order, OrderStatus, PlaceOrderInput } from "@/types/order";
+import type { Order, OrderStatus } from "@/types/order";
 import { ORDER_STATUSES } from "@/lib/constants";
-import { placeOrderSchema } from "@/schemas/orderSchema";
 
 let orders: Order[] = [];
 
@@ -12,10 +11,6 @@ function delay<T>(value: T): Promise<T> {
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
-}
-
-function generateReference(): string {
-  return `ORD-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
 }
 
 /**
@@ -41,32 +36,14 @@ function scheduleStatusProgression(orderId: string) {
   setTimeout(advance, STATUS_STEP_MS);
 }
 
-export async function placeOrder(input: PlaceOrderInput): Promise<Order> {
-  const parsed = placeOrderSchema.parse(input);
-
-  const subtotal = parsed.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
-  const order: Order = {
-    id: crypto.randomUUID(),
-    reference: generateReference(),
-    vendorId: parsed.vendorId,
-    vendorName: parsed.vendorName,
-    employeeId: parsed.employeeId,
-    items: parsed.items,
-    deliveryWindowId: parsed.deliveryWindowId,
-    subtotal,
-    deliveryFee: parsed.deliveryFee,
-    total: subtotal + parsed.deliveryFee,
-    status: "placed",
-    createdAt: new Date().toISOString(),
-  };
-
-  orders = [order, ...orders];
+/**
+ * Placing an order is real (lib/api/orders.ts) but the backend has no list or
+ * status endpoints yet, so orders it returns are mirrored here to keep the
+ * history and vendor pages populated. Delete with this file once they exist.
+ */
+export function seedMockOrder(order: Order) {
+  orders = [order, ...orders.filter((o) => o.id !== order.id)];
   scheduleStatusProgression(order.id);
-  return delay(clone(order));
 }
 
 export async function fetchOrdersByVendor(vendorId: string): Promise<Order[]> {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, CircleAlert, ShoppingCart } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -9,14 +9,14 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { CartLineItem } from "@/components/shared/CartLineItem";
 import { CartSummary } from "@/components/shared/CartSummary";
+import { DeliveryDateSelector } from "@/components/shared/DeliveryDateSelector";
 import { DeliveryWindowSelector } from "@/components/shared/DeliveryWindowSelector";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { OrderConfirmation } from "@/components/shared/OrderConfirmation";
-import { useDeliveryWindows } from "@/hooks/useDeliveryWindows";
 import { usePlaceOrder } from "@/hooks/useOrders";
 import { useVendor } from "@/hooks/useVendors";
 import { useCartStore, useCartSubtotal } from "@/store/cartStore";
-import { MOCK_EMPLOYEE_ID } from "@/lib/constants";
+import { upcomingDeliveryDates } from "@/lib/deliveryDates";
 import { confirmOrderSchema } from "@/schemas/orderSchema";
 import type { ConfirmOrderValues, Order } from "@/types/order";
 
@@ -25,14 +25,15 @@ export default function CartPage() {
     vendorId,
     items,
     deliveryWindowId,
+    deliveryDate,
     decreaseQuantity,
     increaseQuantity,
     removeItem,
     setDeliveryWindow,
+    setDeliveryDate,
     clearCart,
   } = useCartStore();
 
-  const { data: deliveryWindows } = useDeliveryWindows();
   const { data: vendor } = useVendor(vendorId ?? "");
   const placeOrder = usePlaceOrder();
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
@@ -44,21 +45,28 @@ export default function CartPage() {
     formState: { errors },
   } = useForm<ConfirmOrderValues>({
     resolver: zodResolver(confirmOrderSchema),
-    defaultValues: { deliveryWindowId: deliveryWindowId ?? "" },
+    defaultValues: {
+      deliveryWindowId: deliveryWindowId ?? undefined,
+      deliveryDate: deliveryDate ?? undefined,
+    },
   });
+
+  const availableDays = vendor?.availableDays;
+  const deliveryDates = useMemo(
+    () => upcomingDeliveryDates(availableDays ?? []),
+    [availableDays],
+  );
 
   const subtotal = useCartSubtotal();
 
   function onSubmit(data: ConfirmOrderValues) {
-    if (!vendorId || !vendor) return;
+    if (!vendorId) return;
     placeOrder.mutate(
       {
         vendorId,
-        vendorName: vendor.name,
-        deliveryFee: vendor.deliveryFee,
-        employeeId: MOCK_EMPLOYEE_ID,
         items,
         deliveryWindowId: data.deliveryWindowId,
+        deliveryDate: data.deliveryDate,
       },
       {
         onSuccess: (order) => {
@@ -131,8 +139,18 @@ export default function CartPage() {
               ))}
             </div>
 
+            <DeliveryDateSelector
+              dates={deliveryDates}
+              value={watch("deliveryDate")}
+              onChange={(date) => {
+                setValue("deliveryDate", date, { shouldValidate: true });
+                setDeliveryDate(date);
+              }}
+              error={errors.deliveryDate?.message}
+            />
+
             <DeliveryWindowSelector
-              windows={deliveryWindows ?? []}
+              windows={vendor?.timeWindows ?? []}
               value={watch("deliveryWindowId")}
               onChange={(id) => {
                 setValue("deliveryWindowId", id, { shouldValidate: true });
@@ -153,7 +171,8 @@ export default function CartPage() {
                   <CircleAlert />
                   <AlertTitle>Unable to place order</AlertTitle>
                   <AlertDescription>
-                    Something went wrong placing your order. Please try again.
+                    {placeOrder.error.message ||
+                      "Something went wrong placing your order. Please try again."}
                   </AlertDescription>
                 </Alert>
               )}
