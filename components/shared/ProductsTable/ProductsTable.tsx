@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Loader2, Package, Pencil, Trash2 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
+import { useState } from "react";
+import { Loader2, Package, Pencil, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,9 +22,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { formatPrice } from "@/lib/utils"
-import type { Product } from "@/types/product"
+} from "@/components/ui/alert-dialog";
+import { formatPrice } from "@/lib/utils";
+import type { Product } from "@/types/product";
 
 function ProductsTable({
   products,
@@ -34,16 +34,15 @@ function ProductsTable({
   isDeleting,
   isTogglingId,
 }: {
-  products: Product[]
-  onEdit: (product: Product) => void
-  onDelete: (product: Product) => void
-  onToggleStock: (product: Product, inStock: boolean) => void
-  isDeleting?: boolean
-  isTogglingId?: string
+  products: Product[];
+  onEdit: (product: Product) => void;
+  onDelete: (product: Product) => void;
+  onToggleStock: (product: Product, inStock: boolean) => void;
+  isDeleting?: boolean;
+  isTogglingId?: string;
 }) {
-  const [productPendingDelete, setProductPendingDelete] = useState<Product | null>(
-    null
-  )
+  const [productPendingDelete, setProductPendingDelete] =
+    useState<Product | null>(null);
 
   return (
     <>
@@ -77,21 +76,29 @@ function ProductsTable({
                 <TableCell>
                   <Badge variant="outline">{product.category}</Badge>
                 </TableCell>
-                <TableCell className="font-semibold">{formatPrice(product.price)}</TableCell>
+                <TableCell className="font-semibold">
+                  {formatPrice(product.price)}
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Switch
                       checked={product.inStock}
                       disabled={isTogglingId === product.id}
-                      onCheckedChange={(checked) => onToggleStock(product, checked)}
+                      onCheckedChange={(checked) =>
+                        onToggleStock(product, checked)
+                      }
                       aria-label={
-                        product.inStock ? "Mark as out of stock" : "Mark as in stock"
+                        product.inStock
+                          ? "Mark as out of stock"
+                          : "Mark as in stock"
                       }
                     />
                     {isTogglingId === product.id ? (
                       <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
                     ) : (
-                      <Badge variant={product.inStock ? "success" : "secondary"}>
+                      <Badge
+                        variant={product.inStock ? "success" : "secondary"}
+                      >
                         {product.inStock ? "In stock" : "Out of stock"}
                       </Badge>
                     )}
@@ -126,16 +133,17 @@ function ProductsTable({
       <AlertDialog
         open={!!productPendingDelete}
         onOpenChange={(open) => {
-          if (!open) setProductPendingDelete(null)
+          if (!open) setProductPendingDelete(null);
         }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete product</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete &ldquo;{productPendingDelete?.name}
-              &rdquo;? This will remove it from your catalogue and the storefront.
-              This action cannot be undone.
+              Are you sure you want to delete &ldquo;
+              {productPendingDelete?.name}
+              &rdquo;? This will remove it from your catalogue and the
+              storefront. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -144,8 +152,8 @@ function ProductsTable({
               disabled={isDeleting}
               onClick={() => {
                 if (productPendingDelete) {
-                  onDelete(productPendingDelete)
-                  setProductPendingDelete(null)
+                  onDelete(productPendingDelete);
+                  setProductPendingDelete(null);
                 }
               }}
             >
@@ -156,7 +164,7 @@ function ProductsTable({
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
+  );
 }
 
-export { ProductsTable }
+export { ProductsTable };
