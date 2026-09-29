@@ -72,7 +72,7 @@ export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
               >
                 <Icon className="size-10 " />
               </span>
-              <span className="text2xl font-semibold ">{item.label}</span>
+              <span className="text-2xl font-semibold ">{item.label}</span>
             </Link>
           </Button>
         );
