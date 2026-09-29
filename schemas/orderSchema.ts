@@ -17,6 +17,10 @@ export const cartItemSchema = z.object({
 
 export const placeOrderSchema = z.object({
   vendorId: z.string().min(1, "Select a vendor"),
+  /** Passed by the caller (already has the vendor loaded) rather than looked
+   *  up here, so the orders mock doesn't need to depend on the vendors API. */
+  vendorName: z.string().min(1),
+  deliveryFee: z.number().nonnegative(),
   employeeId: z.string().min(1),
   items: z.array(cartItemSchema).min(1, "Your cart is empty"),
   deliveryWindowId: z.string().min(1, "Select a delivery window"),

@@ -42,7 +42,7 @@ export const useUserRegistration = ({
     onSuccess: (response, variables) => {
       useAuthStore
         .getState()
-        .setAuth(response.role, response.access, response.refresh);
+        .setAuth(response.role, response.access, response.refresh, response.id);
       onSuccess?.(variables);
     },
     onError: (err: Error) => {
