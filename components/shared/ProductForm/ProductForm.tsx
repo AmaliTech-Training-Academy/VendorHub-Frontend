@@ -56,7 +56,7 @@ function ProductForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-4 "
       noValidate
     >
       <div className="flex flex-col gap-1.5">
