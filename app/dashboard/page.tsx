@@ -17,7 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge/OrderStatusBadge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import { RecentOrder } from "@/types/interfaces";
 
@@ -130,12 +130,13 @@ export default function DashboardOverviewPage() {
               The latest orders from your customers
             </CardDescription>
           </div>
-          <Button variant="ghost" size="sm">
-            <Link href="/dashboard/orders">
-              View all
-              <ArrowRight className="size-4" />
-            </Link>
-          </Button>
+          <Link
+            href="/dashboard/orders"
+            className={buttonVariants({ variant: "ghost", size: "sm" })}
+          >
+            View all
+            <ArrowRight className="size-4" />
+          </Link>
         </CardHeader>
 
         <CardContent>
