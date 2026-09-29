@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 function VendorListSkeleton({ count = 6 }: { count?: number }) {
   return (
@@ -23,6 +23,8 @@ function VendorListSkeleton({ count = 6 }: { count?: number }) {
                 <Skeleton className="h-5 w-20 rounded-full" />
               </div>
             </div>
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-28" />
           </div>
           <div className="flex flex-col gap-1.5">
             <Skeleton className="h-4 w-32" />
@@ -35,7 +37,7 @@ function VendorListSkeleton({ count = 6 }: { count?: number }) {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
-export { VendorListSkeleton }
+export { VendorListSkeleton };

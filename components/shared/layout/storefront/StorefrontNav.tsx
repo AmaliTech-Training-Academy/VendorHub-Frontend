@@ -42,13 +42,13 @@ export function StorefrontNav() {
           <Image
             src="/logo.png"
             alt="VendorHub logo"
-            width={44}
-            height={44}
+            width={50}
+            height={50}
             className="object-contain rounded-full bg-white p-1"
           />
-          <span className="font-bold text-xl">
-            <span className="text-white">Vendor</span>
-            <span className="text-orange-400">Hub</span>
+          <span className="font-bold text-base  sm:inline ">
+            <span className="text-white text-xl">Vendor</span>
+            <span className="text-orange-400 text-2xl">Hub</span>
           </span>
         </Link>
 
@@ -62,13 +62,13 @@ export function StorefrontNav() {
                 key={tab.href}
                 variant="ghost"
                 className={cn(
-                  "h-10 px-5 text-white/70 hover:text-white hover:bg-white/10",
+                  "text-white/70 hover:text-white hover:bg-white/10 py-4 px-5",
                   isActive &&
                     "bg-white text-blue-950 hover:bg-white hover:text-blue-950",
                 )}
               >
-                <Link href={tab.href} className="flex items-center gap-2.5">
-                  <Icon className="size-5" />
+                <Link href={tab.href} className="flex items-center gap-2">
+                  <Icon className="size-7" />
                   <span className="font-semibold text-sm">{tab.label}</span>
                 </Link>
               </Button>
@@ -77,23 +77,22 @@ export function StorefrontNav() {
         </div>
 
         {/* Account — desktop */}
-        <div className="hidden md:flex items-center shrink-0">
+        <div className="hidden md:flex items-center shrink-0 z-100">
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
                 <Button
                   variant="ghost"
                   size="icon"
-                  aria-label="Account menu"
-                  className="size-11 rounded-full bg-amber-500 text-blue-950 hover:bg-amber-400 hover:text-blue-950"
+                  className="text-orange-500 hover:bg-white/10 hover:text-white rounded-full p-6  bg-white/20 cursor-pointer"
                 />
               }
             >
-              <User className="size-5" />
+              <User className="size-7 text-orange-500 " />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleLogout}>
-                <LogOut className="size-4" />
+                <LogOut className="size-4 " />
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>

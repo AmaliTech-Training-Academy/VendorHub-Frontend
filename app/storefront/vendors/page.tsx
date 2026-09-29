@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { CircleAlert, Store } from "lucide-react";
+import { CircleAlert, Store, Clock } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { VendorCard } from "@/components/shared/VendorCard";
-import { VendorList } from "@/components/shared/VendorList";
 import { VendorListSkeleton } from "@/components/shared/VendorListSkeleton";
 import { useVendors } from "@/hooks/useVendors";
 import { groupVendorsByCategory } from "@/lib/vendors";
+import { useState } from "react";
+import { VendorList } from "@/components/shared/VendorList";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/shared/StorefrontHeader";
 
 export default function VendorsPage() {
   const { data: vendors, isPending, isError } = useVendors();
@@ -20,26 +21,29 @@ export default function VendorsPage() {
     (group) => !selectedCategory || group.category === selectedCategory,
   );
 
+  const vendorsByCategory = vendors
+    ? vendors.reduce<Record<string, typeof vendors>>((acc, vendor) => {
+        vendor.categories.forEach((category) => {
+          if (!acc[category]) acc[category] = [];
+          acc[category].push(vendor);
+        });
+        return acc;
+      }, {})
+    : {};
+
   return (
     <div className="flex w-full flex-col gap-6 p-6">
-      <div className="flex items-center gap-4 rounded-2xl bg-gradient-to-br from-accent via-accent/60 to-transparent p-5">
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-950 text-orange-400 shadow-sm dark:ring-1 dark:ring-white/15">
-          <Store aria-hidden="true" className="size-6" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Hungry? Here&apos;s who&apos;s open
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Pick a vendor, fill your basket, and we&apos;ll bring it to your desk.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Hungry? Here's who's open"
+        description="Pick a local vendor, fill your workspace basket, and we'll coordinate delivery to your desk."
+        icon={Store}
+        badgeText="Fast Desk Delivery"
+        badgeIcon={Clock}
+      />
 
       {isPending && <VendorListSkeleton />}
-
       {isError && (
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="rounded-xl">
           <CircleAlert />
           <AlertTitle>Unable to load vendors</AlertTitle>
           <AlertDescription>
@@ -47,7 +51,6 @@ export default function VendorsPage() {
           </AlertDescription>
         </Alert>
       )}
-
       {vendors && vendors.length === 0 && (
         <EmptyState
           icon={Store}
@@ -56,13 +59,14 @@ export default function VendorsPage() {
         />
       )}
 
+      {/* Netflix Horizontal Row Layout */}
       {vendors && vendors.length > 0 && (
         <div className="flex flex-col gap-8">
           {groups.length > 1 && (
             <div
               role="group"
               aria-label="Filter vendors by category"
-              className="sticky top-18 z-10 -mx-6 flex flex-wrap gap-2 bg-background/85 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70"
+              className="sticky top-0 z-10 -mx-6 flex flex-wrap gap-2 bg-background/85 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/70"
             >
               <Button
                 size="sm"
@@ -78,7 +82,9 @@ export default function VendorsPage() {
                   key={group.category}
                   size="sm"
                   className="rounded-full"
-                  variant={selectedCategory === group.category ? "default" : "outline"}
+                  variant={
+                    selectedCategory === group.category ? "default" : "outline"
+                  }
                   aria-pressed={selectedCategory === group.category}
                   onClick={() => setSelectedCategory(group.category)}
                 >

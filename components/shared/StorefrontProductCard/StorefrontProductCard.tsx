@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Carrot,
@@ -11,20 +11,41 @@ import {
   Plus,
   ShoppingBasket,
   type LucideIcon,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { formatPrice } from "@/lib/utils"
-import type { Product } from "@/types/product"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/utils";
+import type { Product } from "@/types/product";
 
-const CATEGORY_TILES: Record<Product["category"], { icon: LucideIcon; tile: string }> = {
-  Groceries: { icon: ShoppingBasket, tile: "bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-300" },
-  Beverages: { icon: Coffee, tile: "bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300" },
-  Bakery: { icon: Croissant, tile: "bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-300" },
-  Produce: { icon: Carrot, tile: "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300" },
-  Dairy: { icon: Milk, tile: "bg-sky-100 text-sky-600 dark:bg-sky-500/20 dark:text-sky-300" },
-  Household: { icon: House, tile: "bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-300" },
+const CATEGORY_TILES: Record<
+  Product["category"],
+  { icon: LucideIcon; tile: string }
+> = {
+  Groceries: {
+    icon: ShoppingBasket,
+    tile: "bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-300",
+  },
+  Beverages: {
+    icon: Coffee,
+    tile: "bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300",
+  },
+  Bakery: {
+    icon: Croissant,
+    tile: "bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-300",
+  },
+  Produce: {
+    icon: Carrot,
+    tile: "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300",
+  },
+  Dairy: {
+    icon: Milk,
+    tile: "bg-sky-100 text-sky-600 dark:bg-sky-500/20 dark:text-sky-300",
+  },
+  Household: {
+    icon: House,
+    tile: "bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-300",
+  },
   Other: { icon: Package, tile: "bg-muted text-muted-foreground" },
-}
+};
 
 function StorefrontProductCard({
   product,
@@ -34,15 +55,16 @@ function StorefrontProductCard({
   onIncrease,
   onDecrease,
 }: {
-  product: Product
-  quantityInCart?: number
-  index?: number
-  onAdd: (product: Product) => void
-  onIncrease?: (productId: string) => void
-  onDecrease?: (productId: string) => void
+  product: Product;
+  quantityInCart?: number;
+  index?: number;
+  onAdd: (product: Product) => void;
+  onIncrease?: (productId: string) => void;
+  onDecrease?: (productId: string) => void;
 }) {
-  const { icon: Icon, tile } = CATEGORY_TILES[product.category] ?? CATEGORY_TILES.Other
-  const showStepper = quantityInCart > 0 && onIncrease && onDecrease
+  const { icon: Icon, tile } =
+    CATEGORY_TILES[product.category] ?? CATEGORY_TILES.Other;
+  const showStepper = quantityInCart > 0 && onIncrease && onDecrease;
 
   return (
     <div
@@ -115,7 +137,7 @@ function StorefrontProductCard({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { StorefrontProductCard }
+export { StorefrontProductCard };

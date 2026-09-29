@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 import {
   ArrowRight,
   CalendarDays,
@@ -11,11 +11,11 @@ import {
   Store,
   Truck,
   type LucideIcon,
-} from "lucide-react"
-import { formatDays, formatPrice } from "@/lib/utils"
-import type { Vendor } from "@/types/vendor"
+} from "lucide-react";
+import { formatDays, formatPrice } from "@/lib/utils";
+import type { Vendor } from "@/types/vendor";
 
-type Theme = { icon: LucideIcon; iconColor: string }
+type Theme = { icon: LucideIcon; iconColor: string };
 
 const CATEGORY_THEMES: Record<string, Theme> = {
   Groceries: {
@@ -42,17 +42,17 @@ const CATEGORY_THEMES: Record<string, Theme> = {
     icon: House,
     iconColor: "text-sky-600 dark:text-sky-300",
   },
-}
+};
 
 const FALLBACK_THEME: Theme = {
   icon: Store,
   iconColor: "text-primary",
-}
+};
 
 function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
-  const theme = CATEGORY_THEMES[vendor.categories[0]] ?? FALLBACK_THEME
-  const Icon = theme.icon
-  const [firstWindow, ...otherWindows] = vendor.timeWindows
+  const theme = CATEGORY_THEMES[vendor.categories[0]] ?? FALLBACK_THEME;
+  const Icon = theme.icon;
+  const [firstWindow, ...otherWindows] = vendor.timeWindows;
 
   return (
     <Link
@@ -112,7 +112,10 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
           <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border bg-muted/40 px-2.5 text-xs font-medium text-foreground">
             {/* On hover/focus the truck grows and drives off to the right while the delivered
                 package slides in and grows. Under reduced motion the swap is instant. */}
-            <span aria-hidden="true" className="relative h-7 w-16 overflow-hidden">
+            <span
+              aria-hidden="true"
+              className="relative h-7 w-16 overflow-hidden"
+            >
               <Truck className="absolute top-1/2 left-1 size-4 origin-left -translate-y-1/2 text-primary transition-all delay-100 duration-800 ease-in-out motion-reduce:transition-none group-hover:translate-x-16 group-hover:scale-[1.75] group-hover:opacity-0 group-focus-visible:translate-x-16 group-focus-visible:scale-[1.75] group-focus-visible:opacity-0" />
               <PackageCheck className="absolute top-1/2 left-1 size-4 origin-left -translate-y-1/2 translate-x-16 scale-75 text-blue-950 dark:text-orange-400 opacity-0 transition-all delay-100 duration-700 ease-in-out motion-reduce:transition-none group-hover:translate-x-0 group-hover:scale-150 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:scale-150 group-focus-visible:opacity-100" />
             </span>
@@ -121,7 +124,7 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
         </div>
       </div>
     </Link>
-  )
+  );
 }
 
-export { VendorCard }
+export { VendorCard };
