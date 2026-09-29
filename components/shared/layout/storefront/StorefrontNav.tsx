@@ -32,8 +32,8 @@ export function StorefrontNav() {
   };
 
   return (
-    <header className="w-full shadow-sm">
-      <div className="fixed z-40 w-full bg-blue-950 mx-auto flex items-center justify-between px-4 py-7 md:px-16">
+    <header className="sticky top-0 z-40 w-full bg-blue-950 shadow-sm">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-4 px-6">
         {/* Logo */}
         <Link
           href="/storefront/vendors"
