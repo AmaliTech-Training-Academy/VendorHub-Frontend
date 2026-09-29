@@ -153,7 +153,7 @@ export default function ProductsPage() {
           if (!open && !isSubmitting) setDialogState(null);
         }}
       >
-        <DialogContent className="bg-white">
+        <DialogContent >
           <DialogHeader>
             <DialogTitle>
               {dialogState?.mode === "edit" ? "Edit product" : "Add product"}
