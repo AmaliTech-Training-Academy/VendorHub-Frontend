@@ -3,7 +3,8 @@ import { LoginResponse, RegisterResponse } from "@/types/interfaces";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function apiRequest<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
+  const baseUrl = API_URL?.replace(/\/+$/, "");
+  const res = await fetch(`${baseUrl}/${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

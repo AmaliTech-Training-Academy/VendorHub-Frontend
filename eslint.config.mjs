@@ -3,7 +3,6 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import tseslint from "typescript-eslint";
 import importPlugin from "eslint-plugin-import";
-import jsxA11y from "eslint-plugin-jsx-a11y";
 import security from "eslint-plugin-security";
 
 const eslintConfig = defineConfig([
@@ -11,7 +10,10 @@ const eslintConfig = defineConfig([
   ...nextTs,
 
   // TypeScript
-  ...tseslint.configs.strictTypeChecked,
+  ...tseslint.configs.strictTypeChecked.map((config) => ({
+    ...config,
+    files: ["**/*.{ts,tsx}"],
+  })),
 
   {
     files: ["**/*.{ts,tsx}"],
@@ -24,7 +26,6 @@ const eslintConfig = defineConfig([
 
     plugins: {
       import: importPlugin,
-      "jsx-a11y": jsxA11y,
       security,
     },
 
@@ -245,6 +246,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "coverage/**",
     "dist/**",
+    "eslint.config.mjs",
+    "vitest.config.ts",
   ]),
 ]);
 
