@@ -11,8 +11,8 @@ function DeliveryWindowSelector({
   error,
 }: {
   windows: DeliveryWindow[]
-  value: string
-  onChange: (deliveryWindowId: string) => void
+  value: number | undefined
+  onChange: (deliveryWindowId: number) => void
   error?: string
 }) {
   return (
@@ -31,8 +31,7 @@ function DeliveryWindowSelector({
                 "relative flex cursor-pointer items-center justify-between gap-2 rounded-xl border bg-card p-3 text-sm transition-colors has-focus-visible:ring-3 has-focus-visible:ring-ring/50",
                 selected
                   ? "border-primary bg-primary/10 font-medium"
-                  : "border-border hover:bg-muted/50",
-                !window.available && "cursor-not-allowed opacity-50 hover:bg-card"
+                  : "border-border hover:bg-muted/50"
               )}
             >
               <input
@@ -40,17 +39,14 @@ function DeliveryWindowSelector({
                 name="delivery-window"
                 value={window.id}
                 checked={selected}
-                disabled={!window.available}
                 aria-invalid={!!error}
                 onChange={() => onChange(window.id)}
                 className="sr-only"
               />
               <span>{window.label}</span>
-              {!window.available && (
-                <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  Fully booked
-                </span>
-              )}
+              <span className="shrink-0 text-xs text-muted-foreground">
+                {window.startTime}–{window.endTime}
+              </span>
             </label>
           )
         })}

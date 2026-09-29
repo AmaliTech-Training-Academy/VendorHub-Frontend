@@ -13,7 +13,9 @@ export type AddItemResult = { blocked: true } | { blocked: false };
 type CartState = {
   vendorId: string | null;
   items: CartItem[];
-  deliveryWindowId: string | null;
+  deliveryWindowId: number | null;
+  /** YYYY-MM-DD */
+  deliveryDate: string | null;
   /** Fails with `{ blocked: true }` instead of adding when the item belongs
    *  to a different vendor than what's already in the cart — the caller
    *  decides whether to block or confirm-clear via `clearCart`. */
@@ -22,17 +24,19 @@ type CartState = {
   /** Removes the item entirely when its quantity would drop below 1. */
   decreaseQuantity: (productId: number) => void;
   increaseQuantity: (productId: number) => void;
-  setDeliveryWindow: (deliveryWindowId: string) => void;
+  setDeliveryWindow: (deliveryWindowId: number) => void;
+  setDeliveryDate: (deliveryDate: string) => void;
   clearCart: () => void;
 };
 
-/** Drops an item; an emptied cart also forgets its vendor and delivery window. */
+/** Drops an item; an emptied cart also forgets its vendor and delivery choices. */
 function withoutItem(state: CartState, productId: number) {
   const items = state.items.filter((i) => i.productId !== productId);
   return {
     items,
     vendorId: items.length > 0 ? state.vendorId : null,
     deliveryWindowId: items.length > 0 ? state.deliveryWindowId : null,
+    deliveryDate: items.length > 0 ? state.deliveryDate : null,
   };
 }
 
@@ -40,6 +44,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   vendorId: null,
   items: [],
   deliveryWindowId: null,
+  deliveryDate: null,
 
   addItem: (item) => {
     const { vendorId, items } = get();
@@ -85,7 +90,10 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   setDeliveryWindow: (deliveryWindowId) => set({ deliveryWindowId }),
 
-  clearCart: () => set({ vendorId: null, items: [], deliveryWindowId: null }),
+  setDeliveryDate: (deliveryDate) => set({ deliveryDate }),
+
+  clearCart: () =>
+    set({ vendorId: null, items: [], deliveryWindowId: null, deliveryDate: null }),
 }));
 
 /** Total quantity across all cart items, e.g. for a cart button's badge count. */
