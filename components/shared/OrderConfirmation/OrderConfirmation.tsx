@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { CircleCheck } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { formatPrice } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { cn, formatPrice } from "@/lib/utils"
 import type { Order } from "@/types/order"
 
 function OrderConfirmation({ order }: { order: Order }) {
@@ -33,8 +33,11 @@ function OrderConfirmation({ order }: { order: Order }) {
           {formatPrice(order.total)}
         </span>
       </p>
-      <Link href="/storefront/vendors">
-        <Button className="rounded-full">Continue browsing</Button>
+      <Link
+        href="/storefront/vendors"
+        className={cn(buttonVariants(), "rounded-full")}
+      >
+        Continue browsing
       </Link>
     </div>
   )

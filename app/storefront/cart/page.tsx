@@ -6,7 +6,7 @@ import { ArrowLeft, CircleAlert, ShoppingCart } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { CartLineItem } from "@/components/shared/CartLineItem";
 import { CartSummary } from "@/components/shared/CartSummary";
 import { DeliveryDateSelector } from "@/components/shared/DeliveryDateSelector";
@@ -17,6 +17,7 @@ import { usePlaceOrder } from "@/hooks/useOrders";
 import { useVendor } from "@/hooks/useVendors";
 import { useCartStore, useCartSubtotal } from "@/store/cartStore";
 import { upcomingDeliveryDates } from "@/lib/deliveryDates";
+import { cn } from "@/lib/utils";
 import { confirmOrderSchema } from "@/schemas/orderSchema";
 import type { ConfirmOrderValues, Order } from "@/types/order";
 
@@ -114,10 +115,11 @@ export default function CartPage() {
           title="Your cart is empty"
           description="Browse vendors to add products to your order."
           action={
-            <Link href="/storefront/vendors">
-              <Button variant="outline" className="mt-2">
-                Browse vendors
-              </Button>
+            <Link
+              href="/storefront/vendors"
+              className={cn(buttonVariants({ variant: "outline" }), "mt-2")}
+            >
+              Browse vendors
             </Link>
           }
         />
