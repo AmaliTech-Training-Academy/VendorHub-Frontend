@@ -12,9 +12,9 @@ function CartLineItem({
   onRemove,
 }: {
   item: CartItem
-  onDecrease: (productId: string) => void
-  onIncrease: (productId: string) => void
-  onRemove: (productId: string) => void
+  onDecrease: (productId: number) => void
+  onIncrease: (productId: number) => void
+  onRemove: (productId: number) => void
 }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm">

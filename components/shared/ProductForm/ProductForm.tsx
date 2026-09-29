@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { DialogFooter } from "@/components/ui/dialog";
 import { PRODUCT_CATEGORIES, productSchema } from "@/schemas/productSchema";
@@ -19,7 +18,7 @@ const DEFAULT_VALUES: ProductFormInput = {
   name: "",
   description: "",
   price: "",
-  category: PRODUCT_CATEGORIES[0],
+  category: "",
   inStock: true,
 };
 
@@ -114,18 +113,21 @@ function ProductForm({
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="product-category">Category</Label>
-          <Select
+          <Input
             id="product-category"
+            list="product-category-suggestions"
+            placeholder="e.g. Groceries"
+            autoComplete="off"
             aria-invalid={!!errors.category}
             disabled={isSubmitting}
             {...register("category")}
-          >
+          />
+          {/* Suggestions only — a vendor can type any category, not just these. */}
+          <datalist id="product-category-suggestions">
             {PRODUCT_CATEGORIES.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
+              <option key={category} value={category} />
             ))}
-          </Select>
+          </datalist>
           {errors.category && (
             <p role="alert" className="text-sm text-destructive">
               {errors.category.message}

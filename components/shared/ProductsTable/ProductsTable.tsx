@@ -34,12 +34,12 @@ function ProductsTable({
   isDeleting,
   isTogglingId,
 }: {
-  products: Product[];
-  onEdit: (product: Product) => void;
-  onDelete: (product: Product) => void;
-  onToggleStock: (product: Product, inStock: boolean) => void;
-  isDeleting?: boolean;
-  isTogglingId?: string;
+  products: Product[]
+  onEdit: (product: Product) => void
+  onDelete: (product: Product) => void
+  onToggleStock: (product: Product, inStock: boolean) => void
+  isDeleting?: boolean
+  isTogglingId?: number
 }) {
   const [productPendingDelete, setProductPendingDelete] =
     useState<Product | null>(null);

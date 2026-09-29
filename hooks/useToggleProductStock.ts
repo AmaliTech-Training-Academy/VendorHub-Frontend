@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { invalidateProducts, productsQueryKey } from "@/hooks/productQueries";
-import { toggleProductStock } from "@/lib/api/products-mock";
+import { toggleProductStock } from "@/lib/api/products";
 import type { Product } from "@/types/product";
 
 export function useToggleProductStock(vendorId: string) {
@@ -8,7 +8,7 @@ export function useToggleProductStock(vendorId: string) {
   const queryKey = productsQueryKey(vendorId);
 
   return useMutation({
-    mutationFn: ({ id, inStock }: { id: string; inStock: boolean }) =>
+    mutationFn: ({ id, inStock }: { id: number; inStock: boolean }) =>
       toggleProductStock(id, inStock),
     onMutate: async ({ id, inStock }) => {
       await queryClient.cancelQueries({ queryKey });
