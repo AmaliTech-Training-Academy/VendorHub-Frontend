@@ -17,8 +17,8 @@ export default function OrderHistoryPage() {
   } = useEmployeeOrders(userId === null ? "" : String(userId));
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
-      <div className="flex items-center gap-4 rounded-2xl bg-gradient-to-br from-accent via-accent/60 to-transparent p-5">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-6">
+      <div className="flex items-center gap-4 rounded-lg p-5 border-b-1">
         <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-950 text-orange-400 shadow-sm dark:ring-1 dark:ring-white/15">
           <ClipboardList aria-hidden="true" className="size-6" />
         </div>
