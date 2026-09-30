@@ -28,14 +28,14 @@ import { useDeleteProduct } from "@/hooks/useDeleteProduct";
 import { useEditProduct } from "@/hooks/useEditProduct";
 import { useProducts } from "@/hooks/useProducts";
 import { useToggleProductStock } from "@/hooks/useToggleProductStock";
-import { MOCK_VENDOR_ID } from "@/lib/constants";
+import { useVendorId } from "@/hooks/useVendorId";
 import type { Product, ProductFormValues } from "@/types/product";
 import { Status } from "@/types/status";
 
 type DialogState = { mode: "add" } | { mode: "edit"; product: Product } | null;
 
 export default function ProductsPage() {
-  const vendorId = MOCK_VENDOR_ID;
+  const vendorId = useVendorId();
   const [dialogState, setDialogState] = useState<DialogState>(null);
 
   const { data: products, status } = useProducts(vendorId);
@@ -67,7 +67,7 @@ export default function ProductsPage() {
 
   return (
     <div className="mx-auto flex w-full  flex-col gap-6 p-6">
-      <div className="flex flex-wrap items-center justify-between gap-4  p-5">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-linear-to-br from-accent via-accent/60 to-transparent p-5">
         <div className="flex items-center gap-4">
           <div className="flex p-3 shrink-0 items-center justify-center rounded-xl bg-blue-950 text-orange-400 shadow-sm dark:ring-1 dark:ring-white/15">
             <Package aria-hidden="true" className="size-8" />

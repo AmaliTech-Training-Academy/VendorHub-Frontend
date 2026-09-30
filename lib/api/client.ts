@@ -16,11 +16,51 @@ function buildUrl(path: string, query?: Record<string, QueryValue>): string {
   return url.toString();
 }
 
+const GENERIC_ERROR = "Something went wrong";
+
+/** DRF puts these at the top level without naming a field. */
+const UNLABELLED_KEYS = new Set(["detail", "non_field_errors"]);
+
+function humanizeField(path: string[]): string {
+  const text = path.join(" ").replace(/_/g, " ").toLowerCase();
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** Walks DRF's nested error shapes, collecting string leaves under their field path. */
+function collectMessages(value: unknown, path: string[], out: Map<string, string[]>) {
+  if (typeof value === "string") {
+    const label = humanizeField(path);
+    out.set(label, [...(out.get(label) ?? []), value]);
+  } else if (Array.isArray(value)) {
+    for (const item of value) collectMessages(item, path, out);
+  } else if (value && typeof value === "object") {
+    for (const [key, item] of Object.entries(value)) {
+      collectMessages(item, UNLABELLED_KEYS.has(key) ? path : [...path, key], out);
+    }
+  }
+}
+
+/**
+ * Turns a DRF error body into one readable message: {"detail": "..."},
+ * {"detail": ["..."]}, and field errors like {"email": ["..."]} (including
+ * nested list-serializer errors) all come out as text. When `detail` is
+ * present it wins, since auth errors add extra keys ("code", "messages")
+ * that aren't meant for the user.
+ */
 async function parseErrorMessage(res: Response): Promise<string> {
-  const errorBody = await res.json().catch(() => null);
-  if (Array.isArray(errorBody?.detail)) return errorBody.detail.join(" ");
-  if (typeof errorBody?.detail === "string") return errorBody.detail;
-  return "Something went wrong";
+  const errorBody: unknown = await res.json().catch(() => null);
+  const source =
+    errorBody && typeof errorBody === "object" && "detail" in errorBody
+      ? errorBody.detail
+      : errorBody;
+
+  const grouped = new Map<string, string[]>();
+  collectMessages(source, [], grouped);
+
+  const parts = [...grouped].map(([label, messages]) =>
+    label ? `${label}: ${messages.join(" ")}` : messages.join(" "),
+  );
+  return parts.join(" ") || GENERIC_ERROR;
 }
 
 export type ApiRequestOptions = {
