@@ -28,14 +28,14 @@ import { useDeleteProduct } from "@/hooks/useDeleteProduct";
 import { useEditProduct } from "@/hooks/useEditProduct";
 import { useProducts } from "@/hooks/useProducts";
 import { useToggleProductStock } from "@/hooks/useToggleProductStock";
-import { MOCK_VENDOR_ID } from "@/lib/constants";
+import { useVendorId } from "@/hooks/useVendorId";
 import type { Product, ProductFormValues } from "@/types/product";
 import { Status } from "@/types/status";
 
 type DialogState = { mode: "add" } | { mode: "edit"; product: Product } | null;
 
 export default function ProductsPage() {
-  const vendorId = MOCK_VENDOR_ID;
+  const vendorId = useVendorId();
   const [dialogState, setDialogState] = useState<DialogState>(null);
 
   const { data: products, status } = useProducts(vendorId);

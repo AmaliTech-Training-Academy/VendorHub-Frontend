@@ -6,10 +6,10 @@ import { EmptyState } from "@/components/shared/EmptyState"
 import { OrdersTable } from "@/components/shared/OrdersTable"
 import { OrdersTableSkeleton } from "@/components/shared/OrdersTableSkeleton"
 import { useVendorOrders } from "@/hooks/useOrders"
-import { MOCK_VENDOR_ID } from "@/lib/constants"
+import { useVendorId } from "@/hooks/useVendorId"
 
 export default function OrdersPage() {
-  const vendorId = MOCK_VENDOR_ID
+  const vendorId = useVendorId()
   const { data: orders, isPending, isError } = useVendorOrders(vendorId)
 
   return (

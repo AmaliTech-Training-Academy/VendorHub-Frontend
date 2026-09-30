@@ -1,4 +1,6 @@
 // app/dashboard/page.tsx
+"use client";
+
 import Link from "next/link";
 import { ClipboardList, Package, ShoppingBag, ArrowRight } from "lucide-react";
 import {
@@ -17,31 +19,27 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge/OrderStatusBadge";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { useProducts } from "@/hooks/useProducts";
+import { useVendorId } from "@/hooks/useVendorId";
 import { formatPrice } from "@/lib/utils";
 import { RecentOrder } from "@/types/interfaces";
 
-// 🔧 TEMPORARY: hardcoded until the orders and products endpoints are wired in
-const stats = [
-  {
-    label: "Pending orders",
-    value: 3,
-    hint: "Waiting for you to prepare",
-    icon: ClipboardList,
-  },
-  {
-    label: "Products listed",
-    value: 12,
-    hint: "Live in your storefront",
-    icon: Package,
-  },
-  {
-    label: "Orders this week",
-    value: 27,
-    hint: "Since Monday",
-    icon: ShoppingBag,
-  },
-];
+// TEMPORARY: the order stats and recent orders below are hardcoded until the
+// backend has endpoints for listing orders. Product stats are real.
+const pendingOrders = {
+  label: "Pending orders",
+  value: 3,
+  hint: "Waiting for you to prepare",
+  icon: ClipboardList,
+};
+
+const ordersThisWeek = {
+  label: "Orders this week",
+  value: 27,
+  hint: "Since Monday",
+  icon: ShoppingBag,
+};
 
 const recentOrders: RecentOrder[] = [
   {
@@ -87,6 +85,20 @@ const recentOrders: RecentOrder[] = [
 ];
 
 export default function DashboardOverviewPage() {
+  const { data: products, isError } = useProducts(useVendorId());
+
+  const productsInStock = {
+    label: "Products in stock",
+    value: products ? products.filter((p) => p.inStock).length : "—",
+    hint: products
+      ? `${products.length} total, live in your storefront`
+      : isError
+        ? "Couldn't load your products"
+        : "Live in your storefront",
+    icon: Package,
+  };
+  const stats = [pendingOrders, productsInStock, ordersThisWeek];
+
   return (
     <div className="flex flex-col gap-6 w-full">
       <div>
