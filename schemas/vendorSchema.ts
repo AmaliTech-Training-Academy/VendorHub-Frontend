@@ -16,6 +16,7 @@ const vendorApiSchema = z.object({
   delivery_fee: z.string().nullable(),
   available_days: z.array(z.enum(WEEKDAYS)).nullable(),
   delivery_windows: z.array(storedTimeWindowSchema).nullable(),
+  slogans: z.array(z.string().trim().min(1)).nullable().optional(),
 });
 
 export const vendorSchema = vendorApiSchema.transform((raw) => ({
@@ -26,4 +27,5 @@ export const vendorSchema = vendorApiSchema.transform((raw) => ({
     raw.delivery_fee === null ? null : parseDecimal(raw.delivery_fee),
   availableDays: raw.available_days ?? [],
   timeWindows: raw.delivery_windows ?? [],
+  slogans: raw.slogans ?? [],
 }));

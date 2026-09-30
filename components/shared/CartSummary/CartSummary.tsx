@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { Loader2, ReceiptText } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { formatPrice } from "@/lib/utils"
+import { Loader2, ReceiptText } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/utils";
 
 function CartSummary({
   subtotal,
   deliveryFee,
   isSubmitting,
 }: {
-  subtotal: number
-  deliveryFee: number
-  isSubmitting?: boolean
+  subtotal: number;
+  deliveryFee: number;
+  isSubmitting?: boolean;
 }) {
-  const total = subtotal + deliveryFee
+  const total = subtotal + deliveryFee;
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm lg:sticky lg:top-24">
@@ -37,12 +37,17 @@ function CartSummary({
           {formatPrice(total)}
         </span>
       </div>
-      <Button type="submit" size="lg" disabled={isSubmitting} className="w-full rounded-full">
+      <Button
+        type="submit"
+        size="lg"
+        disabled={isSubmitting}
+        className="w-full rounded-full"
+      >
         {isSubmitting && <Loader2 className="size-4 animate-spin" />}
         {isSubmitting ? "Placing order…" : "Confirm order"}
       </Button>
     </div>
-  )
+  );
 }
 
-export { CartSummary }
+export { CartSummary };
