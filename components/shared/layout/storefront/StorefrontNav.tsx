@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   DropdownMenu,
@@ -58,20 +58,20 @@ export function StorefrontNav() {
             const isActive = pathname.startsWith(tab.href);
             const Icon = tab.icon;
             return (
-              <Button
+              <Link
                 key={tab.href}
-                variant="ghost"
+                href={tab.href}
+                aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "text-white/70 hover:text-white hover:bg-white/10 py-4 px-5",
+                  buttonVariants({ variant: "ghost" }),
+                  "gap-2 text-white/70 hover:text-white hover:bg-white/10 py-4 px-5",
                   isActive &&
                     "bg-white text-blue-950 hover:bg-white hover:text-blue-950",
                 )}
               >
-                <Link href={tab.href} className="flex items-center gap-2">
-                  <Icon className="size-7" />
-                  <span className="font-semibold text-sm">{tab.label}</span>
-                </Link>
-              </Button>
+                <Icon className="size-7" />
+                <span className="font-semibold text-sm">{tab.label}</span>
+              </Link>
             );
           })}
         </div>
@@ -118,16 +118,20 @@ export function StorefrontNav() {
                 const isActive = pathname.startsWith(tab.href);
                 const Icon = tab.icon;
                 return (
-                  <Button
+                  <Link
                     key={tab.href}
-                    variant={isActive ? "secondary" : "ghost"}
-                    className="justify-start"
+                    href={tab.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={cn(
+                      buttonVariants({
+                        variant: isActive ? "secondary" : "ghost",
+                      }),
+                      "justify-start gap-2",
+                    )}
                   >
-                    <Link href={tab.href} className="flex items-center gap-2">
-                      <Icon className="size-4" />
-                      {tab.label}
-                    </Link>
-                  </Button>
+                    <Icon className="size-4" />
+                    {tab.label}
+                  </Link>
                 );
               })}
               <Separator className="my-2" />

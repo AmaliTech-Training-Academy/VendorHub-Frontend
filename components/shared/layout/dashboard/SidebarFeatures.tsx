@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "cn";
 import { LayoutDashboard, LogOut, Package, Receipt, Truck } from "lucide-react";
 import Image from "next/image";
@@ -17,15 +17,18 @@ const navItems = [
 
 export function Brand() {
   return (
-    <Link href="/dashboard" className="flex items-center gap-2.5 shrink-0">
+    <Link
+      href="/dashboard"
+      className="flex items-center gap-2.5 shrink-0 md:gap-3"
+    >
       <Image
         src="/logo.png"
         alt="VendorHub logo"
-        width={34}
-        height={34}
-        className="object-contain rounded-full bg-white p-1"
+        width={48}
+        height={48}
+        className="size-[34px] object-contain rounded-full bg-white p-1 md:size-12"
       />
-      <span className="font-semibold text-lg">
+      <span className="font-semibold text-lg md:text-3xl md:font-bold">
         <span className="text-white">Vendor</span>
         <span className="text-orange-400">Hub</span>
       </span>
@@ -45,36 +48,32 @@ export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
         const Icon = item.icon;
 
         return (
-          <Button
+          <Link
             key={item.href}
-            variant="ghost"
+            href={item.href}
+            onClick={onNavigate}
+            aria-current={isActive ? "page" : undefined}
             className={cn(
-              "group h-30 flex  justify-center items-center gap-3 rounded-xl  text-base",
+              buttonVariants({ variant: "ghost" }),
+              "group h-30 w-full flex-col gap-0 rounded-xl px-3 text-base",
               "transition-all duration-200 motion-reduce:transition-none",
               isActive
                 ? "bg-white text-blue-950 shadow-md hover:bg-white hover:text-blue-950"
                 : "text-white/70 hover:translate-x-1 hover:bg-white/10 hover:text-white motion-reduce:hover:translate-x-0",
             )}
           >
-            <Link
-              href={item.href}
-              onClick={onNavigate}
-              aria-current={isActive ? "page" : undefined}
-              className="flex flex-col justify-center items-center  h-full  w-full px-3  "
+            <span
+              className={cn(
+                "flex p-4 shrink-0 items-center justify-center rounded-lg transition-colors duration-200",
+                isActive
+                  ? "bg-orange-500 text-white"
+                  : "bg-white/5 text-white/70 group-hover:bg-white/15 group-hover:text-white",
+              )}
             >
-              <span
-                className={cn(
-                  "flex  p-4 shrink-0 items-center justify-center rounded-lg transition-colors duration-200",
-                  isActive
-                    ? "bg-orange-500 text-white"
-                    : "bg-white/5 text-white/70 group-hover:bg-white/15 group-hover:text-white",
-                )}
-              >
-                <Icon className="size-10 " />
-              </span>
-              <span className="text-2xl font-semibold ">{item.label}</span>
-            </Link>
-          </Button>
+              <Icon className="size-10" />
+            </span>
+            <span className="text-xl font-semibold">{item.label}</span>
+          </Link>
         );
       })}
     </nav>
