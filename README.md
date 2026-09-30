@@ -24,11 +24,7 @@ Ensure you have **Node.js (v18 or higher)** installed on your machine.
 
 ### Environment Variables
 
-Copy the template environment file and fill in the required keys:
-
-```bash
-cp .env.example .env.local
-```
+Create a `.env.local` file in the project root (it is gitignored). The only required key is `NEXT_PUBLIC_API_URL`, described below.
 
 ### Connecting to the Backend
 
@@ -37,10 +33,10 @@ This frontend expects a running instance of the **[VendorHub Backend](https://gi
 Once it's running locally, point this app at it via `.env.local`:
 
 ```dotenv
-NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
 ```
 
-Adjust the port if your local backend runs elsewhere.
+The `/api` suffix is required: the backend mounts every route under `/api/`, and the frontend calls paths relative to it (e.g. `accounts/login/`). Adjust the port if your local backend runs elsewhere. The backend's CORS settings only allow `http://localhost:3000`, so keep the frontend on port 3000. `NEXT_PUBLIC_*` values are read when the dev server starts, so restart `npm run dev` after changing them.
 
 ### Local Development
 

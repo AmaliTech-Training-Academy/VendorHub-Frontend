@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { ShoppingCart } from "lucide-react";
 import { useCartItemCount } from "@/store/cartStore";
 
@@ -23,18 +24,22 @@ export function FloatingCart() {
   if (cartCount === 0) return null;
 
   return (
-    <Link href="/storefront/cart" className="fixed bottom-6 right-6 z-50">
-      <Button
-        size="icon"
-        className={`relative h-14 w-14 rounded-full shadow-lg bg-orange-500 hover:bg-orange-600 transition-transform ${
-          isBouncing ? "scale-110" : "scale-100"
-        }`}
+    <Link
+      href="/storefront/cart"
+      aria-label={`View cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}
+      className={cn(
+        buttonVariants({ size: "icon" }),
+        "fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg bg-orange-500 hover:bg-orange-600 transition-transform",
+        isBouncing ? "scale-110" : "scale-100",
+      )}
+    >
+      <ShoppingCart className="size-6" />
+      <span
+        aria-hidden="true"
+        className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-900 px-1 text-[11px] font-semibold text-white"
       >
-        <ShoppingCart className="size-6" />
-        <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-900 px-1 text-[11px] font-semibold text-white">
-          {cartCount}
-        </span>
-      </Button>
+        {cartCount}
+      </span>
     </Link>
   );
 }
