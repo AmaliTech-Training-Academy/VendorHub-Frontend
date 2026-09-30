@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge/OrderStatusBadge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
 import { useVendorId } from "@/hooks/useVendorId";
 import { formatPrice } from "@/lib/utils";
