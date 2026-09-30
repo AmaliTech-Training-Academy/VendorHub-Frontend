@@ -1,13 +1,13 @@
-import Link from "next/link"
-import { CircleCheck } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { formatPrice } from "@/lib/utils"
-import type { Order } from "@/types/order"
+import Link from "next/link";
+import { CircleCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/utils";
+import type { Order } from "@/types/order";
 
 function OrderConfirmation({ order }: { order: Order }) {
   return (
     <div className="flex flex-col items-center gap-5 rounded-2xl border border-border bg-gradient-to-b from-emerald-500/10 via-card to-card p-8 text-center shadow-sm animate-in fade-in zoom-in-95 duration-500 motion-reduce:animate-none">
-      <div className="flex size-16 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 ring-8 ring-emerald-500/10 dark:text-emerald-400">
+      <div className="flex size-16 items-center justify-center rounded-full bg-blue-500/15 text-emerald-600 ring-8 ring-emerald-500/10 dark:text-emerald-400">
         <CircleCheck aria-hidden="true" className="size-8" />
       </div>
       <div className="flex flex-col gap-1">
@@ -37,7 +37,7 @@ function OrderConfirmation({ order }: { order: Order }) {
         <Button className="rounded-full">Continue browsing</Button>
       </Link>
     </div>
-  )
+  );
 }
 
-export { OrderConfirmation }
+export { OrderConfirmation };
