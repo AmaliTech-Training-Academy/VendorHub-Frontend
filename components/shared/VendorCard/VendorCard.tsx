@@ -119,7 +119,12 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
               <Truck className="absolute top-1/2 left-1 size-4 origin-left -translate-y-1/2 text-primary transition-all delay-100 duration-800 ease-in-out motion-reduce:transition-none group-hover:translate-x-16 group-hover:scale-[1.75] group-hover:opacity-0 group-focus-visible:translate-x-16 group-focus-visible:scale-[1.75] group-focus-visible:opacity-0" />
               <PackageCheck className="absolute top-1/2 left-1 size-4 origin-left -translate-y-1/2 translate-x-16 scale-75 text-blue-950 dark:text-orange-400 opacity-0 transition-all delay-100 duration-700 ease-in-out motion-reduce:transition-none group-hover:translate-x-0 group-hover:scale-150 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:scale-150 group-focus-visible:opacity-100" />
             </span>
-            {formatPrice(vendor.deliveryFee)}
+
+            <span className="text-xl text-blue-950">
+              {vendor.deliveryFee === null
+                ? "Fee unavailable"
+                : formatPrice(vendor.deliveryFee)}
+            </span>
           </span>
         </div>
       </div>

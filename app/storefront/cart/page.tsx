@@ -79,14 +79,14 @@ export default function CartPage() {
 
   if (confirmedOrder) {
     return (
-      <div className="mx-auto flex w-full max-w-lg flex-col gap-6 p-6">
+      <div className="mx-auto flex justify-center items-center  w-full  max-w-lg flex-col ">
         <OrderConfirmation order={confirmedOrder} />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-6">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-6">
       <div className="flex flex-col gap-3">
         <Link
           href="/storefront/vendors"
@@ -95,7 +95,7 @@ export default function CartPage() {
           <ArrowLeft className="size-3.5" />
           Back to vendors
         </Link>
-        <div className="flex items-center gap-4 rounded-2xl bg-linear-to-br from-accent via-accent/60 to-transparent p-5">
+        <div className="flex items-center gap-4 rounded-lg p-2 border-b-1">
           <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-950 text-orange-400 shadow-sm dark:ring-1 dark:ring-white/15">
             <ShoppingCart aria-hidden="true" className="size-6" />
           </div>
@@ -124,9 +124,9 @@ export default function CartPage() {
       ) : (
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="grid items-start gap-6 lg:grid-cols-[1fr_20rem]"
+          className="grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]"
         >
-          <div className="flex flex-col gap-6">
+          <div className="flex min-w-0 flex-col gap-6 lg:col-start-1">
             <div className="flex flex-col gap-2">
               {items.map((item) => (
                 <CartLineItem
@@ -158,25 +158,25 @@ export default function CartPage() {
               }}
               error={errors.deliveryWindowId?.message}
             />
+          </div>
 
-            <div className="flex flex-col gap-4">
-              <CartSummary
-                subtotal={subtotal}
-                deliveryFee={vendor?.deliveryFee ?? 0}
-                isSubmitting={placeOrder.isPending}
-              />
+          <div className="flex min-w-0 flex-col gap-4 lg:col-start-2">
+            <CartSummary
+              subtotal={subtotal}
+              deliveryFee={vendor?.deliveryFee ?? 0}
+              isSubmitting={placeOrder.isPending}
+            />
 
-              {placeOrder.isError && (
-                <Alert variant="destructive">
-                  <CircleAlert />
-                  <AlertTitle>Unable to place order</AlertTitle>
-                  <AlertDescription>
-                    {placeOrder.error.message ||
-                      "Something went wrong placing your order. Please try again."}
-                  </AlertDescription>
-                </Alert>
-              )}
-            </div>
+            {placeOrder.isError && (
+              <Alert variant="destructive">
+                <CircleAlert />
+                <AlertTitle>Unable to place order</AlertTitle>
+                <AlertDescription>
+                  {placeOrder.error.message ||
+                    "Something went wrong placing your order. Please try again."}
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
         </form>
       )}
