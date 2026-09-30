@@ -81,20 +81,20 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
           <Skeleton className="h-36 w-full rounded-2xl" />
         ) : (
           vendor && (
-            <div className="flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-accent via-accent/60 to-transparent p-5">
+            <div className="flex flex-col gap-4 rounded-lg border-b p-2">
               <div className="flex items-center gap-4">
-                <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-card text-primary shadow-sm">
+                <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-blue-950 text-primary shadow-sm">
                   <Store aria-hidden="true" className="size-7" />
                 </div>
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h1 className="text-2xl font-semibold tracking-tight">
                     {vendor.name}
                   </h1>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className=" w-auto flex flex-wrap gap-1.5 ">
                     {vendor.categories.map((category) => (
                       <span
                         key={category}
-                        className="rounded-full bg-card/80 px-2 py-0.5 text-xs font-medium text-accent-foreground"
+                        className="rounded-full bg-card/80 px-2 py-0.5 text-xs font-medium text-accent-foreground border"
                       >
                         {category}
                       </span>
@@ -107,8 +107,10 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
                 <div className="flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5">
                   <dt className="sr-only">Delivery fee</dt>
                   <Truck aria-hidden="true" className="size-4 text-primary" />
-                  <dd className="font-medium">
-                    {formatPrice(vendor.deliveryFee)} delivery
+                  <dd className="font-medium ">
+                    {vendor.deliveryFee === null
+                      ? "Delivery fee unavailable"
+                      : `${formatPrice(vendor.deliveryFee)} delivery`}
                   </dd>
                 </div>
                 <div className="flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5">
@@ -118,18 +120,24 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
                     className="size-4 text-primary"
                   />
                   <dd>
-                    {vendor.availableDays
-                      .map((day) => WEEKDAY_LABELS[day])
-                      .join(", ")}
+                    {vendor.availableDays.length > 0
+                      ? vendor.availableDays
+                          .map((day) => WEEKDAY_LABELS[day])
+                          .join(", ")
+                      : "No delivery days listed"}
                   </dd>
                 </div>
                 <div className="flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5">
                   <dt className="sr-only">Delivery times</dt>
                   <Clock aria-hidden="true" className="size-4 text-primary" />
                   <dd>
-                    {vendor.timeWindows
-                      .map((window) => `${window.startTime}–${window.endTime}`)
-                      .join(", ")}
+                    {vendor.timeWindows.length > 0
+                      ? vendor.timeWindows
+                          .map(
+                            (window) => `${window.startTime}–${window.endTime}`,
+                          )
+                          .join(", ")
+                      : "No delivery times listed"}
                   </dd>
                 </div>
               </dl>
