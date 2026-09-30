@@ -32,6 +32,7 @@ export default function CartPage() {
     setDeliveryWindow,
     setDeliveryDate,
     clearCart,
+    hasHydrated,
   } = useCartStore();
 
   const { data: vendor } = useVendor(vendorId ?? "");
@@ -76,6 +77,8 @@ export default function CartPage() {
       },
     );
   }
+
+  if (!hasHydrated) return null;
 
   if (confirmedOrder) {
     return (
