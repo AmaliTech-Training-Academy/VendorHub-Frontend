@@ -17,15 +17,18 @@ const navItems = [
 
 export function Brand() {
   return (
-    <Link href="/dashboard" className="flex items-center gap-2.5 shrink-0">
+    <Link
+      href="/dashboard"
+      className="flex items-center gap-2.5 shrink-0 md:gap-3"
+    >
       <Image
         src="/logo.png"
         alt="VendorHub logo"
-        width={34}
-        height={34}
-        className="object-contain rounded-full bg-white p-1"
+        width={48}
+        height={48}
+        className="size-[34px] object-contain rounded-full bg-white p-1 md:size-12"
       />
-      <span className="font-semibold text-lg">
+      <span className="font-semibold text-lg md:text-3xl md:font-bold">
         <span className="text-white">Vendor</span>
         <span className="text-orange-400">Hub</span>
       </span>
@@ -69,7 +72,7 @@ export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             >
               <Icon className="size-10" />
             </span>
-            <span className="text-2xl font-semibold">{item.label}</span>
+            <span className="text-xl font-semibold">{item.label}</span>
           </Link>
         );
       })}
