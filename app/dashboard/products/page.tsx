@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   CircleAlert,
   CircleCheck,
@@ -9,6 +8,13 @@ import {
   PackageX,
   Plus,
 } from "lucide-react";
+import { useState } from "react";
+
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ProductForm } from "@/components/shared/ProductForm";
+import { ProductsTable } from "@/components/shared/ProductsTable";
+import { ProductsTableSkeleton } from "@/components/shared/ProductsTableSkeleton";
+import { StatCard } from "@/components/shared/StatCard";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,11 +24,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { EmptyState } from "@/components/shared/EmptyState";
-import { ProductForm } from "@/components/shared/ProductForm";
-import { StatCard } from "@/components/shared/StatCard";
-import { ProductsTable } from "@/components/shared/ProductsTable";
-import { ProductsTableSkeleton } from "@/components/shared/ProductsTableSkeleton";
 import { useAddProduct } from "@/hooks/useAddProduct";
 import { useDeleteProduct } from "@/hooks/useDeleteProduct";
 import { useEditProduct } from "@/hooks/useEditProduct";
@@ -48,11 +49,11 @@ export default function ProductsPage() {
     if (dialogState?.mode === "edit") {
       editProduct.mutate(
         { id: dialogState.product.id, input: values },
-        { onSuccess: () => setDialogState(null) },
+        { onSuccess: () => { setDialogState(null); } },
       );
       return;
     }
-    addProduct.mutate(values, { onSuccess: () => setDialogState(null) });
+    addProduct.mutate(values, { onSuccess: () => { setDialogState(null); } });
   }
 
   const isSubmitting = addProduct.isPending || editProduct.isPending;
@@ -83,7 +84,7 @@ export default function ProductsPage() {
         </div>
         <Button
           className="rounded-full px-4 "
-          onClick={() => openDialog({ mode: "add" })}
+          onClick={() => { openDialog({ mode: "add" }); }}
         >
           <Plus />
           Add product
@@ -135,14 +136,14 @@ export default function ProductsPage() {
       {status === Status.SUCCESS && products.length > 0 && (
         <ProductsTable
           products={products}
-          onEdit={(product) => openDialog({ mode: "edit", product })}
-          onDelete={(product) => deleteProduct.mutate(product.id)}
-          onToggleStock={(product, inStock) =>
-            toggleStock.mutate({ id: product.id, inStock })
-          }
+          onEdit={(product) => { openDialog({ mode: "edit", product }); }}
+          onDelete={(product) => { deleteProduct.mutate(product.id); }}
+          onToggleStock={(product, inStock) => {
+            toggleStock.mutate({ id: product.id, inStock });
+          }}
           isDeleting={deleteProduct.isPending}
           isTogglingId={
-            toggleStock.isPending ? toggleStock.variables?.id : undefined
+            toggleStock.isPending ? toggleStock.variables.id : undefined
           }
         />
       )}
@@ -150,7 +151,7 @@ export default function ProductsPage() {
       <Dialog
         open={!!dialogState}
         onOpenChange={(open) => {
-          if (!open && !isSubmitting) setDialogState(null);
+          if (!open && !isSubmitting) {setDialogState(null);}
         }}
       >
         <DialogContent >
@@ -179,7 +180,7 @@ export default function ProductsPage() {
               submitError={submitError}
               isSubmitting={isSubmitting}
               onSubmit={handleSubmit}
-              onCancel={() => setDialogState(null)}
+              onCancel={() => { setDialogState(null); }}
             />
           )}
         </DialogContent>

@@ -1,16 +1,16 @@
-import type { Order, OrderStatus } from "@/types/order";
 import { ORDER_STATUSES } from "@/lib/constants";
+import type { Order } from "@/types/order";
 
 let orders: Order[] = [];
 
 const LATENCY_MS = 500;
 
 function delay<T>(value: T): Promise<T> {
-  return new Promise((resolve) => setTimeout(() => resolve(value), LATENCY_MS));
+  return new Promise((resolve) => setTimeout(() => { resolve(value); }, LATENCY_MS));
 }
 
 function clone<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value));
+  return JSON.parse(JSON.stringify(value)) as T;
 }
 
 /**
@@ -25,8 +25,8 @@ function scheduleStatusProgression(orderId: string) {
   let index = ORDER_STATUSES.indexOf("placed");
   const advance = () => {
     index += 1;
-    const nextStatus: OrderStatus | undefined = ORDER_STATUSES[index];
-    if (!nextStatus || !orders.some((o) => o.id === orderId)) return;
+    const nextStatus = ORDER_STATUSES.at(index);
+    if (!nextStatus || !orders.some((o) => o.id === orderId)) {return;}
 
     orders = orders.map((o) => (o.id === orderId ? { ...o, status: nextStatus } : o));
     if (index < ORDER_STATUSES.length - 1) {

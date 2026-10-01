@@ -1,6 +1,7 @@
 "use client"
 
 import { Clock } from "lucide-react"
+
 import { cn } from "@/lib/utils"
 import type { DeliveryWindow } from "@/types/order"
 
@@ -40,7 +41,7 @@ function DeliveryWindowSelector({
                 value={window.id}
                 checked={selected}
                 aria-invalid={!!error}
-                onChange={() => onChange(window.id)}
+                onChange={() => { onChange(window.id); }}
                 className="sr-only"
               />
               <span>{window.label}</span>

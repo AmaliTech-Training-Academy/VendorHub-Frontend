@@ -3,17 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import { toast } from "sonner";
 
+import { RegisterFields } from "@/components/auth/RegisterFields";
+import OnboardingGraphics from "@/components/shared/OnboardingGraphics";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import OnboardingGraphics from "@/components/shared/OnboardingGraphics";
-
-import { RegisterFields } from "@/components/auth/RegisterFields";
 import { useUserLogin } from "@/hooks/useUserLogin";
 import { useUserRegistration } from "@/hooks/useUserRegistration";
 import type { AuthConfig } from "@/types/interfaces";
 import type { AuthMode } from "@/types/types";
+
 import LoginFields from "./LoginFields";
 
 const authConfig: Record<AuthMode, AuthConfig> = {
@@ -133,7 +134,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
               {config.description}
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>

@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+
 import { Menu } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuthStore } from "@/store/useAuthStore";
+
 import { Brand, LogoutButton, NavLinks } from "./SidebarFeatures";
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
@@ -55,7 +57,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               className="w-72 bg-blue-950 border-none p-5"
             >
               <div className="mt-8 flex h-full flex-col">
-                <NavLinks onNavigate={() => setMobileOpen(false)} />
+                <NavLinks onNavigate={() => { setMobileOpen(false); }} />
                 <div className="mt-auto pb-4">
                   <Separator className="my-5 bg-white/10" />
                   <LogoutButton onClick={handleLogout} />

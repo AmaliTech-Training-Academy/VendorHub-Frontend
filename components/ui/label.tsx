@@ -2,6 +2,8 @@ import { cn } from "cn"
 
 function Label({ className, ...props }: React.ComponentProps<"label">) {
   return (
+    // Generic wrapper: callers associate it via htmlFor or by nesting the control.
+    // eslint-disable-next-line jsx-a11y/label-has-associated-control
     <label
       data-slot="label"
       className={cn(

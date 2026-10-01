@@ -1,24 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CircleAlert, ShoppingCart } from "lucide-react";
-import { useForm } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { buttonVariants } from "@/components/ui/button";
+import { ArrowLeft, CircleAlert, ShoppingCart } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+
 import { CartLineItem } from "@/components/shared/CartLineItem";
 import { CartSummary } from "@/components/shared/CartSummary";
 import { DeliveryDateSelector } from "@/components/shared/DeliveryDateSelector";
 import { DeliveryWindowSelector } from "@/components/shared/DeliveryWindowSelector";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { OrderConfirmation } from "@/components/shared/OrderConfirmation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { buttonVariants } from "@/components/ui/button";
 import { usePlaceOrder } from "@/hooks/useOrders";
 import { useVendor } from "@/hooks/useVendors";
-import { useCartStore, useCartSubtotal } from "@/store/cartStore";
 import { upcomingDeliveryDates } from "@/lib/deliveryDates";
 import { cn } from "@/lib/utils";
 import { confirmOrderSchema } from "@/schemas/orderSchema";
+import { useCartStore, useCartSubtotal } from "@/store/cartStore";
 import type { ConfirmOrderValues, Order } from "@/types/order";
 
 export default function CartPage() {
@@ -62,7 +64,7 @@ export default function CartPage() {
   const subtotal = useCartSubtotal();
 
   function onSubmit(data: ConfirmOrderValues) {
-    if (!vendorId) return;
+    if (!vendorId) {return;}
     placeOrder.mutate(
       {
         vendorId,
@@ -79,7 +81,7 @@ export default function CartPage() {
     );
   }
 
-  if (!hasHydrated) return null;
+  if (!hasHydrated) {return null;}
 
   if (confirmedOrder) {
     return (
@@ -128,7 +130,7 @@ export default function CartPage() {
         />
       ) : (
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={(e) => { void handleSubmit(onSubmit)(e); }}
           className="grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]"
         >
           <div className="flex min-w-0 flex-col gap-6 lg:col-start-1">

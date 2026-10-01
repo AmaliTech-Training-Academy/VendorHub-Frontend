@@ -1,8 +1,9 @@
 "use client"
 
 import { CalendarDays } from "lucide-react"
-import { cn } from "@/lib/utils"
+
 import type { DeliveryDateOption } from "@/lib/deliveryDates"
+import { cn } from "@/lib/utils"
 
 function DeliveryDateSelector({
   dates,
@@ -45,7 +46,7 @@ function DeliveryDateSelector({
                   value={date.value}
                   checked={selected}
                   aria-invalid={!!error}
-                  onChange={() => onChange(date.value)}
+                  onChange={() => { onChange(date.value); }}
                   className="sr-only"
                 />
                 {date.label}

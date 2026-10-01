@@ -1,8 +1,9 @@
 "use client"
 
-import { useFieldArray, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleAlert, Loader2, Plus, Trash2 } from "lucide-react"
+import { useFieldArray, useForm } from "react-hook-form"
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -59,7 +60,7 @@ function DeliverySettingsForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+    <form onSubmit={(e) => { void handleSubmit(onSubmit)(e); }} className="flex flex-col gap-6" noValidate>
       <div className="flex flex-col gap-1.5">
         <Label>Available days</Label>
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Available days">
@@ -71,7 +72,7 @@ function DeliverySettingsForm({
               disabled={isSubmitting}
               variant={availableDays.includes(day) ? "default" : "outline"}
               aria-pressed={availableDays.includes(day)}
-              onClick={() => toggleDay(day)}
+              onClick={() => { toggleDay(day); }}
             >
               {WEEKDAY_LABELS[day]}
             </Button>
@@ -92,7 +93,7 @@ function DeliverySettingsForm({
             variant="outline"
             size="sm"
             disabled={isSubmitting}
-            onClick={() => append({ label: "", startTime: "", endTime: "" })}
+            onClick={() => { append({ label: "", startTime: "", endTime: "" }); }}
           >
             <Plus />
             Add window
@@ -118,7 +119,7 @@ function DeliverySettingsForm({
                 />
                 {errors.timeWindows?.[index]?.label && (
                   <p role="alert" className="text-sm text-destructive">
-                    {errors.timeWindows[index]?.label?.message}
+                    {errors.timeWindows[index].label.message}
                   </p>
                 )}
               </div>
@@ -137,7 +138,7 @@ function DeliverySettingsForm({
                   />
                   {errors.timeWindows?.[index]?.startTime && (
                     <p role="alert" className="text-sm text-destructive">
-                      {errors.timeWindows[index]?.startTime?.message}
+                      {errors.timeWindows[index].startTime.message}
                     </p>
                   )}
                 </div>
@@ -154,7 +155,7 @@ function DeliverySettingsForm({
                   />
                   {errors.timeWindows?.[index]?.endTime && (
                     <p role="alert" className="text-sm text-destructive">
-                      {errors.timeWindows[index]?.endTime?.message}
+                      {errors.timeWindows[index].endTime.message}
                     </p>
                   )}
                 </div>
@@ -167,7 +168,7 @@ function DeliverySettingsForm({
                 className="shrink-0"
                 disabled={isSubmitting || fields.length === 1}
                 aria-label="Remove this time window"
-                onClick={() => remove(index)}
+                onClick={() => { remove(index); }}
               >
                 <Trash2 className="text-destructive" />
               </Button>

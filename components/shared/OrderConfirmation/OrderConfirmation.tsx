@@ -1,5 +1,7 @@
 import Link from "next/link";
+
 import { CircleCheck } from "lucide-react";
+
 import { buttonVariants } from "@/components/ui/button";
 import { cn, formatPrice } from "@/lib/utils";
 import type { Order } from "@/types/order";

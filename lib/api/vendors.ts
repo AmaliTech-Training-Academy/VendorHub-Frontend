@@ -1,9 +1,9 @@
 import { apiRequest } from "@/lib/api/client";
-import { paginatedSchema } from "@/schemas/paginationSchema";
 import {
   deliverySettingsResponseSchema,
   toDeliverySettingsPayload,
 } from "@/schemas/deliverySettingsSchema";
+import { paginatedSchema } from "@/schemas/paginationSchema";
 import { vendorSchema } from "@/schemas/vendorSchema";
 import type { DeliverySettings, DeliverySettingsFormValues } from "@/types/deliverySettings";
 import type { Vendor } from "@/types/vendor";
