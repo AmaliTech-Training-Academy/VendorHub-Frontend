@@ -35,6 +35,66 @@ import { Status } from "@/types/status";
 
 type DialogState = { mode: "add" } | { mode: "edit"; product: Product } | null;
 
+const DIALOG_COPY = {
+  add: {
+    title: "Add product",
+    description: "Fill in the details to add a new product to your catalogue.",
+    submitLabel: "Add product",
+    submittingLabel: "Adding…",
+  },
+  edit: {
+    title: "Edit product",
+    description: "Update the details of this product.",
+    submitLabel: "Save changes",
+    submittingLabel: "Saving…",
+  },
+} as const;
+
+function ProductDialog({
+  state,
+  isSubmitting,
+  submitError,
+  onSubmit,
+  onClose,
+}: {
+  state: DialogState;
+  isSubmitting: boolean;
+  submitError?: string;
+  onSubmit: (values: ProductFormValues) => void;
+  onClose: () => void;
+}) {
+  const copy = DIALOG_COPY[state?.mode ?? "add"];
+  const product = state?.mode === "edit" ? state.product : undefined;
+
+  return (
+    <Dialog
+      open={!!state}
+      onOpenChange={(open) => {
+        if (!open && !isSubmitting) {onClose();}
+      }}
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{copy.title}</DialogTitle>
+          <DialogDescription>{copy.description}</DialogDescription>
+        </DialogHeader>
+        {state && (
+          <ProductForm
+            key={product?.id ?? "add"}
+            defaultValues={product}
+            submitLabel={copy.submitLabel}
+            submittingLabel={copy.submittingLabel}
+            submitError={submitError}
+            isSubmitting={isSubmitting}
+            onSubmit={onSubmit}
+            onCancel={onClose}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function ProductsPage() {
   const vendorId = useVendorId();
   const [dialogState, setDialogState] = useState<DialogState>(null);
@@ -148,43 +208,13 @@ export default function ProductsPage() {
         />
       )}
 
-      <Dialog
-        open={!!dialogState}
-        onOpenChange={(open) => {
-          if (!open && !isSubmitting) {setDialogState(null);}
-        }}
-      >
-        <DialogContent >
-          <DialogHeader>
-            <DialogTitle>
-              {dialogState?.mode === "edit" ? "Edit product" : "Add product"}
-            </DialogTitle>
-            <DialogDescription>
-              {dialogState?.mode === "edit"
-                ? "Update the details of this product."
-                : "Fill in the details to add a new product to your catalogue."}
-            </DialogDescription>
-          </DialogHeader>
-          {dialogState && (
-            <ProductForm
-              key={dialogState.mode === "edit" ? dialogState.product.id : "add"}
-              defaultValues={
-                dialogState.mode === "edit" ? dialogState.product : undefined
-              }
-              submitLabel={
-                dialogState.mode === "edit" ? "Save changes" : "Add product"
-              }
-              submittingLabel={
-                dialogState.mode === "edit" ? "Saving…" : "Adding…"
-              }
-              submitError={submitError}
-              isSubmitting={isSubmitting}
-              onSubmit={handleSubmit}
-              onCancel={() => { setDialogState(null); }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      <ProductDialog
+        state={dialogState}
+        isSubmitting={isSubmitting}
+        submitError={submitError}
+        onSubmit={handleSubmit}
+        onClose={() => { setDialogState(null); }}
+      />
     </div>
   );
 }

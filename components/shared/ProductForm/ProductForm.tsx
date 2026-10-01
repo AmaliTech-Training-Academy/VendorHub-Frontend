@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert, Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -42,8 +42,8 @@ function ProductForm({
 }) {
   const {
     register,
+    control,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors },
   } = useForm<ProductFormInput, unknown, ProductFormValues>({
@@ -52,7 +52,7 @@ function ProductForm({
     mode: "onTouched",
   });
 
-  const inStock = watch("inStock");
+  const inStock = useWatch({ control, name: "inStock" });
 
   return (
     <form

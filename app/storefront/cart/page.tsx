@@ -5,7 +5,7 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, CircleAlert, ShoppingCart } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { CartLineItem } from "@/components/shared/CartLineItem";
 import { CartSummary } from "@/components/shared/CartSummary";
@@ -22,6 +22,18 @@ import { cn } from "@/lib/utils";
 import { confirmOrderSchema } from "@/schemas/orderSchema";
 import { useCartStore, useCartSubtotal } from "@/store/cartStore";
 import type { ConfirmOrderValues, Order } from "@/types/order";
+
+function PlaceOrderError({ message }: { message: string }) {
+  return (
+    <Alert variant="destructive">
+      <CircleAlert />
+      <AlertTitle>Unable to place order</AlertTitle>
+      <AlertDescription>
+        {message || "Something went wrong placing your order. Please try again."}
+      </AlertDescription>
+    </Alert>
+  );
+}
 
 export default function CartPage() {
   const {
@@ -43,7 +55,7 @@ export default function CartPage() {
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
 
   const {
-    watch,
+    control,
     setValue,
     handleSubmit,
     formState: { errors },
@@ -54,6 +66,8 @@ export default function CartPage() {
       deliveryDate: deliveryDate ?? undefined,
     },
   });
+  const selectedDate = useWatch({ control, name: "deliveryDate" });
+  const selectedWindowId = useWatch({ control, name: "deliveryWindowId" });
 
   const availableDays = vendor?.availableDays;
   const deliveryDates = useMemo(
@@ -148,7 +162,7 @@ export default function CartPage() {
 
             <DeliveryDateSelector
               dates={deliveryDates}
-              value={watch("deliveryDate")}
+              value={selectedDate}
               onChange={(date) => {
                 setValue("deliveryDate", date, { shouldValidate: true });
                 setDeliveryDate(date);
@@ -158,7 +172,7 @@ export default function CartPage() {
 
             <DeliveryWindowSelector
               windows={vendor?.timeWindows ?? []}
-              value={watch("deliveryWindowId")}
+              value={selectedWindowId}
               onChange={(id) => {
                 setValue("deliveryWindowId", id, { shouldValidate: true });
                 setDeliveryWindow(id);
@@ -175,14 +189,7 @@ export default function CartPage() {
             />
 
             {placeOrder.isError && (
-              <Alert variant="destructive">
-                <CircleAlert />
-                <AlertTitle>Unable to place order</AlertTitle>
-                <AlertDescription>
-                  {placeOrder.error.message ||
-                    "Something went wrong placing your order. Please try again."}
-                </AlertDescription>
-              </Alert>
+              <PlaceOrderError message={placeOrder.error.message} />
             )}
           </div>
         </form>

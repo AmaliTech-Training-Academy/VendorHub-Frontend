@@ -25,6 +25,17 @@ type Props = {
   watch: UseFormWatch<RegisterFormValues>;
 };
 
+function FieldErrorAlert({ message }: { message?: string }) {
+  if (!message) {
+    return null;
+  }
+  return (
+    <Alert variant="destructive" className="px-3 py-2 text-xs">
+      <AlertDescription>{message}</AlertDescription>
+    </Alert>
+  );
+}
+
 export function RegisterFields({ register, errors, setValue, watch }: Props) {
   // `role` is unset until the user picks one, even though the form type requires it.
   const selectedRole = watch("role") as RegisterFormValues["role"] | undefined;
@@ -126,11 +137,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
 
         <input type="hidden" {...register("role")} />
 
-        {errors.role?.message && (
-          <Alert variant="destructive" className="px-3 py-2 text-xs">
-            <AlertDescription>{errors.role.message}</AlertDescription>
-          </Alert>
-        )}
+        <FieldErrorAlert message={errors.role?.message} />
       </div>
 
       {/* Nothing below the tabs until a role is selected */}
@@ -154,13 +161,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
                   className="h-11 rounded-xl border-slate-200 bg-white focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
                 />
 
-                {errors.businessName?.message && (
-                  <Alert variant="destructive" className="px-3 py-2 text-xs">
-                    <AlertDescription>
-                      {errors.businessName.message}
-                    </AlertDescription>
-                  </Alert>
-                )}
+                <FieldErrorAlert message={errors.businessName?.message} />
               </div>
 
               <div className="flex flex-col gap-1.5">
@@ -178,13 +179,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
                   className="h-11 rounded-xl border-slate-200 bg-white focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
                 />
 
-                {errors.ownerName?.message && (
-                  <Alert variant="destructive" className="px-3 py-2 text-xs">
-                    <AlertDescription>
-                      {errors.ownerName.message}
-                    </AlertDescription>
-                  </Alert>
-                )}
+                <FieldErrorAlert message={errors.ownerName?.message} />
               </div>
             </div>
           )}
@@ -206,13 +201,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
                 className="h-11 rounded-xl border-slate-200 bg-white focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
               />
 
-              {errors.fullName?.message && (
-                <Alert variant="destructive" className="px-3 py-2 text-xs">
-                  <AlertDescription>
-                    {errors.fullName.message}
-                  </AlertDescription>
-                </Alert>
-              )}
+              <FieldErrorAlert message={errors.fullName?.message} />
             </div>
           )}
 
@@ -243,13 +232,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
                 className="h-11 rounded-xl border-slate-200 focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
               />
 
-              {errors.email?.message && (
-                <Alert variant="destructive" className="px-3 py-2 text-xs">
-                  <AlertDescription>
-                    {errors.email.message}
-                  </AlertDescription>
-                </Alert>
-              )}
+              <FieldErrorAlert message={errors.email?.message} />
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -268,13 +251,7 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
                 className="h-11 rounded-xl border-slate-200 focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
               />
 
-              {errors.password?.message && (
-                <Alert variant="destructive" className="px-3 py-2 text-xs">
-                  <AlertDescription>
-                    {errors.password.message}
-                  </AlertDescription>
-                </Alert>
-              )}
+              <FieldErrorAlert message={errors.password?.message} />
             </div>
           </div>
         </>
