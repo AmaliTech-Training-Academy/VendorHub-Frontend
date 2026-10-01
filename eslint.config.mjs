@@ -48,6 +48,12 @@ const eslintConfig = defineConfig([
 
       "@typescript-eslint/no-misused-promises": "error",
 
+      // Numbers stringify predictably; strictTypeChecked bans them by default.
+      "@typescript-eslint/restrict-template-expressions": [
+        "error",
+        { allowNumber: true },
+      ],
+
       "@typescript-eslint/consistent-type-imports": [
         "error",
         {

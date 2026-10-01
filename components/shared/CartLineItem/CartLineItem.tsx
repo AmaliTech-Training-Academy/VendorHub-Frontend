@@ -1,6 +1,7 @@
 "use client"
 
 import { Minus, Plus, ShoppingBasket, Trash2 } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { formatPrice } from "@/lib/utils"
 import type { CartItem } from "@/types/order"
@@ -40,7 +41,7 @@ function CartLineItem({
           size="icon-sm"
           className="rounded-full"
           aria-label={`Decrease quantity of ${item.name}`}
-          onClick={() => onDecrease(item.productId)}
+          onClick={() => { onDecrease(item.productId); }}
         >
           <Minus />
         </Button>
@@ -55,7 +56,7 @@ function CartLineItem({
           size="icon-sm"
           className="rounded-full"
           aria-label={`Increase quantity of ${item.name}`}
-          onClick={() => onIncrease(item.productId)}
+          onClick={() => { onIncrease(item.productId); }}
         >
           <Plus />
         </Button>
@@ -70,7 +71,7 @@ function CartLineItem({
         variant="ghost"
         size="icon-sm"
         aria-label={`Remove ${item.name} from cart`}
-        onClick={() => onRemove(item.productId)}
+        onClick={() => { onRemove(item.productId); }}
       >
         <Trash2 className="text-destructive" />
       </Button>

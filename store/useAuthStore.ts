@@ -1,7 +1,8 @@
 // store/useAuthStore.ts
 import { create } from "zustand";
+
+import type { AuthState } from "@/types/interfaces";
 import type { UserRole } from "@/types/types";
-import { AuthState } from "@/types/interfaces";
 
 const getInitialAuth = () => {
   if (typeof window === "undefined") {

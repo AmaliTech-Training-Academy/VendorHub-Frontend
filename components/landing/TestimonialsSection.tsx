@@ -2,10 +2,10 @@
 
 import { Star, Quote } from "lucide-react";
 
-import { Badge } from "../ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
-import { Card, CardContent, CardFooter } from "../ui/card";
 import { testimonials } from "./testimonials.mock";
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+import { Badge } from "../ui/badge";
+import { Card, CardContent, CardFooter } from "../ui/card";
 
 export default function TestimonialsSection() {
   return (

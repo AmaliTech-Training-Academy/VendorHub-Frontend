@@ -1,6 +1,8 @@
 "use client"
 
 import { Clock } from "lucide-react"
+import { useId } from "react"
+
 import { cn } from "@/lib/utils"
 import type { DeliveryWindow } from "@/types/order"
 
@@ -15,6 +17,8 @@ function DeliveryWindowSelector({
   onChange: (deliveryWindowId: number) => void
   error?: string
 }) {
+  const errorId = useId()
+
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="mb-1 flex items-center gap-2 text-sm font-medium">
@@ -39,8 +43,8 @@ function DeliveryWindowSelector({
                 name="delivery-window"
                 value={window.id}
                 checked={selected}
-                aria-invalid={!!error}
-                onChange={() => onChange(window.id)}
+                aria-describedby={error ? errorId : undefined}
+                onChange={() => { onChange(window.id); }}
                 className="sr-only"
               />
               <span>{window.label}</span>
@@ -52,7 +56,7 @@ function DeliveryWindowSelector({
         })}
       </div>
       {error && (
-        <p role="alert" className="text-sm text-destructive">
+        <p id={errorId} role="alert" className="text-sm text-destructive">
           {error}
         </p>
       )}

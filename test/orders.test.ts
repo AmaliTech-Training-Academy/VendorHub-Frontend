@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
 import { upcomingDeliveryDates } from "../lib/deliveryDates";
+
+import type * as OrdersModule from "../lib/api/orders";
 
 const apiUrl = "https://api.vendorhub.test";
 
@@ -77,7 +80,7 @@ const input = {
 };
 
 describe("placeOrder", () => {
-  let orders: typeof import("../lib/api/orders");
+  let orders: typeof OrdersModule;
 
   beforeEach(async () => {
     vi.resetModules();

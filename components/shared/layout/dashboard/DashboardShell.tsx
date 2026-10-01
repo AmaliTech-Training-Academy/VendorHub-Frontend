@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+
 import { Menu } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuthStore } from "@/store/useAuthStore";
+
 import { Brand, LogoutButton, NavLinks } from "./SidebarFeatures";
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
@@ -41,21 +43,23 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <header className="md:hidden flex items-center justify-between bg-blue-950 px-4 py-3">
           <Brand />
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-            <SheetTrigger>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/10 hover:text-white"
-              >
-                <Menu />
-              </Button>
+            <SheetTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-white/10 hover:text-white"
+                />
+              }
+            >
+              <Menu />
             </SheetTrigger>
             <SheetContent
               side="left"
               className="w-72 bg-blue-950 border-none p-5"
             >
               <div className="mt-8 flex h-full flex-col">
-                <NavLinks onNavigate={() => setMobileOpen(false)} />
+                <NavLinks onNavigate={() => { setMobileOpen(false); }} />
                 <div className="mt-auto pb-4">
                   <Separator className="my-5 bg-white/10" />
                   <LogoutButton onClick={handleLogout} />

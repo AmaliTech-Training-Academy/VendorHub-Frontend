@@ -1,17 +1,18 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert, Loader2 } from "lucide-react";
+import { useForm, useWatch } from "react-hook-form";
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { DialogFooter } from "@/components/ui/dialog";
-import { PRODUCT_CATEGORIES, productSchema } from "@/schemas/productSchema";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { PRODUCT_CATEGORIES, productSchema } from "@/schemas/productSchema";
 import type { ProductFormInput, ProductFormValues } from "@/types/product";
 
 const DEFAULT_VALUES: ProductFormInput = {
@@ -41,8 +42,8 @@ function ProductForm({
 }) {
   const {
     register,
+    control,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors },
   } = useForm<ProductFormInput, unknown, ProductFormValues>({
@@ -51,11 +52,11 @@ function ProductForm({
     mode: "onTouched",
   });
 
-  const inStock = watch("inStock");
+  const inStock = useWatch({ control, name: "inStock" });
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={(e) => { void handleSubmit(onSubmit)(e); }}
       className="flex flex-col gap-4 "
       noValidate
     >
@@ -144,7 +145,7 @@ function ProductForm({
           id="product-in-stock"
           checked={inStock}
           disabled={isSubmitting}
-          onCheckedChange={(checked) => setValue("inStock", checked)}
+          onCheckedChange={(checked) => { setValue("inStock", checked); }}
         />
       </div>
 

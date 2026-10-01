@@ -1,16 +1,17 @@
-import type {
-  FieldErrors,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
 
 import type {
   LoginFormData,
   RegisterFormValues,
   UserRole,
 } from "@/types/types";
-import { OrderStatus } from "./order";
+
+import type { OrderStatus } from "./order";
+import type {
+  FieldErrors,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
 
 // types/interfaces.ts
 export interface User {

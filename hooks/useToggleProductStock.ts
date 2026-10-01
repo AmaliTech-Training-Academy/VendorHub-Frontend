@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { invalidateProducts, productsQueryKey } from "@/hooks/productQueries";
 import { toggleProductStock } from "@/lib/api/products";
 import type { Product } from "@/types/product";

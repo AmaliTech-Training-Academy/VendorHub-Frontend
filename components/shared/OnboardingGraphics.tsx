@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+
 import type { OnboardingGraphicsProps } from "@/types/interfaces";
 
 export default function OnboardingGraphics({

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import { placeOrder } from "@/lib/api/orders";
 import {
   fetchOrdersByEmployee,
@@ -46,8 +47,8 @@ export function usePlaceOrder() {
     mutationFn: (input: PlaceOrderInput) => placeOrder(input),
     onSuccess: (order) => {
       seedMockOrder(order);
-      queryClient.invalidateQueries({ queryKey: ordersQueryKey(order.vendorId) });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({ queryKey: ordersQueryKey(order.vendorId) });
+      void queryClient.invalidateQueries({
         queryKey: employeeOrdersQueryKey(order.employeeId),
       });
     },
