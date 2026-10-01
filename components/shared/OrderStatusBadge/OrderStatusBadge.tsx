@@ -1,6 +1,7 @@
 import { Badge, type badgeVariants } from "@/components/ui/badge"
-import type { VariantProps } from "class-variance-authority"
 import type { OrderStatus } from "@/types/order"
+
+import type { VariantProps } from "class-variance-authority"
 
 const STATUS_CONFIG: Record<
   OrderStatus,

@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+
 import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 
 const navigationLinks = [
@@ -101,7 +103,7 @@ export default function LandingNavbar() {
             type="button"
             variant="ghost"
             size="icon"
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => { setIsOpen(!isOpen); }}
             className="text-blue-950"
             aria-label="Toggle Menu"
           >
@@ -121,7 +123,7 @@ export default function LandingNavbar() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => { setIsOpen(false); }}
                   className="block text-lg font-medium text-gray-700 hover:text-blue-900 py-1"
                 >
                   {link.label}
@@ -136,7 +138,7 @@ export default function LandingNavbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setIsOpen(false)}
+                onClick={() => { setIsOpen(false); }}
                 className={`w-full text-center px-4 py-2.5 rounded-md text-white font-semibold ${link.mobileClassName}`}
               >
                 {link.label}

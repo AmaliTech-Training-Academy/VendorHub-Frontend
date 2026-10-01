@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+
+import { ShoppingCart } from "lucide-react";
+import { useEffect, useState } from "react";
+
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ShoppingCart } from "lucide-react";
 import { useCartItemCount } from "@/store/cartStore";
 
 export function FloatingCart() {
@@ -12,21 +14,28 @@ export function FloatingCart() {
   const [isBouncing, setIsBouncing] = useState(false);
   const [prevCount, setPrevCount] = useState(cartCount);
 
-  useEffect(() => {
+  // Track count changes during render rather than in an effect.
+  if (cartCount !== prevCount) {
+    setPrevCount(cartCount);
     if (cartCount > prevCount) {
       setIsBouncing(true);
-      const timeout = setTimeout(() => setIsBouncing(false), 400);
-      return () => clearTimeout(timeout);
     }
-    setPrevCount(cartCount);
-  }, [cartCount, prevCount]);
+  }
 
-  if (cartCount === 0) return null;
+  useEffect(() => {
+    if (!isBouncing) {
+      return;
+    }
+    const timeout = setTimeout(() => { setIsBouncing(false); }, 400);
+    return () => { clearTimeout(timeout); };
+  }, [isBouncing]);
+
+  if (cartCount === 0) {return null;}
 
   return (
     <Link
       href="/storefront/cart"
-      aria-label={`View cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}
+      aria-label={`View cart, ${String(cartCount)} ${cartCount === 1 ? "item" : "items"}`}
       className={cn(
         buttonVariants({ size: "icon" }),
         "fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg bg-orange-500 hover:bg-orange-600 transition-transform",

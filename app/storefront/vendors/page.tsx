@@ -1,16 +1,17 @@
 "use client";
 
 import { CircleAlert, Store, Clock } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useState } from "react";
+
 import { EmptyState } from "@/components/shared/EmptyState";
+import { PageHeader } from "@/components/shared/StorefrontHeader";
 import { VendorCard } from "@/components/shared/VendorCard";
+import { VendorList } from "@/components/shared/VendorList";
 import { VendorListSkeleton } from "@/components/shared/VendorListSkeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { useVendors } from "@/hooks/useVendors";
 import { groupVendorsByCategory } from "@/lib/vendors";
-import { useState } from "react";
-import { VendorList } from "@/components/shared/VendorList";
-import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/shared/StorefrontHeader";
 
 export default function VendorsPage() {
   const { data: vendors, isPending, isError } = useVendors();
@@ -20,16 +21,6 @@ export default function VendorsPage() {
   const visibleGroups = groups.filter(
     (group) => !selectedCategory || group.category === selectedCategory,
   );
-
-  const vendorsByCategory = vendors
-    ? vendors.reduce<Record<string, typeof vendors>>((acc, vendor) => {
-        vendor.categories.forEach((category) => {
-          if (!acc[category]) acc[category] = [];
-          acc[category].push(vendor);
-        });
-        return acc;
-      }, {})
-    : {};
 
   return (
     <div className="flex w-full flex-col gap-6 p-6">
@@ -73,7 +64,7 @@ export default function VendorsPage() {
                 className="rounded-full"
                 variant={selectedCategory ? "outline" : "default"}
                 aria-pressed={!selectedCategory}
-                onClick={() => setSelectedCategory(null)}
+                onClick={() => { setSelectedCategory(null); }}
               >
                 All ({vendors.length})
               </Button>
@@ -86,7 +77,7 @@ export default function VendorsPage() {
                     selectedCategory === group.category ? "default" : "outline"
                   }
                   aria-pressed={selectedCategory === group.category}
-                  onClick={() => setSelectedCategory(group.category)}
+                  onClick={() => { setSelectedCategory(group.category); }}
                 >
                   {group.category} ({group.vendors.length})
                 </Button>

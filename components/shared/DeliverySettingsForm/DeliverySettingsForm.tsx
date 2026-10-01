@@ -1,8 +1,9 @@
 "use client"
 
-import { useFieldArray, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleAlert, Clock, Eye, Loader2, Plus, Trash2 } from "lucide-react"
+import { useFieldArray, useForm, useWatch } from "react-hook-form"
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,10 +19,72 @@ import type {
   DeliverySettingsInput,
 } from "@/types/deliverySettings"
 
+import type { Control, FieldError } from "react-hook-form"
+
 const DEFAULT_VALUES: DeliverySettingsInput = {
   availableDays: [],
   timeWindows: [{ label: "", startTime: "", endTime: "" }],
   deliveryFee: "",
+}
+
+/** One input in a time-window row, with a visually hidden label and its error. */
+function WindowField({
+  id,
+  label,
+  error,
+  ...inputProps
+}: React.ComponentProps<typeof Input> & {
+  id: string
+  label: string
+  error?: FieldError
+}) {
+  return (
+    <div className="flex flex-1 flex-col gap-1.5">
+      <Label htmlFor={id} className="sr-only">
+        {label}
+      </Label>
+      <Input id={id} aria-invalid={!!error} {...inputProps} />
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error.message}
+        </p>
+      )}
+    </div>
+  )
+}
+
+/** Live summary of what employees will see, updated as the vendor edits. */
+function DeliveryPreview({
+  control,
+}: {
+  control: Control<DeliverySettingsInput, unknown, DeliverySettingsFormValues>
+}) {
+  const availableDays = useWatch({ control, name: "availableDays" })
+  const timeWindows = useWatch({ control, name: "timeWindows" })
+  const deliveryFee = useWatch({ control, name: "deliveryFee" })
+
+  const previewDays = availableDays.length
+    ? formatDays(availableDays)
+    : "no days selected yet"
+  const previewWindows = timeWindows
+    .filter((window) => window.startTime && window.endTime)
+    .map((window) => `${window.startTime}–${window.endTime}`)
+    .join(", ")
+  const parsedFee = Number(deliveryFee)
+  const previewFee = deliveryFee !== "" && !Number.isNaN(parsedFee) ? formatPrice(parsedFee) : "—"
+
+  return (
+    <div className="flex items-start gap-3 rounded-xl bg-accent/60 p-3.5 text-sm">
+      <Eye aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-primary" />
+      <p className="text-accent-foreground">
+        Employees will see:{" "}
+        <span className="font-medium">
+          {previewDays}
+          {previewWindows && ` · ${previewWindows}`} · {previewFee} delivery
+        </span>
+      </p>
+    </div>
+  )
 }
 
 function DeliverySettingsForm({
@@ -39,7 +102,6 @@ function DeliverySettingsForm({
     register,
     control,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors },
   } = useForm<DeliverySettingsInput, unknown, DeliverySettingsFormValues>({
@@ -49,9 +111,7 @@ function DeliverySettingsForm({
   })
 
   const { fields, append, remove } = useFieldArray({ control, name: "timeWindows" })
-  const availableDays = watch("availableDays")
-  const timeWindows = watch("timeWindows")
-  const deliveryFee = watch("deliveryFee")
+  const availableDays = useWatch({ control, name: "availableDays" })
 
   function toggleDay(day: (typeof WEEKDAYS)[number]) {
     const next = availableDays.includes(day)
@@ -60,18 +120,8 @@ function DeliverySettingsForm({
     setValue("availableDays", next, { shouldValidate: true })
   }
 
-  const previewDays = availableDays.length
-    ? formatDays(availableDays)
-    : "no days selected yet"
-  const previewWindows = timeWindows
-    .filter((window) => window.startTime && window.endTime)
-    .map((window) => `${window.startTime}–${window.endTime}`)
-    .join(", ")
-  const parsedFee = Number(deliveryFee)
-  const previewFee = deliveryFee !== "" && !Number.isNaN(parsedFee) ? formatPrice(parsedFee) : "—"
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+    <form onSubmit={(e) => { void handleSubmit(onSubmit)(e); }} className="flex flex-col gap-6" noValidate>
       <div className="flex flex-col gap-1.5">
         <Label>Available days</Label>
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Available days">
@@ -84,7 +134,7 @@ function DeliverySettingsForm({
               disabled={isSubmitting}
               variant={availableDays.includes(day) ? "default" : "outline"}
               aria-pressed={availableDays.includes(day)}
-              onClick={() => toggleDay(day)}
+              onClick={() => { toggleDay(day); }}
             >
               {WEEKDAY_LABELS[day]}
             </Button>
@@ -106,7 +156,7 @@ function DeliverySettingsForm({
             size="sm"
             className="rounded-full"
             disabled={isSubmitting}
-            onClick={() => append({ label: "", startTime: "", endTime: "" })}
+            onClick={() => { append({ label: "", startTime: "", endTime: "" }); }}
           >
             <Plus />
             Add window
@@ -114,83 +164,59 @@ function DeliverySettingsForm({
         </div>
 
         <div className="flex flex-col gap-3">
-          {fields.map((field, index) => (
-            <div
-              key={field.id}
-              className="flex flex-col gap-3 rounded-xl border border-border bg-muted/30 p-3 sm:flex-row sm:items-start"
-            >
-              <div className="hidden shrink-0 items-center justify-center rounded-lg bg-primary/10 p-2 text-primary sm:flex">
-                <Clock aria-hidden="true" className="size-4" />
-              </div>
+          {fields.map((field, index) => {
+            const windowErrors = errors.timeWindows?.[index]
+            return (
+              <div
+                key={field.id}
+                className="flex flex-col gap-3 rounded-xl border border-border bg-muted/30 p-3 sm:flex-row sm:items-start"
+              >
+                <div className="hidden shrink-0 items-center justify-center rounded-lg bg-primary/10 p-2 text-primary sm:flex">
+                  <Clock aria-hidden="true" className="size-4" />
+                </div>
 
-              <div className="flex flex-1 flex-col gap-1.5">
-                <Label htmlFor={`window-${index}-label`} className="sr-only">
-                  Window name
-                </Label>
-                <Input
+                <WindowField
                   id={`window-${index}-label`}
+                  label="Window name"
                   placeholder="e.g. Morning"
-                  aria-invalid={!!errors.timeWindows?.[index]?.label}
+                  error={windowErrors?.label}
                   disabled={isSubmitting}
                   {...register(`timeWindows.${index}.label`)}
                 />
-                {errors.timeWindows?.[index]?.label && (
-                  <p role="alert" className="text-sm text-destructive">
-                    {errors.timeWindows[index]?.label?.message}
-                  </p>
-                )}
-              </div>
 
-              <div className="flex flex-1 gap-2">
-                <div className="flex flex-1 flex-col gap-1.5">
-                  <Label htmlFor={`window-${index}-start`} className="sr-only">
-                    Start time
-                  </Label>
-                  <Input
+                <div className="flex flex-1 gap-2">
+                  <WindowField
                     id={`window-${index}-start`}
+                    label="Start time"
                     type="time"
-                    aria-invalid={!!errors.timeWindows?.[index]?.startTime}
+                    error={windowErrors?.startTime}
                     disabled={isSubmitting}
                     {...register(`timeWindows.${index}.startTime`)}
                   />
-                  {errors.timeWindows?.[index]?.startTime && (
-                    <p role="alert" className="text-sm text-destructive">
-                      {errors.timeWindows[index]?.startTime?.message}
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-1 flex-col gap-1.5">
-                  <Label htmlFor={`window-${index}-end`} className="sr-only">
-                    End time
-                  </Label>
-                  <Input
+                  <WindowField
                     id={`window-${index}-end`}
+                    label="End time"
                     type="time"
-                    aria-invalid={!!errors.timeWindows?.[index]?.endTime}
+                    error={windowErrors?.endTime}
                     disabled={isSubmitting}
                     {...register(`timeWindows.${index}.endTime`)}
                   />
-                  {errors.timeWindows?.[index]?.endTime && (
-                    <p role="alert" className="text-sm text-destructive">
-                      {errors.timeWindows[index]?.endTime?.message}
-                    </p>
-                  )}
                 </div>
-              </div>
 
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                className="shrink-0"
-                disabled={isSubmitting || fields.length === 1}
-                aria-label="Remove this time window"
-                onClick={() => remove(index)}
-              >
-                <Trash2 className="text-destructive" />
-              </Button>
-            </div>
-          ))}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  className="shrink-0"
+                  disabled={isSubmitting || fields.length === 1}
+                  aria-label="Remove this time window"
+                  onClick={() => { remove(index); }}
+                >
+                  <Trash2 className="text-destructive" />
+                </Button>
+              </div>
+            )
+          })}
         </div>
         {errors.timeWindows?.message && (
           <p role="alert" className="text-sm text-destructive">
@@ -227,16 +253,7 @@ function DeliverySettingsForm({
         )}
       </div>
 
-      <div className="flex items-start gap-3 rounded-xl bg-accent/60 p-3.5 text-sm">
-        <Eye aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-primary" />
-        <p className="text-accent-foreground">
-          Employees will see:{" "}
-          <span className="font-medium">
-            {previewDays}
-            {previewWindows && ` · ${previewWindows}`} · {previewFee} delivery
-          </span>
-        </p>
-      </div>
+      <DeliveryPreview control={control} />
 
       {submitError && (
         <Alert variant="destructive">

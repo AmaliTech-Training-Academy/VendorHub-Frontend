@@ -1,6 +1,7 @@
+import { z } from "zod";
 import { create } from "zustand";
 import { createJSONStorage, persist, type StateStorage } from "zustand/middleware";
-import { z } from "zod";
+
 import { cartItemSchema } from "@/schemas/orderSchema";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { CartItem } from "@/types/order";
@@ -124,8 +125,8 @@ export const useCartStore = create<CartState>()(
       decreaseQuantity: (productId) =>
         set((state) => {
           const item = state.items.find((i) => i.productId === productId);
-          if (!item) return state;
-          if (item.quantity <= 1) return withoutItem(state, productId);
+          if (!item) {return state;}
+          if (item.quantity <= 1) {return withoutItem(state, productId);}
           return {
             items: state.items.map((i) =>
               i.productId === productId ? { ...i, quantity: i.quantity - 1 } : i
@@ -135,7 +136,7 @@ export const useCartStore = create<CartState>()(
 
       increaseQuantity: (productId) =>
         set((state) => {
-          if (!state.items.some((i) => i.productId === productId)) return state;
+          if (!state.items.some((i) => i.productId === productId)) {return state;}
           return {
             items: state.items.map((i) =>
               i.productId === productId ? { ...i, quantity: i.quantity + 1 } : i
@@ -182,7 +183,7 @@ export const useCartStore = create<CartState>()(
 
 // A different user (or a logout) must never see or restore the previous cart.
 useAuthStore.subscribe((state, previous) => {
-  if (state.userId !== previous.userId) useCartStore.getState().clearCart();
+  if (state.userId !== previous.userId) {useCartStore.getState().clearCart();}
 });
 
 /** Total quantity across all cart items, e.g. for a cart button's badge count. */

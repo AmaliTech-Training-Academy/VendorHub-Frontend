@@ -1,5 +1,5 @@
-import { ChevronDown } from "lucide-react"
 import { cn } from "cn"
+import { ChevronDown } from "lucide-react"
 
 function Select({ className, children, ...props }: React.ComponentProps<"select">) {
   return (

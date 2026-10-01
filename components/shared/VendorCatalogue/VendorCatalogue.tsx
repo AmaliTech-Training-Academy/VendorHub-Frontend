@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+
 import {
   ArrowLeft,
   CalendarDays,
@@ -11,9 +11,12 @@ import {
   Store,
   Truck,
 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useState } from "react";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { StorefrontProductCard } from "@/components/shared/StorefrontProductCard";
+import { VendorCatalogueSkeleton } from "@/components/shared/VendorCatalogueSkeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,13 +27,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { EmptyState } from "@/components/shared/EmptyState";
-import { StorefrontProductCard } from "@/components/shared/StorefrontProductCard";
-import { VendorCatalogueSkeleton } from "@/components/shared/VendorCatalogueSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useVendor, useVendorCatalogue } from "@/hooks/useVendors";
-import { WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema";
 import { formatPrice } from "@/lib/utils";
-import { useCartItemCount, useCartStore } from "@/store/cartStore";
+import { WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema";
+import { useCartStore } from "@/store/cartStore";
 import type { VendorProduct } from "@/types/product";
 
 function VendorCatalogue({ vendorId }: { vendorId: string }) {
@@ -55,7 +56,7 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
   }
 
   function confirmSwitchVendor() {
-    if (!pendingSwitchProduct) return;
+    if (!pendingSwitchProduct) {return;}
     clearCart();
     addItem({
       productId: pendingSwitchProduct.id,
@@ -189,7 +190,7 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
       <AlertDialog
         open={!!pendingSwitchProduct}
         onOpenChange={(open) => {
-          if (!open) setPendingSwitchProduct(null);
+          if (!open) {setPendingSwitchProduct(null);}
         }}
       >
         <AlertDialogContent>

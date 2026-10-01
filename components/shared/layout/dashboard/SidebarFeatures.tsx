@@ -1,9 +1,11 @@
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "cn";
-import { LayoutDashboard, LogOut, Package, Receipt, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+import { cn } from "cn";
+import { LayoutDashboard, LogOut, Package, Receipt, Truck } from "lucide-react";
+
+import { Button, buttonVariants } from "@/components/ui/button";
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
   { href: "/dashboard/products", label: "Products", icon: Package },

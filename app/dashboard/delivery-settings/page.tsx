@@ -2,9 +2,10 @@
 
 import { CircleAlert, Truck } from "lucide-react";
 import { toast } from "sonner";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 import { DeliverySettingsForm } from "@/components/shared/DeliverySettingsForm";
 import { DeliverySettingsFormSkeleton } from "@/components/shared/DeliverySettingsFormSkeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useDeliverySettings } from "@/hooks/useDeliverySettings";
 import { useUpdateDeliverySettings } from "@/hooks/useUpdateDeliverySettings";
 import { useVendorId } from "@/hooks/useVendorId";
