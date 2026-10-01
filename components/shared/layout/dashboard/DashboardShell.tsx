@@ -43,14 +43,16 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <header className="md:hidden flex items-center justify-between bg-blue-950 px-4 py-3">
           <Brand />
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-            <SheetTrigger>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/10 hover:text-white"
-              >
-                <Menu />
-              </Button>
+            <SheetTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-white/10 hover:text-white"
+                />
+              }
+            >
+              <Menu />
             </SheetTrigger>
             <SheetContent
               side="left"
