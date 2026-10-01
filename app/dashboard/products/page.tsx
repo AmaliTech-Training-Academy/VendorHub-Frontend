@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   CircleAlert,
   CircleCheck,
@@ -9,6 +8,13 @@ import {
   PackageX,
   Plus,
 } from "lucide-react";
+import { useState } from "react";
+
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ProductForm } from "@/components/shared/ProductForm";
+import { ProductsTable } from "@/components/shared/ProductsTable";
+import { ProductsTableSkeleton } from "@/components/shared/ProductsTableSkeleton";
+import { StatCard } from "@/components/shared/StatCard";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,11 +24,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { EmptyState } from "@/components/shared/EmptyState";
-import { ProductForm } from "@/components/shared/ProductForm";
-import { StatCard } from "@/components/shared/StatCard";
-import { ProductsTable } from "@/components/shared/ProductsTable";
-import { ProductsTableSkeleton } from "@/components/shared/ProductsTableSkeleton";
 import { useAddProduct } from "@/hooks/useAddProduct";
 import { useDeleteProduct } from "@/hooks/useDeleteProduct";
 import { useEditProduct } from "@/hooks/useEditProduct";
@@ -33,6 +34,66 @@ import type { Product, ProductFormValues } from "@/types/product";
 import { Status } from "@/types/status";
 
 type DialogState = { mode: "add" } | { mode: "edit"; product: Product } | null;
+
+const DIALOG_COPY = {
+  add: {
+    title: "Add product",
+    description: "Fill in the details to add a new product to your catalogue.",
+    submitLabel: "Add product",
+    submittingLabel: "Adding…",
+  },
+  edit: {
+    title: "Edit product",
+    description: "Update the details of this product.",
+    submitLabel: "Save changes",
+    submittingLabel: "Saving…",
+  },
+} as const;
+
+function ProductDialog({
+  state,
+  isSubmitting,
+  submitError,
+  onSubmit,
+  onClose,
+}: {
+  state: DialogState;
+  isSubmitting: boolean;
+  submitError?: string;
+  onSubmit: (values: ProductFormValues) => void;
+  onClose: () => void;
+}) {
+  const copy = DIALOG_COPY[state?.mode ?? "add"];
+  const product = state?.mode === "edit" ? state.product : undefined;
+
+  return (
+    <Dialog
+      open={!!state}
+      onOpenChange={(open) => {
+        if (!open && !isSubmitting) {onClose();}
+      }}
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{copy.title}</DialogTitle>
+          <DialogDescription>{copy.description}</DialogDescription>
+        </DialogHeader>
+        {state && (
+          <ProductForm
+            key={product?.id ?? "add"}
+            defaultValues={product}
+            submitLabel={copy.submitLabel}
+            submittingLabel={copy.submittingLabel}
+            submitError={submitError}
+            isSubmitting={isSubmitting}
+            onSubmit={onSubmit}
+            onCancel={onClose}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function ProductsPage() {
   const vendorId = useVendorId();
@@ -48,11 +109,11 @@ export default function ProductsPage() {
     if (dialogState?.mode === "edit") {
       editProduct.mutate(
         { id: dialogState.product.id, input: values },
-        { onSuccess: () => setDialogState(null) },
+        { onSuccess: () => { setDialogState(null); } },
       );
       return;
     }
-    addProduct.mutate(values, { onSuccess: () => setDialogState(null) });
+    addProduct.mutate(values, { onSuccess: () => { setDialogState(null); } });
   }
 
   const isSubmitting = addProduct.isPending || editProduct.isPending;
@@ -83,7 +144,7 @@ export default function ProductsPage() {
         </div>
         <Button
           className="rounded-full px-4 "
-          onClick={() => openDialog({ mode: "add" })}
+          onClick={() => { openDialog({ mode: "add" }); }}
         >
           <Plus />
           Add product
@@ -135,55 +196,25 @@ export default function ProductsPage() {
       {status === Status.SUCCESS && products.length > 0 && (
         <ProductsTable
           products={products}
-          onEdit={(product) => openDialog({ mode: "edit", product })}
-          onDelete={(product) => deleteProduct.mutate(product.id)}
-          onToggleStock={(product, inStock) =>
-            toggleStock.mutate({ id: product.id, inStock })
-          }
+          onEdit={(product) => { openDialog({ mode: "edit", product }); }}
+          onDelete={(product) => { deleteProduct.mutate(product.id); }}
+          onToggleStock={(product, inStock) => {
+            toggleStock.mutate({ id: product.id, inStock });
+          }}
           isDeleting={deleteProduct.isPending}
           isTogglingId={
-            toggleStock.isPending ? toggleStock.variables?.id : undefined
+            toggleStock.isPending ? toggleStock.variables.id : undefined
           }
         />
       )}
 
-      <Dialog
-        open={!!dialogState}
-        onOpenChange={(open) => {
-          if (!open && !isSubmitting) setDialogState(null);
-        }}
-      >
-        <DialogContent >
-          <DialogHeader>
-            <DialogTitle>
-              {dialogState?.mode === "edit" ? "Edit product" : "Add product"}
-            </DialogTitle>
-            <DialogDescription>
-              {dialogState?.mode === "edit"
-                ? "Update the details of this product."
-                : "Fill in the details to add a new product to your catalogue."}
-            </DialogDescription>
-          </DialogHeader>
-          {dialogState && (
-            <ProductForm
-              key={dialogState.mode === "edit" ? dialogState.product.id : "add"}
-              defaultValues={
-                dialogState.mode === "edit" ? dialogState.product : undefined
-              }
-              submitLabel={
-                dialogState.mode === "edit" ? "Save changes" : "Add product"
-              }
-              submittingLabel={
-                dialogState.mode === "edit" ? "Saving…" : "Adding…"
-              }
-              submitError={submitError}
-              isSubmitting={isSubmitting}
-              onSubmit={handleSubmit}
-              onCancel={() => setDialogState(null)}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      <ProductDialog
+        state={dialogState}
+        isSubmitting={isSubmitting}
+        submitError={submitError}
+        onSubmit={handleSubmit}
+        onClose={() => { setDialogState(null); }}
+      />
     </div>
   );
 }

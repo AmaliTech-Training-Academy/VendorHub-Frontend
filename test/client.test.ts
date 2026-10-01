@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type * as ClientModule from "../lib/api/client";
+
 const apiUrl = "https://api.vendorhub.test";
 
 describe("apiRequest error messages", () => {
-  let apiRequest: typeof import("../lib/api/client").apiRequest;
+  let apiRequest: typeof ClientModule.apiRequest;
 
   beforeEach(async () => {
     vi.resetModules();
@@ -23,7 +25,7 @@ describe("apiRequest error messages", () => {
     );
     return apiRequest("x/", { method: "POST", body: {} }).then(
       () => "no error",
-      (err: Error) => err.message,
+      (err: unknown) => (err as Error).message,
     );
   }
 

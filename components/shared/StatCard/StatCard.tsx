@@ -1,5 +1,6 @@
-import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+import type { LucideIcon } from "lucide-react";
 
 const TONES = {
   default: "bg-primary/10 text-primary",

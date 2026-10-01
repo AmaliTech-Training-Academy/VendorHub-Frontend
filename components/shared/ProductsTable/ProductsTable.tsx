@@ -1,7 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { Loader2, Package, Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -13,16 +24,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
@@ -84,8 +85,7 @@ function ProductsTable({
                     <Switch
                       checked={product.inStock}
                       disabled={isTogglingId === product.id}
-                      onCheckedChange={(checked) =>
-                        onToggleStock(product, checked)
+                      onCheckedChange={(checked) => { onToggleStock(product, checked); }
                       }
                       aria-label={
                         product.inStock
@@ -110,7 +110,7 @@ function ProductsTable({
                       variant="ghost"
                       size="icon-sm"
                       aria-label={`Edit ${product.name}`}
-                      onClick={() => onEdit(product)}
+                      onClick={() => { onEdit(product); }}
                     >
                       <Pencil />
                     </Button>
@@ -118,7 +118,7 @@ function ProductsTable({
                       variant="ghost"
                       size="icon-sm"
                       aria-label={`Delete ${product.name}`}
-                      onClick={() => setProductPendingDelete(product)}
+                      onClick={() => { setProductPendingDelete(product); }}
                     >
                       <Trash2 className="text-destructive" />
                     </Button>
@@ -133,7 +133,7 @@ function ProductsTable({
       <AlertDialog
         open={!!productPendingDelete}
         onOpenChange={(open) => {
-          if (!open) setProductPendingDelete(null);
+          if (!open) {setProductPendingDelete(null);}
         }}
       >
         <AlertDialogContent>

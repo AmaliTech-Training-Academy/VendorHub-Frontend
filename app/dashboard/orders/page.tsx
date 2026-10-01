@@ -1,11 +1,12 @@
 "use client"
 
 import { CircleAlert, ClipboardList, Clock, Wallet } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+
 import { EmptyState } from "@/components/shared/EmptyState"
 import { OrdersTable } from "@/components/shared/OrdersTable"
 import { OrdersTableSkeleton } from "@/components/shared/OrdersTableSkeleton"
 import { StatCard } from "@/components/shared/StatCard"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { useVendorOrders } from "@/hooks/useOrders"
 import { useVendorId } from "@/hooks/useVendorId"
 import { formatPrice } from "@/lib/utils"

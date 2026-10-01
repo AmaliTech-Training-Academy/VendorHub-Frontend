@@ -2,7 +2,11 @@
 "use client";
 
 import Link from "next/link";
+
 import { ClipboardList, Package, ShoppingBag, ArrowRight } from "lucide-react";
+
+import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge/OrderStatusBadge";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -18,12 +22,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge/OrderStatusBadge";
-import { buttonVariants } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
 import { useVendorId } from "@/hooks/useVendorId";
 import { formatPrice } from "@/lib/utils";
-import { RecentOrder } from "@/types/interfaces";
+import type { RecentOrder } from "@/types/interfaces";
 
 // TEMPORARY: the order stats and recent orders below are hardcoded until the
 // backend has endpoints for listing orders. Product stats are real.
@@ -87,14 +89,17 @@ const recentOrders: RecentOrder[] = [
 export default function DashboardOverviewPage() {
   const { data: products, isError } = useProducts(useVendorId());
 
+  let productsHint = "Live in your storefront";
+  if (products) {
+    productsHint = `${String(products.length)} total, live in your storefront`;
+  } else if (isError) {
+    productsHint = "Couldn't load your products";
+  }
+
   const productsInStock = {
     label: "Products in stock",
     value: products ? products.filter((p) => p.inStock).length : "—",
-    hint: products
-      ? `${products.length} total, live in your storefront`
-      : isError
-        ? "Couldn't load your products"
-        : "Live in your storefront",
+    hint: productsHint,
     icon: Package,
   };
   const stats = [pendingOrders, productsInStock, ordersThisWeek];

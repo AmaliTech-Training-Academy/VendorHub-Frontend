@@ -1,13 +1,13 @@
 "use client";
 
-import FeatureHighlights from "@/components/landing/FeatureHighlights";
-import LandingHero from "@/components/landing/LandingHero";
-import HowItWorks from "@/components/landing/HowItWorks";
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import TestimonialsSection from "@/components/landing/TestimonialsSection";
-import PainPointsSection from "@/components/landing/PainPointsSection";
 import CTASection from "@/components/landing/CTASection";
+import FeatureHighlights from "@/components/landing/FeatureHighlights";
+import HowItWorks from "@/components/landing/HowItWorks";
 import LandingFooter from "@/components/landing/LandingFooter";
+import LandingHero from "@/components/landing/LandingHero";
+import LandingNavbar from "@/components/landing/LandingNavbar";
+import PainPointsSection from "@/components/landing/PainPointsSection";
+import TestimonialsSection from "@/components/landing/TestimonialsSection";
 
 export default function Home() {
   return (

@@ -1,11 +1,15 @@
-import { useForm, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { registerSchema } from "@/schemas/registerSchema";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useForm } from "react-hook-form";
+
 import { registerEmployee, registerVendor, loginUser } from "@/lib/api/auth";
+import { registerSchema } from "@/schemas/registerSchema";
+import type { RegisterFormData } from "@/schemas/registerSchema";
+import { useAuthStore } from "@/store/useAuthStore";
 import type { UseUserRegistrationOptions } from "@/types/interfaces";
 import type { RegisterFormValues } from "@/types/types";
+
+import type { Resolver } from "react-hook-form";
 
 export const useUserRegistration = ({
   onSuccess,
@@ -17,24 +21,28 @@ export const useUserRegistration = ({
     watch,
     setValue,
     formState: { errors },
-  } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema) as Resolver<RegisterFormValues>,
+  } = useForm<RegisterFormValues, unknown, RegisterFormData>({
+    resolver: zodResolver(registerSchema) as Resolver<
+      RegisterFormValues,
+      unknown,
+      RegisterFormData
+    >,
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: RegisterFormValues) => {
+    mutationFn: async (data: RegisterFormData) => {
       if (data.role === "VENDOR") {
         await registerVendor({
           email: data.email,
           password: data.password,
-          business_name: data.businessName!,
-          owner_name: data.ownerName!,
+          business_name: data.businessName,
+          owner_name: data.ownerName,
         });
       } else {
         await registerEmployee({
           email: data.email,
           password: data.password,
-          full_name: data.fullName!,
+          full_name: data.fullName,
         });
       }
       return loginUser({ email: data.email, password: data.password });
@@ -50,7 +58,7 @@ export const useUserRegistration = ({
     },
   });
 
-  const onSubmit = (data: RegisterFormValues) => {
+  const onSubmit = (data: RegisterFormData) => {
     mutation.mutate(data);
   };
 

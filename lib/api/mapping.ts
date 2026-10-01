@@ -32,8 +32,8 @@ function mapKeysDeep(value: unknown, convert: (key: string) => string): unknown 
 }
 
 /** Converts every key in a response (recursively) from snake_case to camelCase. */
-export function keysToCamelCase<T = unknown>(value: unknown): T {
-  return mapKeysDeep(value, toCamelCase) as T;
+export function keysToCamelCase(value: unknown): unknown {
+  return mapKeysDeep(value, toCamelCase);
 }
 
 /** Converts every key in a payload (recursively) from camelCase to snake_case. */
