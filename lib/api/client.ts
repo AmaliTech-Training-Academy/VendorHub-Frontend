@@ -85,7 +85,7 @@ export async function apiRequest<T>(
   const { method = "GET", body, query, auth = true } = options;
 
   const headers: Record<string, string> = {};
-  if (body !== undefined) headers["Content-Type"] = "application/json";
+  if (body !== undefined) {headers["Content-Type"] = "application/json"};
   let accessToken: string | null = null;
   if (auth) {
     accessToken = useAuthStore.getState().accessToken;
