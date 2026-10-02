@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import {
   ArrowRight,
   CalendarDays,
@@ -12,6 +13,7 @@ import {
   Truck,
   type LucideIcon,
 } from "lucide-react";
+
 import { formatDays, formatPrice } from "@/lib/utils";
 import type { Vendor } from "@/types/vendor";
 
@@ -52,11 +54,13 @@ const FALLBACK_THEME: Theme = {
 function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
   const theme = CATEGORY_THEMES[vendor.categories[0]] ?? FALLBACK_THEME;
   const Icon = theme.icon;
-  const [firstWindow, ...otherWindows] = vendor.timeWindows;
+  // `at` keeps the type honest: a vendor may have no time windows.
+  const firstWindow = vendor.timeWindows.at(0);
+  const otherWindows = vendor.timeWindows.slice(1);
 
   return (
     <Link
-      href={`/storefront/vendors/${vendor.id}`}
+      href={`/storefront/vendors/catalogue?id=${encodeURIComponent(vendor.id)}`}
       style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
       className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm outline-none transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/10 focus-visible:ring-3 focus-visible:ring-ring/50"
     >

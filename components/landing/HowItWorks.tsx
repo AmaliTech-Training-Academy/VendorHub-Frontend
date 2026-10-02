@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
+
 import {
   Store,
   Calendar,
@@ -10,6 +10,8 @@ import {
   ShoppingBag,
   BellRing,
 } from "lucide-react";
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { AudienceTab } from "@/types/type";
@@ -92,7 +94,7 @@ export default function HowItWorks() {
                 type="button"
                 variant="ghost"
                 aria-pressed={activeTab === tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => { setActiveTab(tab.id); }}
                 className={cn(
                   "w-1/2 py-2.5 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-300 hover:bg-transparent",
                   {

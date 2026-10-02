@@ -13,6 +13,15 @@ function fakeStorage(overrides: Partial<Storage> = {}) {
   };
 }
 
+/** Reads back what the cart persisted under `key`. */
+function readSaved(storage: FakeStorage, key: string) {
+  const raw = storage.data.get(key);
+  if (raw === undefined) {
+    throw new Error(`Nothing saved under ${key}`);
+  }
+  return JSON.parse(raw) as { state: Record<string, unknown> };
+}
+
 const item = { productId: 21, vendorId: "3", name: "Jollof rice", price: 20 };
 
 /** Loads fresh store modules, as after a page reload, logged in as `userId`. */
@@ -42,7 +51,7 @@ describe("persisted cart", () => {
     cart.getState().setDeliveryWindow(8);
     cart.getState().setDeliveryDate("2026-10-12");
 
-    const saved = JSON.parse(storage.data.get(KEY)!);
+    const saved = readSaved(storage, KEY);
     expect(Object.keys(saved.state).sort()).toEqual(["items", "ownerId", "vendorId"]);
     expect(saved.state).toMatchObject({ vendorId: "3", ownerId: 7 });
     expect(saved.state.items).toEqual([{ ...item, quantity: 2 }]);
@@ -80,7 +89,7 @@ describe("persisted cart", () => {
     auth.getState().logout();
 
     expect(cart.getState().items).toEqual([]);
-    expect(JSON.parse(storage.data.get(KEY)!).state.items).toEqual([]);
+    expect(readSaved(storage, KEY).state.items).toEqual([]);
   });
 
   it("clears the cart when a different user logs in without a reload", async () => {
@@ -121,7 +130,7 @@ describe("persisted cart", () => {
     const { cart, KEY } = await load(7, storage);
     cart.getState().addItem(item);
     cart.getState().removeItem(21);
-    expect(JSON.parse(storage.data.get(KEY)!).state).toMatchObject({
+    expect(readSaved(storage, KEY).state).toMatchObject({
       vendorId: null,
       ownerId: null,
       items: [],

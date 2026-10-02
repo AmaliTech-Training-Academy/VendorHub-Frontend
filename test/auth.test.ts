@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type * as AuthModule from "../lib/api/auth";
+
 const apiUrl = "https://api.vendorhub.test";
 
 describe("auth API functions", () => {
-  let auth: typeof import("../lib/api/auth");
+  let auth: typeof AuthModule;
 
   beforeEach(async () => {
     vi.resetModules();

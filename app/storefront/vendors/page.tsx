@@ -10,7 +10,7 @@ import {
   Store,
   Truck,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 
 import { EmptyState } from "@/components/shared/EmptyState";
 import {
@@ -24,11 +24,23 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useVendors } from "@/hooks/useVendors";
 import { formatPrice } from "@/lib/utils";
-import {
-  filterVendorGroups,
-  groupVendorsByCategory,
-  type DeliveryFeeRange,
-} from "@/lib/vendors";
+import { filterVendorGroups, groupVendorsByCategory } from "@/lib/vendors";
+
+type DeliveryFeeRange = {
+  minimum: number;
+  maximum: number;
+};
+
+type VendorLike = {
+  id: string | number;
+  category: string;
+  deliveryFee: number | null;
+};
+
+type VendorGroup = {
+  category: string;
+  vendors: VendorLike[];
+};
 
 const directorySlides: [PageHeaderSlide, ...PageHeaderSlide[]] = [
   {
@@ -62,6 +74,60 @@ const directorySlides: [PageHeaderSlide, ...PageHeaderSlide[]] = [
     backgroundImage: "/happy.jpg",
   },
 ];
+
+const groupVendorsByCategorySafe = groupVendorsByCategory as unknown as (
+  vendors: VendorLike[],
+) => VendorGroup[];
+const filterVendorGroupsSafe = filterVendorGroups as unknown as (
+  groups: VendorGroup[],
+  category: string | null,
+  feeRange: DeliveryFeeRange | null,
+) => VendorGroup[];
+
+function normalizeVendorList(vendors: unknown): VendorLike[] {
+  if (!Array.isArray(vendors)) {
+    return [];
+  }
+
+  return vendors.filter((vendor): vendor is VendorLike => {
+    if (typeof vendor !== "object" || vendor === null) {
+      return false;
+    }
+
+    const candidate = vendor as Partial<VendorLike>;
+
+    return typeof candidate.id === "string" || typeof candidate.id === "number";
+  });
+}
+
+function getVendorGroups(vendors: unknown): VendorGroup[] {
+  return groupVendorsByCategorySafe(normalizeVendorList(vendors));
+}
+
+function getHighestDeliveryFee(vendors: unknown): number {
+  const deliveryFees = normalizeVendorList(vendors)
+    .map((vendor) => vendor.deliveryFee)
+    .filter((fee): fee is number => typeof fee === "number");
+
+  return deliveryFees.length === 0 ? 0 : Math.max(0, ...deliveryFees);
+}
+
+function getCategoryCount(
+  feeFilteredGroups: VendorGroup[],
+  category: string | null,
+): number {
+  if (!category) {
+    return feeFilteredGroups.reduce(
+      (count, group) => count + group.vendors.length,
+      0,
+    );
+  }
+
+  return (
+    feeFilteredGroups.find((group) => group.category === category)?.vendors
+      .length ?? 0
+  );
+}
 
 function DeliveryFeeFilter({
   feeRange,
@@ -137,26 +203,85 @@ function DeliveryFeeFilter({
   );
 }
 
+function VendorGroupsList({
+  visibleGroups,
+  resetFilters,
+}: {
+  visibleGroups: VendorGroup[];
+  resetFilters: () => void;
+}) {
+  if (visibleGroups.length === 0) {
+    return (
+      <EmptyState
+        icon={Filter}
+        title="No vendors match these filters"
+        description="Widen the delivery fee range or choose another category."
+        action={
+          <Button type="button" variant="outline" onClick={resetFilters}>
+            Reset filters
+          </Button>
+        }
+      />
+    );
+  }
+
+  return (
+    <>
+      {visibleGroups.map((group) => (
+        <section
+          key={group.category}
+          aria-labelledby={`vendors-${group.category}`}
+          className="flex flex-col gap-3"
+        >
+          <div className="flex items-baseline justify-between px-1">
+            <h2
+              id={`vendors-${group.category}`}
+              className="text-lg font-semibold tracking-tight"
+            >
+              {group.category}
+            </h2>
+            <span className="text-sm text-muted-foreground">
+              {group.vendors.length}{" "}
+              {group.vendors.length === 1 ? "vendor" : "vendors"}
+            </span>
+          </div>
+          <VendorList count={group.vendors.length}>
+            {group.vendors.map((vendor, index) => (
+              <VendorCard
+                key={vendor.id}
+                vendor={
+                  vendor as unknown as ComponentProps<
+                    typeof VendorCard
+                  >["vendor"]
+                }
+                index={index}
+              />
+            ))}
+          </VendorList>
+        </section>
+      ))}
+    </>
+  );
+}
+
 export default function VendorsPage() {
   const { data: vendors, isPending, isError } = useVendors();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [feeRange, setFeeRange] = useState<DeliveryFeeRange | null>(null);
 
-  const groups = vendors ? groupVendorsByCategory(vendors) : [];
-  const feeFilteredGroups = filterVendorGroups(groups, null, feeRange);
-  const highestDeliveryFee = Math.max(
-    0,
-    ...(vendors ?? []).flatMap((vendor) =>
-      vendor.deliveryFee === null ? [] : [vendor.deliveryFee],
-    ),
-  );
+  const vendorsData = normalizeVendorList(vendors);
+  const groups = getVendorGroups(vendors);
+  const feeFilteredGroups = filterVendorGroupsSafe(groups, null, feeRange);
+  const highestDeliveryFee = getHighestDeliveryFee(vendors);
   const feeRangeLimit =
     highestDeliveryFee > 0 ? Number(highestDeliveryFee.toFixed(2)) : 1;
-  const visibleGroups = filterVendorGroups(groups, selectedCategory, feeRange);
-  const matchingVendorCount = feeFilteredGroups.reduce(
-    (count, group) => count + group.vendors.length,
-    0,
+  const visibleGroups = filterVendorGroupsSafe(
+    groups,
+    selectedCategory,
+    feeRange,
   );
+  const matchingVendorCount = getCategoryCount(feeFilteredGroups, null);
+  const hasVendors = vendorsData.length > 0;
 
   function resetFilters() {
     setSelectedCategory(null);
@@ -181,7 +306,7 @@ export default function VendorsPage() {
           </AlertDescription>
         </Alert>
       )}
-      {vendors && vendors.length === 0 && (
+      {!isPending && !isError && !hasVendors && (
         <EmptyState
           icon={Store}
           title="No vendors available"
@@ -189,7 +314,7 @@ export default function VendorsPage() {
         />
       )}
 
-      {vendors && vendors.length > 0 && (
+      {!isPending && !isError && hasVendors && (
         <div className="grid items-start gap-8 lg:grid-cols-[14rem_minmax(0,1fr)]">
           <div className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-24">
             <div className="flex flex-col gap-3 lg:hidden">
@@ -221,11 +346,10 @@ export default function VendorsPage() {
                     All ({matchingVendorCount})
                   </Button>
                   {groups.map((group) => {
-                    const count =
-                      feeFilteredGroups.find(
-                        (feeFilteredGroup) =>
-                          feeFilteredGroup.category === group.category,
-                      )?.vendors.length ?? 0;
+                    const count = getCategoryCount(
+                      feeFilteredGroups,
+                      group.category,
+                    );
 
                     return (
                       <Button
@@ -330,10 +454,7 @@ export default function VendorsPage() {
                     >
                       {group.category}
                       <span className="text-muted-foreground">
-                        {feeFilteredGroups.find(
-                          (feeFilteredGroup) =>
-                            feeFilteredGroup.category === group.category,
-                        )?.vendors.length ?? 0}
+                        {getCategoryCount(feeFilteredGroups, group.category)}
                       </span>
                     </Button>
                   ))}
@@ -350,52 +471,10 @@ export default function VendorsPage() {
           </div>
 
           <div className="flex min-w-0 flex-col gap-8">
-            {visibleGroups.length === 0 ? (
-              <EmptyState
-                icon={Filter}
-                title="No vendors match these filters"
-                description="Widen the delivery fee range or choose another category."
-                action={
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={resetFilters}
-                  >
-                    Reset filters
-                  </Button>
-                }
-              />
-            ) : (
-              visibleGroups.map((group) => (
-                <section
-                  key={group.category}
-                  aria-labelledby={`vendors-${group.category}`}
-                  className="flex flex-col gap-3"
-                >
-                  <div className="flex items-baseline justify-between px-1">
-                    <h2
-                      id={`vendors-${group.category}`}
-                      className="text-lg font-semibold tracking-tight"
-                    >
-                      {group.category}
-                    </h2>
-                    <span className="text-sm text-muted-foreground">
-                      {group.vendors.length}{" "}
-                      {group.vendors.length === 1 ? "vendor" : "vendors"}
-                    </span>
-                  </div>
-                  <VendorList count={group.vendors.length}>
-                    {group.vendors.map((vendor, index) => (
-                      <VendorCard
-                        key={vendor.id}
-                        vendor={vendor}
-                        index={index}
-                      />
-                    ))}
-                  </VendorList>
-                </section>
-              ))
-            )}
+            <VendorGroupsList
+              visibleGroups={visibleGroups}
+              resetFilters={resetFilters}
+            />
           </div>
         </div>
       )}

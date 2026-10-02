@@ -12,6 +12,7 @@ import {
   ShoppingBasket,
   type LucideIcon,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import type { VendorProduct } from "@/types/product";
@@ -102,7 +103,7 @@ function StorefrontProductCard({
                 variant="ghost"
                 className="rounded-full"
                 aria-label={`Remove one ${product.name}`}
-                onClick={() => onDecrease(product.id)}
+                onClick={() => { onDecrease(product.id); }}
               >
                 <Minus />
               </Button>
@@ -116,7 +117,7 @@ function StorefrontProductCard({
                 size="icon-sm"
                 className="rounded-full"
                 aria-label={`Add one more ${product.name}`}
-                onClick={() => onIncrease(product.id)}
+                onClick={() => { onIncrease(product.id); }}
               >
                 <Plus />
               </Button>
@@ -125,7 +126,7 @@ function StorefrontProductCard({
             <Button
               size="sm"
               className="rounded-full"
-              onClick={() => onAdd(product)}
+              onClick={() => { onAdd(product); }}
             >
               <Plus />
               Add

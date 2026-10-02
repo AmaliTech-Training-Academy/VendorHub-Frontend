@@ -3,19 +3,23 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+
+// eslint-disable-next-line import/order
+import { cn } from "cn";
+
+import { LogOut, Menu, Receipt, ShoppingCart, Store, User } from "lucide-react";
+
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { LogOut, Menu, Receipt, ShoppingCart, Store, User } from "lucide-react";
-import { useAuthStore } from "@/store/useAuthStore";
 import { useCartItemCount } from "@/store/cartStore";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const tabs = [
   { href: "/storefront/vendors", label: "Vendors", icon: Store },

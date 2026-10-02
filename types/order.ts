@@ -1,4 +1,3 @@
-import type { z } from "zod";
 import type {
   cartItemSchema,
   confirmOrderSchema,
@@ -6,6 +5,8 @@ import type {
   orderSchema,
   placeOrderSchema,
 } from "@/schemas/orderSchema";
+
+import type { z } from "zod";
 
 export type DeliveryWindow = z.infer<typeof deliveryWindowSchema>;
 export type CartItem = z.infer<typeof cartItemSchema>;
