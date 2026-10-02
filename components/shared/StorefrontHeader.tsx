@@ -99,7 +99,7 @@ export function PageHeader({
       <div className="relative flex min-h-68 flex-col justify-between gap-8 p-6 sm:min-h-76 sm:p-8">
         <div
           key={activeIndex}
-          aria-live="polite"
+          aria-live="off"
           aria-atomic="true"
           className="flex max-w-3xl flex-col gap-4 animate-in slide-in-from-right-5 fade-in duration-700 motion-reduce:animate-none"
         >
