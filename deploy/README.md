@@ -1,0 +1,73 @@
+# Deploying the frontend (S3 + CloudFront)
+
+The app builds as a static export (`output: "export"` in `next.config.ts`) into
+`out/`, which is served from a private S3 bucket through CloudFront. The backend
+is deployed separately; the frontend only needs its URL at build time.
+
+Static export can't use anything that needs a Node server: middleware/proxy,
+server actions, route handlers that read the request, `cookies()`/`headers()`,
+or dynamic route segments without `generateStaticParams`. That's why the vendor
+catalogue lives at `/storefront/vendors/catalogue?id=<vendorId>`.
+
+## One-time AWS setup
+
+Do this once per environment, in the AWS console (us-east-1 or your team's region).
+
+1. **S3 bucket**: create a bucket (e.g. `vendorhub-frontend-prod`). Keep
+   *Block all public access* **on**. No static website hosting is needed.
+2. **CloudFront Function**: CloudFront → Functions → Create function
+   `vendorhub-index-rewrite`, runtime `cloudfront-js-2.0`. Paste
+   [`cloudfront-function.js`](./cloudfront-function.js), then **Publish**.
+3. **Distribution**: CloudFront → Create distribution:
+   - Origin: the S3 bucket (the REST endpoint, not the website endpoint).
+     Origin access: **Origin access control (OAC)**. Create a new OAC, then
+     apply the bucket policy CloudFront offers to copy.
+   - Viewer protocol policy: **Redirect HTTP to HTTPS**.
+   - Cache policy: `CachingOptimized`. Origin request policy: none.
+     The `?id=` query string is read in the browser, so it doesn't need to
+     reach S3.
+   - Function associations → Viewer request → CloudFront Function →
+     `vendorhub-index-rewrite`.
+   - Default root object: `index.html`.
+4. **Error pages**: Distribution → Error pages → Create custom error
+   response, for both **403** and **404**: response page `/404/index.html`,
+   HTTP response code **404**. S3 returns 403 for missing keys under OAC.
+5. **Custom domain** (optional): request an ACM certificate in **us-east-1**,
+   add it plus the alternate domain name to the distribution, and point DNS
+   at the distribution.
+
+## Backend settings the backend teammate must update
+
+The browser calls the API from the CloudFront origin, so the Django backend
+needs that origin allowed:
+
+- `CORS_ALLOWED_ORIGINS` must include `https://<distribution>.cloudfront.net`
+  (and the custom domain, if any).
+- If any request uses session/CSRF auth, add the same origins to
+  `CSRF_TRUSTED_ORIGINS`.
+
+## Deploying
+
+Needs the AWS CLI v2 with credentials that can `s3:PutObject`,
+`s3:DeleteObject` and `s3:ListBucket` on the bucket, plus
+`cloudfront:CreateInvalidation` on the distribution.
+
+```bash
+NEXT_PUBLIC_API_URL=https://<backend-host>/api \
+S3_BUCKET=vendorhub-frontend-prod \
+CLOUDFRONT_DISTRIBUTION_ID=E123EXAMPLE \
+./deploy/deploy.sh
+```
+
+`NEXT_PUBLIC_API_URL` is inlined into the JavaScript during the build, so
+changing the backend URL means rebuilding and redeploying.
+
+## Checking a build locally
+
+```bash
+NEXT_PUBLIC_API_URL=https://<backend-host>/api npm run build
+npx serve out
+```
+
+`serve` doesn't apply the CloudFront rewrite, but it resolves `/login/` to
+`login/index.html` the same way.
