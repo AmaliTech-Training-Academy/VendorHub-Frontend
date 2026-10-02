@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { useEffect } from "react";
+import { useEffect , useSyncExternalStore  } from "react";
 
 import { homePathForRole } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
