@@ -15,11 +15,20 @@ type Props = {
   allowedRoles: UserRole[];
 };
 
+const subscribeNoop = () => () => {};
+
 export function AuthGuard({ children, allowedRoles }: Props) {
   const router = useRouter();
   const role = useAuthStore((state) => state.role);
   const accessToken = useAuthStore((state) => state.accessToken);
-  const [checked, setChecked] = useState(false);
+  // The auth store reads localStorage on the client, so render the spinner
+  // during hydration (false) to match the server output.
+  const isClient = useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
+  const isAllowed = !!accessToken && !!role && allowedRoles.includes(role);
 
   useEffect(() => {
     if (!accessToken || !role) {
@@ -31,11 +40,9 @@ export function AuthGuard({ children, allowedRoles }: Props) {
       router.replace(homePathForRole(role));
       return;
     }
-
-    setChecked(true);
   }, [accessToken, role, allowedRoles, router]);
 
-  if (!checked) {
+  if (!isClient || !isAllowed) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner className="size-6 text-orange-500" />

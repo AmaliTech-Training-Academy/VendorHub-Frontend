@@ -10,7 +10,7 @@ function buildUrl(path: string, query?: Record<string, QueryValue>): string {
   const url = new URL(`${baseUrl}/${cleanPath}`);
   if (query) {
     for (const [key, value] of Object.entries(query)) {
-      if (value !== undefined) url.searchParams.set(key, String(value));
+      if (value !== undefined) {url.searchParams.set(key, String(value));}
     }
   }
   return url.toString();
@@ -32,7 +32,7 @@ function collectMessages(value: unknown, path: string[], out: Map<string, string
     const label = humanizeField(path);
     out.set(label, [...(out.get(label) ?? []), value]);
   } else if (Array.isArray(value)) {
-    for (const item of value) collectMessages(item, path, out);
+    for (const item of value) {collectMessages(item, path, out);}
   } else if (value && typeof value === "object") {
     for (const [key, item] of Object.entries(value)) {
       collectMessages(item, UNLABELLED_KEYS.has(key) ? path : [...path, key], out);
@@ -110,7 +110,7 @@ export async function apiRequest<T>(
   }
 
   // DELETE (204) and other empty-body responses have nothing to parse.
-  if (res.status === 204) return undefined as T;
+  if (res.status === 204) {return undefined as T;}
   const text = await res.text();
-  return text ? JSON.parse(text) : (undefined as T);
+  return text ? (JSON.parse(text) as T) : (undefined as T);
 }

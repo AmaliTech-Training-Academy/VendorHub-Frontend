@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+
 import { ArrowRight, Utensils, Sparkles, ShieldCheck } from "lucide-react";
 
 const ctaBadges = [

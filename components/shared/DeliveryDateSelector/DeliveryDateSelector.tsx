@@ -1,8 +1,10 @@
 "use client"
 
 import { CalendarDays } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useId } from "react"
+
 import type { DeliveryDateOption } from "@/lib/deliveryDates"
+import { cn } from "@/lib/utils"
 
 function DeliveryDateSelector({
   dates,
@@ -15,6 +17,8 @@ function DeliveryDateSelector({
   onChange: (deliveryDate: string) => void
   error?: string
 }) {
+  const errorId = useId()
+
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="mb-1 flex items-center gap-2 text-sm font-medium">
@@ -44,8 +48,8 @@ function DeliveryDateSelector({
                   name="delivery-date"
                   value={date.value}
                   checked={selected}
-                  aria-invalid={!!error}
-                  onChange={() => onChange(date.value)}
+                  aria-describedby={error ? errorId : undefined}
+                  onChange={() => { onChange(date.value); }}
                   className="sr-only"
                 />
                 {date.label}
@@ -55,7 +59,7 @@ function DeliveryDateSelector({
         </div>
       )}
       {error && (
-        <p role="alert" className="text-sm text-destructive">
+        <p id={errorId} role="alert" className="text-sm text-destructive">
           {error}
         </p>
       )}

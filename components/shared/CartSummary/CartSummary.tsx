@@ -1,6 +1,7 @@
 "use client"
 
 import { Loader2, ReceiptText } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { formatPrice } from "@/lib/utils"
 

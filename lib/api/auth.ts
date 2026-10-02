@@ -1,5 +1,5 @@
 import { apiRequest } from "@/lib/api/client";
-import { LoginResponse, RegisterResponse } from "@/types/interfaces";
+import type { LoginResponse, RegisterResponse } from "@/types/interfaces";
 
 export const registerVendor = (data: {
   email: string;

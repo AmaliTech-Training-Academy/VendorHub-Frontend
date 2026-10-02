@@ -1,5 +1,6 @@
-import { memo } from "react"
 import { Store } from "lucide-react"
+import { memo } from "react"
+
 import { OrderProgress } from "@/components/shared/OrderProgress"
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge"
 import { cn, formatDate, formatPrice } from "@/lib/utils"

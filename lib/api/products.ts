@@ -22,7 +22,7 @@ function toProductPayload(input: ProductFormValues) {
  * the JWT. vendorId isn't sent on the wire; it's kept for the hook's cache
  * key, matching the pattern used for vendors' own delivery settings.
  */
-export async function fetchProducts(vendorId: string): Promise<Product[]> {
+export async function fetchProducts(_vendorId: string): Promise<Product[]> {
   const raw = await apiRequest<unknown>("products/", { query: { page_size: 100 } });
   return productListResponseSchema.parse(raw).results;
 }
@@ -61,7 +61,7 @@ export async function editProduct(
 }
 
 export async function deleteProduct(productId: number): Promise<{ id: number }> {
-  await apiRequest<void>(`products/${productId}/`, { method: "DELETE" });
+  await apiRequest<undefined>(`products/${productId}/`, { method: "DELETE" });
   return { id: productId };
 }
 

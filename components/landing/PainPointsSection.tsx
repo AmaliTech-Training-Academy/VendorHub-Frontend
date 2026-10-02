@@ -1,7 +1,8 @@
 "use client";
 
-import { CircleCheck } from "lucide-react";
 import Image from "next/image";
+
+import { CircleCheck } from "lucide-react";
 
 const storyPoints = [
   {

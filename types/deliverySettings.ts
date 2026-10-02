@@ -1,10 +1,11 @@
-import type { z } from "zod";
 import type {
   deliverySettingsResponseSchema,
   deliverySettingsSchema,
   storedTimeWindowSchema,
   timeWindowSchema,
 } from "@/schemas/deliverySettingsSchema";
+
+import type { z } from "zod";
 
 export type TimeWindowFormValues = z.infer<typeof timeWindowSchema>;
 export type TimeWindow = z.infer<typeof storedTimeWindowSchema>;
