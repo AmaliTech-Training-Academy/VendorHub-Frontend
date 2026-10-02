@@ -46,7 +46,69 @@ needs that origin allowed:
 - If any request uses session/CSRF auth, add the same origins to
   `CSRF_TRUSTED_ORIGINS`.
 
-## Deploying
+## Automatic deploys (GitHub Actions)
+
+[`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml) runs
+`deploy.sh` on every push to `develop`. It can also be started by hand from the
+Actions tab. It authenticates to AWS with OIDC, so no AWS keys are stored in
+GitHub.
+
+One-time setup:
+
+1. **AWS IAM → Identity providers**: add an OpenID Connect provider with
+   URL `https://token.actions.githubusercontent.com` and audience
+   `sts.amazonaws.com` (skip if the account already has it).
+2. **AWS IAM → Roles**: create `vendorhub-frontend-deploy` with this trust
+   policy, which only lets this repo's `production` environment assume it:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [{
+       "Effect": "Allow",
+       "Principal": { "Federated": "arn:aws:iam::<ACCOUNT_ID>:oidc-provider/token.actions.githubusercontent.com" },
+       "Action": "sts:AssumeRoleWithWebIdentity",
+       "Condition": {
+         "StringEquals": {
+           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+           "token.actions.githubusercontent.com:sub": "repo:AmaliTech-Training-Academy/VendorHub-Frontend:environment:production"
+         }
+       }
+     }]
+   }
+   ```
+
+   and this permissions policy:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       { "Effect": "Allow", "Action": "s3:ListBucket",
+         "Resource": "arn:aws:s3:::<BUCKET>" },
+       { "Effect": "Allow", "Action": ["s3:PutObject", "s3:DeleteObject"],
+         "Resource": "arn:aws:s3:::<BUCKET>/*" },
+       { "Effect": "Allow", "Action": "cloudfront:CreateInvalidation",
+         "Resource": "arn:aws:cloudfront::<ACCOUNT_ID>:distribution/<DISTRIBUTION_ID>" }
+     ]
+   }
+   ```
+
+3. **GitHub → Settings → Environments**: create `production`, limit its
+   deployment branches to `develop`, and add these environment **variables**
+   (none are secret, and the API URL ships in the public JS anyway):
+
+   | Variable | Example |
+   | --- | --- |
+   | `AWS_ROLE_ARN` | `arn:aws:iam::<ACCOUNT_ID>:role/vendorhub-frontend-deploy` |
+   | `AWS_REGION` | `us-east-1` |
+   | `S3_BUCKET` | `vendorhub-frontend-prod` |
+   | `CLOUDFRONT_DISTRIBUTION_ID` | `E123EXAMPLE` |
+   | `NEXT_PUBLIC_API_URL` | `https://<backend-host>/api` |
+
+Until these exist, the workflow fails at *Configure AWS credentials*.
+
+## Deploying manually
 
 Needs the AWS CLI v2 with credentials that can `s3:PutObject`,
 `s3:DeleteObject` and `s3:ListBucket` on the bucket, plus
