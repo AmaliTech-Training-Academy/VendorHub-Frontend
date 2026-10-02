@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { filterVendorGroups, groupVendorsByCategory } from "@/lib/vendors";
 import type { Vendor } from "@/types/vendor";
 
@@ -6,7 +7,6 @@ function makeVendor(
   id: number,
   category: string,
   deliveryFee: number | null,
-  slogans: [],
 ): Vendor {
   return {
     id,

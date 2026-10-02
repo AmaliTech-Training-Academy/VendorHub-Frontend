@@ -42,7 +42,9 @@ export function PageHeader({
       });
     }, 7000);
 
-    return () => window.clearInterval(intervalId);
+    return () => {
+      window.clearInterval(intervalId);
+    };
   }, [isPaused, slides.length]);
 
   function showPrevious() {

@@ -36,7 +36,9 @@ export function filterVendorGroups(
     .map((group) => ({
       ...group,
       vendors: group.vendors.filter((vendor) => {
-        if (!feeRange) return true;
+        if (!feeRange) {
+          return true;
+        }
         return (
           vendor.deliveryFee !== null &&
           vendor.deliveryFee >= feeRange.minimum &&
