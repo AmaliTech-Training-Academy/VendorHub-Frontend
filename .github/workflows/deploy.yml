@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
   workflow_dispatch:
 
 # Queue deploys instead of cancelling: a half-finished S3 sync would leave
@@ -16,8 +16,13 @@ permissions:
   id-token: write # OIDC token for assuming the AWS deploy role
 
 jobs:
+  preflight:
+    name: Preflight
+    uses: ./.github/workflows/preflight.yml
+
   deploy:
     name: Deploy to S3 + CloudFront
+    needs: preflight
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # Must match the `sub` condition in the IAM role's trust policy
@@ -39,7 +44,6 @@ jobs:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      # Lint and tests already ran in Preflight on the PR that was merged.
       - name: Build and deploy
         run: ./deploy/deploy.sh
         env:

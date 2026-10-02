@@ -74,10 +74,19 @@ to **HTTPS only**.
 
 ## Automatic deploys (GitHub Actions)
 
-[`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml) runs
-`deploy.sh` on every push to `develop`. It can also be started by hand from the
-Actions tab. It authenticates to AWS with OIDC, so no AWS keys are stored in
-GitHub.
+| Event | Preflight (lint, typecheck, tests) | Deploy |
+| --- | --- | --- |
+| Pull request (any branch) | ✅ | — |
+| Push to `develop` | ✅ | — |
+| Push to `main` | ✅ (as part of Deploy) | ✅ if Preflight passes |
+
+[`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml) runs on every
+push to `main`: it calls [`preflight.yml`](../.github/workflows/preflight.yml)
+on that commit, then runs `deploy.sh` only if Preflight passed. To release,
+open a PR from `develop` into `main` and merge it. It can also be started by
+hand from the Actions tab (on `main` only; the `production` environment rejects
+other branches). It authenticates to AWS with OIDC, so no AWS keys are stored
+in GitHub.
 
 One-time setup:
 
@@ -121,7 +130,7 @@ One-time setup:
    ```
 
 3. **GitHub → Settings → Environments**: create `production`, limit its
-   deployment branches to `develop`, and add these environment **variables**
+   deployment branches to `main`, and add these environment **variables**
    (none are secret, and the API URL ships in the public JS anyway):
 
    | Variable | Example |
