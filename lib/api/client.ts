@@ -86,9 +86,10 @@ export async function apiRequest<T>(
 
   const headers: Record<string, string> = {};
   if (body !== undefined) headers["Content-Type"] = "application/json";
+  let accessToken: string | null = null;
   if (auth) {
-    const token = useAuthStore.getState().accessToken;
-    if (token) headers["Authorization"] = `Bearer ${token}`;
+    accessToken = useAuthStore.getState().accessToken;
+    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
   }
 
   const res = await fetch(buildUrl(path, query), {
@@ -98,6 +99,13 @@ export async function apiRequest<T>(
   });
 
   if (!res.ok) {
+    if (
+      res.status === 401 &&
+      accessToken &&
+      useAuthStore.getState().accessToken === accessToken
+    ) {
+      useAuthStore.getState().logout();
+    }
     throw new Error(await parseErrorMessage(res));
   }
 

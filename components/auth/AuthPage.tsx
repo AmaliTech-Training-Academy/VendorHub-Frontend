@@ -3,17 +3,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import { toast } from "sonner";
 
+import { RegisterFields } from "@/components/auth/RegisterFields";
+import OnboardingGraphics from "@/components/shared/OnboardingGraphics";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import OnboardingGraphics from "@/components/shared/OnboardingGraphics";
-
-import { RegisterFields } from "@/components/auth/RegisterFields";
 import { useUserLogin } from "@/hooks/useUserLogin";
 import { useUserRegistration } from "@/hooks/useUserRegistration";
+import { homePathForRole } from "@/lib/auth";
 import type { AuthConfig } from "@/types/interfaces";
 import type { AuthMode } from "@/types/types";
+
 import LoginFields from "./LoginFields";
 
 const authConfig: Record<AuthMode, AuthConfig> = {
@@ -68,7 +70,9 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
   const loginForm = useUserLogin({
     onSuccess: (role) => {
       toast.success("Welcome back!");
-      router.push(role === "VENDOR" ? "/dashboard/products" : "/storefront");
+      if (role) {
+        router.push(homePathForRole(role));
+      }
     },
     onError: (errorMessage) => {
       toast.error(errorMessage);
@@ -78,9 +82,7 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
   const registrationForm = useUserRegistration({
     onSuccess: (data) => {
       toast.success("Account created! Redirecting...");
-      router.push(
-        data.role === "VENDOR" ? "/dashboard/products" : "/storefront",
-      );
+      router.push(homePathForRole(data.role));
     },
     onError: (errorMessage) => {
       toast.error(errorMessage);

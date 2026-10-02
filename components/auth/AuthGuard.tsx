@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
+import { useEffect, useState } from "react";
+
+import { homePathForRole } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { UserRole } from "@/types/types";
+
 import { Spinner } from "../ui/spinner";
 
 type Props = {
@@ -24,7 +28,7 @@ export function AuthGuard({ children, allowedRoles }: Props) {
     }
 
     if (!allowedRoles.includes(role)) {
-      router.replace(role === "VENDOR" ? "/dashboard/products" : "/storefront");
+      router.replace(homePathForRole(role));
       return;
     }
 

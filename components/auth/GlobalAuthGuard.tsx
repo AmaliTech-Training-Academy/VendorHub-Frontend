@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useSyncExternalStore } from "react";
 
 import { Spinner } from "@/components/ui/spinner";
+import { homePathForRole, isAccessTokenExpired } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const ENTRY_PATHS = new Set(["/", "/login", "/register"]);
@@ -17,6 +18,7 @@ export function GlobalAuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const role = useAuthStore((state) => state.role);
   const accessToken = useAuthStore((state) => state.accessToken);
+  const logout = useAuthStore((state) => state.logout);
   const isEntryPath = ENTRY_PATHS.has(pathname);
   const isHydrated = useSyncExternalStore(
     subscribe,
@@ -26,11 +28,16 @@ export function GlobalAuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isEntryPath && accessToken && role) {
-      router.replace(role === "VENDOR" ? "/dashboard/" : "/storefront");
-    }
-  }, [accessToken, isEntryPath, role, router]);
+      if (isAccessTokenExpired(accessToken)) {
+        logout();
+        return;
+      }
 
-  if (isEntryPath && (!isHydrated || (accessToken && role))) {
+      router.replace(homePathForRole(role));
+    }
+  }, [accessToken, isEntryPath, logout, role, router]);
+
+  if (isEntryPath && isHydrated && accessToken && role) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner className="size-6 text-orange-500" />
