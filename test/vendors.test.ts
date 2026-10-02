@@ -6,6 +6,7 @@ function makeVendor(
   id: number,
   category: string,
   deliveryFee: number | null,
+  slogans: [],
 ): Vendor {
   return {
     id,
