@@ -1,8 +1,14 @@
 # Deploying the frontend (S3 + CloudFront)
 
 The app builds as a static export (`output: "export"` in `next.config.ts`) into
-`out/`, which is served from a private S3 bucket through CloudFront. The backend
-is deployed separately; the frontend only needs its URL at build time.
+`out/`, which is served from a private S3 bucket through CloudFront. The same
+distribution proxies `/api/*` to the backend (deployed separately on Elastic
+Beanstalk), so the browser talks to one HTTPS origin for both:
+
+```
+browser ──HTTPS──▶ CloudFront ─┬─ /api/*  ──HTTP──▶ Elastic Beanstalk (Django)
+                               └─ default ─────────▶ S3 (static export, via OAC)
+```
 
 Static export can't use anything that needs a Node server: middleware/proxy,
 server actions, route handlers that read the request, `cookies()`/`headers()`,
@@ -32,19 +38,39 @@ Do this once per environment, in the AWS console (us-east-1 or your team's regio
 4. **Error pages**: Distribution → Error pages → Create custom error
    response, for both **403** and **404**: response page `/404/index.html`,
    HTTP response code **404**. S3 returns 403 for missing keys under OAC.
-5. **Custom domain** (optional): request an ACM certificate in **us-east-1**,
+5. **Backend origin**: Distribution → Origins → Create origin. Origin
+   domain: the Elastic Beanstalk environment host (e.g.
+   `vendorhub-staging.eu-west-1.elasticbeanstalk.com`), protocol
+   **HTTP only**, port 80.
+6. **API behavior**: Distribution → Behaviors → Create behavior:
+   - Path pattern `/api/*`, origin: the backend origin.
+   - Viewer protocol policy: **HTTPS only**.
+   - Allowed methods: **GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE**.
+   - Cache policy: **CachingDisabled**. Origin request policy:
+     **AllViewerExceptHostHeader** (forwards `Authorization` and query
+     strings; Django sees the Beanstalk host, which `ALLOWED_HOSTS` accepts).
+   - **No** function association. The index rewrite would turn
+     `/api/vendors` into `/api/vendors/index.html`.
+
+   Check it with `curl -i https://<distribution>.cloudfront.net/api/vendors/`:
+   a JSON 401 means requests reach Django.
+7. **Custom domain** (optional): request an ACM certificate in **us-east-1**,
    add it plus the alternate domain name to the distribution, and point DNS
    at the distribution.
 
-## Backend settings the backend teammate must update
+## Why the API goes through CloudFront
 
-The browser calls the API from the CloudFront origin, so the Django backend
-needs that origin allowed:
+The Beanstalk environment only serves HTTP, and browsers block an HTTPS page
+from calling an `http://` API (mixed content). Proxying `/api/*` through the
+frontend's distribution gives the API an HTTPS URL, and because the frontend
+and API now share an origin, no CORS settings are needed on the backend.
 
-- `CORS_ALLOWED_ORIGINS` must include `https://<distribution>.cloudfront.net`
-  (and the custom domain, if any).
-- If any request uses session/CSRF auth, add the same origins to
-  `CSRF_TRUSTED_ORIGINS`.
+**Limitation:** the CloudFront → Beanstalk hop is still plain HTTP over the
+internet, so credentials and tokens are unencrypted on that leg. That's
+acceptable for staging only. Before production, give the backend real HTTPS
+(load-balanced Beanstalk environment + ACM certificate on a custom domain;
+ACM can't issue for `elasticbeanstalk.com`) and switch the origin's protocol
+to **HTTPS only**.
 
 ## Automatic deploys (GitHub Actions)
 
@@ -104,7 +130,7 @@ One-time setup:
    | `AWS_REGION` | `us-east-1` |
    | `S3_BUCKET` | `vendorhub-frontend-prod` |
    | `CLOUDFRONT_DISTRIBUTION_ID` | `E123EXAMPLE` |
-   | `NEXT_PUBLIC_API_URL` | `https://<backend-host>/api` |
+   | `NEXT_PUBLIC_API_URL` | `https://<distribution>.cloudfront.net/api` |
 
 Until these exist, the workflow fails at *Configure AWS credentials*.
 
@@ -115,7 +141,7 @@ Needs the AWS CLI v2 with credentials that can `s3:PutObject`,
 `cloudfront:CreateInvalidation` on the distribution.
 
 ```bash
-NEXT_PUBLIC_API_URL=https://<backend-host>/api \
+NEXT_PUBLIC_API_URL=https://<distribution>.cloudfront.net/api \
 S3_BUCKET=vendorhub-frontend-prod \
 CLOUDFRONT_DISTRIBUTION_ID=E123EXAMPLE \
 ./deploy/deploy.sh
@@ -127,7 +153,7 @@ changing the backend URL means rebuilding and redeploying.
 ## Checking a build locally
 
 ```bash
-NEXT_PUBLIC_API_URL=https://<backend-host>/api npm run build
+NEXT_PUBLIC_API_URL=https://<distribution>.cloudfront.net/api npm run build
 npx serve out
 ```
 
