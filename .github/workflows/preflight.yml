@@ -2,9 +2,13 @@ name: Preflight
 
 on:
   pull_request:
+  push:
+    branches: [develop]
+  # Deploy calls this so main is checked again before anything ships
+  workflow_call:
 
 concurrency:
-  group: preflight-${{ github.event.pull_request.number }}
+  group: preflight-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -36,6 +40,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
 
       - name: Run tests
         run: npm test
