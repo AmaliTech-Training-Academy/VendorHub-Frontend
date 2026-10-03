@@ -1,3 +1,5 @@
+import { ClipboardList } from "lucide-react"
+
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge"
 import {
   Table,
@@ -7,16 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { formatPrice } from "@/lib/utils"
+import { formatDate, formatPrice } from "@/lib/utils"
 import type { Order } from "@/types/order"
 
 function OrdersTable({ orders }: { orders: Order[] }) {
   return (
-    <div className="rounded-lg border border-border">
+    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-muted/50">
           <TableRow>
-            <TableHead>Reference</TableHead>
+            <TableHead>Order</TableHead>
+            <TableHead>Placed</TableHead>
             <TableHead>Items</TableHead>
             <TableHead>Total</TableHead>
             <TableHead>Status</TableHead>
@@ -25,11 +28,23 @@ function OrdersTable({ orders }: { orders: Order[] }) {
         <TableBody>
           {orders.map((order) => (
             <TableRow key={order.id}>
-              <TableCell className="font-mono text-sm">{order.reference}</TableCell>
+              <TableCell>
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <ClipboardList aria-hidden="true" className="size-5" />
+                  </div>
+                  <span className="font-mono text-sm font-semibold">
+                    {order.reference}
+                  </span>
+                </div>
+              </TableCell>
+              <TableCell className="text-sm text-muted-foreground">
+                {formatDate(order.createdAt)}
+              </TableCell>
               <TableCell>
                 {order.items.reduce((sum, item) => sum + item.quantity, 0)} items
               </TableCell>
-              <TableCell>{formatPrice(order.total)}</TableCell>
+              <TableCell className="font-semibold">{formatPrice(order.total)}</TableCell>
               <TableCell>
                 <OrderStatusBadge status={order.status} />
               </TableCell>
