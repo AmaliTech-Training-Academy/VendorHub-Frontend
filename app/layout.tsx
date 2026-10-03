@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 
 import "./globals.css";
+import { GlobalAuthGuard } from "@/components/auth/GlobalAuthGuard";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
@@ -48,7 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <QueryProvider>
-          {children}
+          <GlobalAuthGuard>{children}</GlobalAuthGuard>
           <Toaster />
         </QueryProvider>
       </body>
