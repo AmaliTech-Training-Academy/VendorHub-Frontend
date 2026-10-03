@@ -9,6 +9,7 @@ import { homePathForRole, isAccessTokenExpired } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const ENTRY_PATHS = new Set(["/", "/login", "/register"]);
+
 const subscribe = () => () => {};
 const getClientSnapshot = () => true;
 const getServerSnapshot = () => false;
@@ -19,7 +20,7 @@ export function GlobalAuthGuard({ children }: { children: React.ReactNode }) {
   const role = useAuthStore((state) => state.role);
   const accessToken = useAuthStore((state) => state.accessToken);
   const logout = useAuthStore((state) => state.logout);
-  const isEntryPath = ENTRY_PATHS.has(pathname);
+  const isEntryPath = ENTRY_PATHS.has(pathname.replace(/\/+$/, "") || "/");
   const isHydrated = useSyncExternalStore(
     subscribe,
     getClientSnapshot,
