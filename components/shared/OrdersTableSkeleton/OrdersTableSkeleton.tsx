@@ -10,14 +10,18 @@ import {
 
 function OrdersTableSkeleton({ rows = 5 }: { rows?: number }) {
   return (
-    <div aria-busy="true" className="rounded-lg border border-border">
+    <div
+      aria-busy="true"
+      className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm"
+    >
       <span role="status" className="sr-only">
         Loading orders…
       </span>
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-muted/50">
           <TableRow>
-            <TableHead>Reference</TableHead>
+            <TableHead>Order</TableHead>
+            <TableHead>Placed</TableHead>
             <TableHead>Items</TableHead>
             <TableHead>Total</TableHead>
             <TableHead>Status</TableHead>
@@ -27,7 +31,13 @@ function OrdersTableSkeleton({ rows = 5 }: { rows?: number }) {
           {Array.from({ length: rows }, (_, index) => (
             <TableRow key={index} className="hover:bg-transparent">
               <TableCell>
-                <Skeleton className="h-4 w-24" />
+                <div className="flex items-center gap-3">
+                  <Skeleton className="size-10 shrink-0 rounded-xl" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-28" />
               </TableCell>
               <TableCell>
                 <Skeleton className="h-4 w-14" />
