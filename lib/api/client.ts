@@ -72,12 +72,7 @@ export type ApiRequestOptions = {
   auth?: boolean;
 };
 
-/**
- * Shared fetch wrapper for every real (non-mock) API call: joins the base
- * URL and path regardless of trailing slashes, attaches the Authorization
- * header when authenticated, and normalizes DRF-style error bodies into a
- * single Error message the same way the original auth-only client did.
- */
+
 export async function apiRequest<T>(
   path: string,
   options: ApiRequestOptions = {},
@@ -85,10 +80,11 @@ export async function apiRequest<T>(
   const { method = "GET", body, query, auth = true } = options;
 
   const headers: Record<string, string> = {};
-  if (body !== undefined) {headers["Content-Type"] = "application/json";}
+  if (body !== undefined) {headers["Content-Type"] = "application/json"};
+  let accessToken: string | null = null;
   if (auth) {
-    const token = useAuthStore.getState().accessToken;
-    if (token) {headers["Authorization"] = `Bearer ${token}`;}
+    accessToken = useAuthStore.getState().accessToken;
+    if (accessToken) {headers["Authorization"] = `Bearer ${accessToken}`};
   }
 
   const res = await fetch(buildUrl(path, query), {
@@ -98,6 +94,13 @@ export async function apiRequest<T>(
   });
 
   if (!res.ok) {
+    if (
+      res.status === 401 &&
+      accessToken &&
+      useAuthStore.getState().accessToken === accessToken
+    ) {
+      useAuthStore.getState().logout();
+    }
     throw new Error(await parseErrorMessage(res));
   }
 

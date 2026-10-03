@@ -90,4 +90,31 @@ describe("apiRequest error messages", () => {
     expect(await messageFor(400, {})).toBe("Something went wrong");
     expect(await messageFor(400, { count: 3, ok: false })).toBe("Something went wrong");
   });
+
+  it("clears the current session when an authenticated request gets a 401", async () => {
+    const { useAuthStore } = await import("../store/useAuthStore");
+    useAuthStore.getState().setAuth("VENDOR", "expired-token", "refresh-token", 1);
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify({ detail: "Token expired." }), { status: 401 }),
+    );
+
+    await expect(apiRequest("private/")).rejects.toThrow("Token expired.");
+
+    expect(useAuthStore.getState().accessToken).toBeNull();
+    expect(useAuthStore.getState().role).toBeNull();
+  });
+
+  it("does not clear a session for a 401 from an unauthenticated request", async () => {
+    const { useAuthStore } = await import("../store/useAuthStore");
+    useAuthStore.getState().setAuth("EMPLOYEE", "access-token", "refresh-token", 2);
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify({ detail: "Invalid credentials." }), { status: 401 }),
+    );
+
+    await expect(apiRequest("accounts/login/", { auth: false })).rejects.toThrow(
+      "Invalid credentials.",
+    );
+
+    expect(useAuthStore.getState().accessToken).toBe("access-token");
+  });
 });

@@ -131,6 +131,7 @@ Auth follows a clear split of responsibilities:
 3. Registration has no dedicated "log the user in" response from the backend — `mutationFn` chains a `loginUser` call immediately after a successful register, so registering always ends in an authenticated session.
 4. On success, `useAuthStore.getState().setAuth(role, accessToken, refreshToken)` persists the session to `localStorage` and updates in-memory state.
 5. The consuming page (`AuthPage`) reads `role` from the mutation's `onSuccess` callback to redirect to the correct dashboard (`/dashboard/products` for vendors, `/storefront` for employees).
+6. Expired JWTs are cleared when a signed-in user opens a public entry page, and authenticated API responses with HTTP 401 clear the current session so the route guards return the user to sign-in.
 
 ## 🚀 Deployment & Building
 
