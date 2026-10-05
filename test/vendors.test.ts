@@ -19,6 +19,7 @@ function makeVendor(
     deliveryFee,
     availableDays: [],
     timeWindows: [],
+    slogans: [],
   };
 }
 
