@@ -1,0 +1,1 @@
+export { VendorCatalogueSkeleton } from "./VendorCatalogueSkeleton";
