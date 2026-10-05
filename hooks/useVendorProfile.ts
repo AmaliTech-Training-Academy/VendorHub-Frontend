@@ -45,9 +45,7 @@ export function useVendorProfile({
     defaultValues: {
       address: defaultValues?.address ?? "",
       phone: defaultValues?.phone ?? "",
-      slogans: defaultValues?.slogans?.map((value) => ({ value })) ?? [
-        { value: "" },
-      ],
+      slogans: defaultValues?.slogans ?? [{ value: "" }],
       storefrontImage: defaultValues?.storefrontImage,
     },
   });
