@@ -34,6 +34,3 @@ const vendorProfileInputSchema = z.object({
 });
 
 export const vendorProfileSchema = vendorProfileInputSchema;
-
-export type VendorProfileFormInput = z.input<typeof vendorProfileInputSchema>;
-export type VendorProfileFormValues = z.output<typeof vendorProfileSchema>;
