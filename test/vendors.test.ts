@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { filterVendorGroups, groupVendorsByCategory } from "@/lib/vendors";
+import {
+  countVendorsInGroups,
+  filterVendorGroups,
+  groupVendorsByCategory,
+} from "@/lib/vendors";
 import type { Vendor } from "@/types/vendor";
 
 function makeVendor(
@@ -15,7 +19,6 @@ function makeVendor(
     deliveryFee,
     availableDays: [],
     timeWindows: [],
-    slogans: [],
   };
 }
 
@@ -58,5 +61,10 @@ describe("filterVendorGroups", () => {
 
     expect(unfiltered.flatMap((group) => group.vendors)).toHaveLength(4);
     expect(feeFiltered.flatMap((group) => group.vendors)).toHaveLength(3);
+  });
+
+  it("counts vendors across all groups or within one category", () => {
+    expect(countVendorsInGroups(groups)).toBe(4);
+    expect(countVendorsInGroups(groups, "Bakery")).toBe(2);
   });
 });
