@@ -1,4 +1,3 @@
-
 import type {
   LoginFormData,
   RegisterFormValues,
@@ -29,11 +28,13 @@ export interface AuthState {
   accessToken: string | null;
   /** The authenticated vendor or employee's own id, from LoginOutput.id. */
   userId: number | null;
+  email: string | null;
   setAuth: (
     role: UserRole,
     accessToken: string,
     refreshToken: string,
     userId: number,
+    email?: string,
   ) => void;
   logout: () => void;
 }
