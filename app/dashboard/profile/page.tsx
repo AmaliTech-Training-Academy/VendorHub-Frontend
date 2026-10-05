@@ -14,6 +14,7 @@ import { useVendor } from "@/hooks/useVendors";
 import { formatPrice } from "@/lib/utils";
 import { WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema";
 import { useAuthStore } from "@/store/useAuthStore";
+import type { Vendor } from "@/types/vendor";
 
 export default function VendorProfilePage() {
   const userId = useAuthStore((state) => state.userId);
@@ -40,130 +41,163 @@ export default function VendorProfilePage() {
         <VendorProfileForm />
 
         <aside className="flex min-w-0 flex-col gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Store aria-hidden="true" className="size-5 text-primary" />
-                Store identity
-              </CardTitle>
-              <CardDescription>
-                Information associated with your vendor account
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-5">
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-medium uppercase text-muted-foreground">
-                  Store name
-                </span>
-                <span className="font-semibold">
-                  {isPending
-                    ? "Loading store..."
-                    : (vendor?.name ?? "Unavailable")}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-medium uppercase text-muted-foreground">
-                  Vendor ID
-                </span>
-                <span className="font-mono text-sm">
-                  {vendor?.id ?? (isPending ? "Loading..." : "Unavailable")}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="flex items-center gap-2 text-xs font-medium uppercase text-muted-foreground">
-                  <Mail aria-hidden="true" className="size-3.5" />
-                  Account email
-                </span>
-                <span className="break-all text-sm font-medium">
-                  {email ?? "Sign in again to load your email"}
-                </span>
-              </div>
-              {vendor?.categories && vendor.categories.length > 0 && (
-                <div className="flex flex-col gap-2">
-                  <span className="text-xs font-medium uppercase text-muted-foreground">
-                    Categories
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {vendor.categories.map((category) => (
-                      <span
-                        key={category}
-                        className="border border-border px-2 py-1 text-xs"
-                      >
-                        {category}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {isError && (
-                <p role="status" className="text-sm text-muted-foreground">
-                  Store details could not be loaded right now.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Delivery details</CardTitle>
-              <CardDescription>
-                Current information shown to customers
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-5">
-              <div className="flex items-center justify-between gap-3">
-                <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Truck aria-hidden="true" className="size-4" />
-                  Delivery fee
-                </span>
-                <span className="text-sm font-medium">
-                  {vendor ? formatPrice(vendor.deliveryFee) : "Loading..."}
-                </span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CalendarDays aria-hidden="true" className="size-4" />
-                  Delivery days
-                </span>
-                <span className="text-sm font-medium">
-                  {vendor?.availableDays.length
-                    ? vendor.availableDays
-                        .map((day) => WEEKDAY_LABELS[day])
-                        .join(", ")
-                    : isPending
-                      ? "Loading..."
-                      : "Not set"}
-                </span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock aria-hidden="true" className="size-4" />
-                  Delivery windows
-                </span>
-                {vendor?.timeWindows.length ? (
-                  <ul className="flex flex-col gap-1">
-                    {vendor.timeWindows.map((window) => (
-                      <li
-                        key={window.id}
-                        className="flex justify-between gap-3 text-sm"
-                      >
-                        <span>{window.label}</span>
-                        <span className="text-muted-foreground">
-                          {window.startTime}–{window.endTime}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <span className="text-sm font-medium">
-                    {isPending ? "Loading..." : "Not set"}
-                  </span>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          <StoreIdentityCard
+            vendor={vendor}
+            email={email}
+            isPending={isPending}
+            isError={isError}
+          />
+          <DeliveryDetailsCard vendor={vendor} isPending={isPending} />
         </aside>
       </div>
     </div>
+  );
+}
+
+function StoreIdentityCard({
+  vendor,
+  email,
+  isPending,
+  isError,
+}: {
+  vendor: Vendor | undefined;
+  email: string | null;
+  isPending: boolean;
+  isError: boolean;
+}) {
+  let storeName = "Unavailable";
+  let vendorId = "Unavailable";
+  if (isPending) {
+    storeName = "Loading store...";
+    vendorId = "Loading...";
+  }
+  if (vendor) {
+    storeName = vendor.name;
+    vendorId = String(vendor.id);
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Store aria-hidden="true" className="size-5 text-primary" />
+          Store identity
+        </CardTitle>
+        <CardDescription>
+          Information associated with your vendor account
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-5">
+        <div className="flex flex-col gap-1">
+          <span className="text-xs font-medium uppercase text-muted-foreground">
+            Store name
+          </span>
+          <span className="font-semibold">{storeName}</span>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-xs font-medium uppercase text-muted-foreground">
+            Vendor ID
+          </span>
+          <span className="font-mono text-sm">{vendorId}</span>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="flex items-center gap-2 text-xs font-medium uppercase text-muted-foreground">
+            <Mail aria-hidden="true" className="size-3.5" />
+            Account email
+          </span>
+          <span className="break-all text-sm font-medium">
+            {email ?? "Sign in again to load your email"}
+          </span>
+        </div>
+        {vendor && vendor.categories.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <span className="text-xs font-medium uppercase text-muted-foreground">
+              Categories
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {vendor.categories.map((category) => (
+                <span
+                  key={category}
+                  className="border border-border px-2 py-1 text-xs"
+                >
+                  {category}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        {isError && (
+          <p role="status" className="text-sm text-muted-foreground">
+            Store details could not be loaded right now.
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function DeliveryDetailsCard({
+  vendor,
+  isPending,
+}: {
+  vendor: Vendor | undefined;
+  isPending: boolean;
+}) {
+  const loadingOrUnset = isPending ? "Loading..." : "Not set";
+  const deliveryDays = vendor?.availableDays.length
+    ? vendor.availableDays.map((day) => WEEKDAY_LABELS[day]).join(", ")
+    : loadingOrUnset;
+  const deliveryWindows = vendor?.timeWindows ?? [];
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Delivery details</CardTitle>
+        <CardDescription>
+          Current information shown to customers
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-5">
+        <div className="flex items-center justify-between gap-3">
+          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Truck aria-hidden="true" className="size-4" />
+            Delivery fee
+          </span>
+          <span className="text-sm font-medium">
+            {vendor ? formatPrice(vendor.deliveryFee) : loadingOrUnset}
+          </span>
+        </div>
+        <div className="flex flex-col gap-2">
+          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+            <CalendarDays aria-hidden="true" className="size-4" />
+            Delivery days
+          </span>
+          <span className="text-sm font-medium">{deliveryDays}</span>
+        </div>
+        <div className="flex flex-col gap-2">
+          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Clock aria-hidden="true" className="size-4" />
+            Delivery windows
+          </span>
+          {deliveryWindows.length > 0 ? (
+            <ul className="flex flex-col gap-1">
+              {deliveryWindows.map((window) => (
+                <li
+                  key={window.id}
+                  className="flex justify-between gap-3 text-sm"
+                >
+                  <span>{window.label}</span>
+                  <span className="text-muted-foreground">
+                    {window.startTime}–{window.endTime}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <span className="text-sm font-medium">{loadingOrUnset}</span>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

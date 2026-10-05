@@ -56,7 +56,9 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
   }
 
   function confirmSwitchVendor() {
-    if (!pendingSwitchProduct) {return;}
+    if (!pendingSwitchProduct) {
+      return;
+    }
     clearCart();
     addItem({
       productId: pendingSwitchProduct.id,
@@ -109,9 +111,7 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
                   <dt className="sr-only">Delivery fee</dt>
                   <Truck aria-hidden="true" className="size-4 text-primary" />
                   <dd className="font-medium ">
-                    {vendor.deliveryFee === null
-                      ? "Delivery fee unavailable"
-                      : `${formatPrice(vendor.deliveryFee)} delivery`}
+                    {`${formatPrice(vendor.deliveryFee)} delivery`}
                   </dd>
                 </div>
                 <div className="flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5">
@@ -190,7 +190,9 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
       <AlertDialog
         open={!!pendingSwitchProduct}
         onOpenChange={(open) => {
-          if (!open) {setPendingSwitchProduct(null);}
+          if (!open) {
+            setPendingSwitchProduct(null);
+          }
         }}
       >
         <AlertDialogContent>

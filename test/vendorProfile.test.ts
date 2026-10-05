@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { vendorProfileSchema } from "@/schemas/vendorProfile";
 
 describe("vendorProfileSchema", () => {

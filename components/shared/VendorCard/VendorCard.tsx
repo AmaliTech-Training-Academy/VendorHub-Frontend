@@ -125,9 +125,7 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
             </span>
 
             <span className="text-xl text-blue-950">
-              {vendor.deliveryFee === null
-                ? "Fee unavailable"
-                : formatPrice(vendor.deliveryFee)}
+              {formatPrice(vendor.deliveryFee)}
             </span>
           </span>
         </div>
