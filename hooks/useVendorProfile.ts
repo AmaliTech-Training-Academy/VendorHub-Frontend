@@ -2,11 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
-import {
-  vendorProfileSchema,
-  type VendorProfileFormInput,
-  type VendorProfileFormValues,
-} from "@/schemas/vendorProfile";
+import { vendorProfileSchema } from "@/schemas/vendorProfile";
+import type {
+  VendorProfileFormInput,
+  VendorProfileFormValues,
+} from "@/types/vendorProfile";
 
 type UseVendorProfileOptions = {
   defaultValues?: Partial<VendorProfileFormValues>;
@@ -45,9 +45,7 @@ export function useVendorProfile({
     defaultValues: {
       address: defaultValues?.address ?? "",
       phone: defaultValues?.phone ?? "",
-      slogans: defaultValues?.slogans?.map((value) => ({ value })) ?? [
-        { value: "" },
-      ],
+      slogans: defaultValues?.slogans ?? [{ value: "" }],
       storefrontImage: defaultValues?.storefrontImage,
     },
   });

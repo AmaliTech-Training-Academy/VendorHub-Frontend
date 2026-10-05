@@ -6,13 +6,11 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { useVendorProfile } from "@/hooks/useVendorProfile";
-import type { VendorProfileFormValues } from "@/schemas/vendorProfile";
+import type { VendorProfileFormValues } from "@/types/vendorProfile";
 
-import {
-  ContactDetailsCard,
-  SlogansCard,
-  StorefrontImageCard,
-} from "./VendorProfileForms";
+import { ContactDetailsCard } from "./ContactDetailsCard";
+import { SlogansCard } from "./SlogansCard";
+import { StorefrontImageCard } from "./StorefrontImageCard";
 
 type Props = {
   defaultValues?: Partial<VendorProfileFormValues>;
