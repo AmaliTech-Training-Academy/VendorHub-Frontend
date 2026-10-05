@@ -31,6 +31,7 @@ export function StorefrontNav() {
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
   const cartCount = useCartItemCount();
+  const isCartPage = pathname.replace(/\/+$/, "") === "/storefront/cart";
 
   const handleLogout = () => {
     logout();
@@ -90,7 +91,7 @@ export function StorefrontNav() {
             className={cn(
               buttonVariants({ variant: "ghost" }),
               "h-14 min-w-14 flex-col gap-0.5 px-2 text-white hover:bg-white/10 hover:text-white",
-              pathname === "/storefront/cart" &&
+              isCartPage &&
                 "bg-white text-blue-950 hover:bg-white hover:text-blue-950",
             )}
           >
