@@ -13,18 +13,17 @@ import {
 const vendorApiSchema = z.object({
   id: z.number(),
   business_name: z.string().min(1),
-  categories: z.array(z.string()).nullable(),
-  delivery_fee: z.string().nullable(),
-  available_days: z.array(z.enum(WEEKDAYS)).nullable(),
-  delivery_windows: z.array(storedTimeWindowSchema).nullable(),
+  categories: z.array(z.string()),
+  delivery_fee: z.string(),
+  available_days: z.array(z.enum(WEEKDAYS)),
+  delivery_windows: z.array(storedTimeWindowSchema),
 });
 
 export const vendorSchema = vendorApiSchema.transform((raw) => ({
   id: raw.id,
   name: raw.business_name,
-  categories: raw.categories ?? [],
-  deliveryFee:
-    raw.delivery_fee === null ? null : parseDecimal(raw.delivery_fee),
-  availableDays: raw.available_days ?? [],
-  timeWindows: raw.delivery_windows ?? [],
+  categories: raw.categories,
+  deliveryFee: parseDecimal(raw.delivery_fee),
+  availableDays: raw.available_days,
+  timeWindows: raw.delivery_windows,
 }));

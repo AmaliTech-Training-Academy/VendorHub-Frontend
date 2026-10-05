@@ -3,7 +3,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "cn";
-import { LayoutDashboard, LogOut, Package, Receipt, Truck } from "lucide-react";
+import {
+  LayoutDashboard,
+  LogOut,
+  Package,
+  Receipt,
+  Truck,
+  User,
+} from "lucide-react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 const navItems = [
@@ -15,6 +22,7 @@ const navItems = [
     label: "Delivery settings",
     icon: Truck,
   },
+  { href: "/dashboard/profile", label: "Profile", icon: User },
 ];
 
 export function Brand() {
