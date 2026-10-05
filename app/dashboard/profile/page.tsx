@@ -1,22 +1,22 @@
 "use client";
 
 import { Store } from "lucide-react";
+import { toast } from "sonner";
 
 import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 import { DeliveryDetailsCard } from "@/components/shared/layout/dashboard/DeliveryDetailsCard";
 import { StoreIdentityCard } from "@/components/shared/layout/dashboard/StoreIdentityCard";
 import { VendorProfileForm } from "@/components/shared/layout/dashboard/VendorProfileForm";
-import { useVendor } from "@/hooks/useVendors";
+import { useVendorProfile } from "@/hooks/useVendorProfile";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function VendorProfilePage() {
-  const userId = useAuthStore((state) => state.userId);
-  const email = useAuthStore((state) => state.email);
-  const {
-    data: vendor,
-    isPending,
-    isError,
-  } = useVendor(userId === null ? "" : String(userId));
+  const authEmail = useAuthStore((state) => state.email);
+  const profileForm = useVendorProfile({
+    onSuccess: () => toast.success("Profile updated"),
+    onError: (message) => toast.error(message),
+  });
+  const { profile, isProfilePending, isProfileError } = profileForm;
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
@@ -27,16 +27,16 @@ export default function VendorProfilePage() {
       />
 
       <div className="grid min-w-0 grid-cols-1 items-start gap-8 xl:grid-cols-[minmax(0,1fr)_20rem]">
-        <VendorProfileForm />
+        <VendorProfileForm form={profileForm} />
 
         <aside className="flex min-w-0 flex-col gap-6">
           <StoreIdentityCard
-            vendor={vendor}
-            email={email}
-            isPending={isPending}
-            isError={isError}
+            vendor={profile}
+            email={profile?.email ?? authEmail}
+            isPending={isProfilePending}
+            isError={isProfileError}
           />
-          <DeliveryDetailsCard vendor={vendor} isPending={isPending} />
+          <DeliveryDetailsCard vendor={profile} isPending={isProfilePending} />
         </aside>
       </div>
     </div>

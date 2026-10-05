@@ -21,7 +21,9 @@ describe("apiRequest error messages", () => {
 
   async function messageFor(status: number, body: unknown) {
     vi.mocked(fetch).mockResolvedValue(
-      new Response(typeof body === "string" ? body : JSON.stringify(body), { status }),
+      new Response(typeof body === "string" ? body : JSON.stringify(body), {
+        status,
+      }),
     );
     return apiRequest("x/", { method: "POST", body: {} }).then(
       () => "no error",
@@ -35,8 +37,24 @@ describe("apiRequest error messages", () => {
     );
   });
 
+  it("sends FormData without setting JSON content type", async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify({ success: true }), { status: 200 }),
+    );
+    const body = new FormData();
+    body.append("address", "Ridge Office Park");
+
+    await apiRequest("vendors/me/profile/", { method: "PATCH", body });
+
+    const [, options] = vi.mocked(fetch).mock.calls[0];
+    expect(options?.headers).not.toHaveProperty("Content-Type");
+    expect(options?.body).toBe(body);
+  });
+
   it("joins a detail list", async () => {
-    expect(await messageFor(400, { detail: ["First.", "Second."] })).toBe("First. Second.");
+    expect(await messageFor(400, { detail: ["First.", "Second."] })).toBe(
+      "First. Second.",
+    );
   });
 
   it("uses only detail when auth errors add code/messages", async () => {
@@ -44,7 +62,13 @@ describe("apiRequest error messages", () => {
       await messageFor(401, {
         detail: "Given token not valid for any token type",
         code: "token_not_valid",
-        messages: [{ token_class: "AccessToken", token_type: "access", message: "expired" }],
+        messages: [
+          {
+            token_class: "AccessToken",
+            token_type: "access",
+            message: "expired",
+          },
+        ],
       }),
     ).toBe("Given token not valid for any token type");
   });
@@ -53,7 +77,10 @@ describe("apiRequest error messages", () => {
     expect(
       await messageFor(400, {
         email: ["user with this email already exists."],
-        password: ["This password is too short.", "This password is too common."],
+        password: [
+          "This password is too short.",
+          "This password is too common.",
+        ],
       }),
     ).toBe(
       "Email: user with this email already exists. Password: This password is too short. This password is too common.",
@@ -61,21 +88,24 @@ describe("apiRequest error messages", () => {
   });
 
   it("humanizes snake_case field names", async () => {
-    expect(await messageFor(400, { delivery_date: ["This field is required."] })).toBe(
-      "Delivery date: This field is required.",
-    );
+    expect(
+      await messageFor(400, { delivery_date: ["This field is required."] }),
+    ).toBe("Delivery date: This field is required.");
   });
 
   it("leaves non_field_errors unlabelled", async () => {
-    expect(await messageFor(400, { non_field_errors: ["Vendor is inactive."] })).toBe(
-      "Vendor is inactive.",
-    );
+    expect(
+      await messageFor(400, { non_field_errors: ["Vendor is inactive."] }),
+    ).toBe("Vendor is inactive.");
   });
 
   it("reads nested list-serializer errors and skips the empty entries", async () => {
     expect(
       await messageFor(400, {
-        items: [{}, { quantity: ["Ensure this value is less than or equal to 100."] }],
+        items: [
+          {},
+          { quantity: ["Ensure this value is less than or equal to 100."] },
+        ],
       }),
     ).toBe("Items quantity: Ensure this value is less than or equal to 100.");
   });
@@ -86,16 +116,24 @@ describe("apiRequest error messages", () => {
   });
 
   it("falls back for non-JSON, empty and message-less bodies", async () => {
-    expect(await messageFor(500, "<html>Server Error</html>")).toBe("Something went wrong");
+    expect(await messageFor(500, "<html>Server Error</html>")).toBe(
+      "Something went wrong",
+    );
     expect(await messageFor(400, {})).toBe("Something went wrong");
-    expect(await messageFor(400, { count: 3, ok: false })).toBe("Something went wrong");
+    expect(await messageFor(400, { count: 3, ok: false })).toBe(
+      "Something went wrong",
+    );
   });
 
   it("clears the current session when an authenticated request gets a 401", async () => {
     const { useAuthStore } = await import("../store/useAuthStore");
-    useAuthStore.getState().setAuth("VENDOR", "expired-token", "refresh-token", 1);
+    useAuthStore
+      .getState()
+      .setAuth("VENDOR", "expired-token", "refresh-token", 1);
     vi.mocked(fetch).mockResolvedValue(
-      new Response(JSON.stringify({ detail: "Token expired." }), { status: 401 }),
+      new Response(JSON.stringify({ detail: "Token expired." }), {
+        status: 401,
+      }),
     );
 
     await expect(apiRequest("private/")).rejects.toThrow("Token expired.");
@@ -106,14 +144,18 @@ describe("apiRequest error messages", () => {
 
   it("does not clear a session for a 401 from an unauthenticated request", async () => {
     const { useAuthStore } = await import("../store/useAuthStore");
-    useAuthStore.getState().setAuth("EMPLOYEE", "access-token", "refresh-token", 2);
+    useAuthStore
+      .getState()
+      .setAuth("EMPLOYEE", "access-token", "refresh-token", 2);
     vi.mocked(fetch).mockResolvedValue(
-      new Response(JSON.stringify({ detail: "Invalid credentials." }), { status: 401 }),
+      new Response(JSON.stringify({ detail: "Invalid credentials." }), {
+        status: 401,
+      }),
     );
 
-    await expect(apiRequest("accounts/login/", { auth: false })).rejects.toThrow(
-      "Invalid credentials.",
-    );
+    await expect(
+      apiRequest("accounts/login/", { auth: false }),
+    ).rejects.toThrow("Invalid credentials.");
 
     expect(useAuthStore.getState().accessToken).toBe("access-token");
   });

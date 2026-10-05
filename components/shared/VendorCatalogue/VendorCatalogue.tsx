@@ -52,6 +52,7 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
     });
     if (result.blocked) {
       setPendingSwitchProduct(product);
+      return;
     }
   }
 
