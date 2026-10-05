@@ -2,6 +2,7 @@
 
 import { CalendarDays, Clock, Mail, Store, Truck } from "lucide-react";
 
+import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 import { VendorProfileForm } from "@/components/shared/layout/dashboard/VendorProfileForm";
 import {
   Card,
@@ -23,18 +24,23 @@ export default function VendorProfilePage() {
     isPending,
     isError,
   } = useVendor(userId === null ? "" : String(userId));
+  let deliveryDays = "Not set";
+  if (isPending) {
+    deliveryDays = "Loading...";
+  }
+  if (vendor?.availableDays.length) {
+    deliveryDays = vendor.availableDays
+      .map((day) => WEEKDAY_LABELS[day])
+      .join(", ");
+  }
 
   return (
-    <div className="w-full max-w-none space-y-8">
-      <header className="flex flex-col gap-2 border-b border-border pb-5">
-        <p className="text-sm font-medium text-primary">Vendor workspace</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-blue-950">
-          Store profile
-        </h1>
-        <p className="max-w-2xl text-sm text-muted-foreground">
-          Keep your store identity and storefront details together in one place.
-        </p>
-      </header>
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <DashboardPageHeader
+        title="Store profile"
+        description="Keep your store identity and storefront details together in one place."
+        icon={Store}
+      />
 
       <div className="grid min-w-0 grid-cols-1 items-start gap-8 xl:grid-cols-[minmax(0,1fr)_20rem]">
         <VendorProfileForm />
@@ -125,15 +131,7 @@ export default function VendorProfilePage() {
                   <CalendarDays aria-hidden="true" className="size-4" />
                   Delivery days
                 </span>
-                <span className="text-sm font-medium">
-                  {vendor?.availableDays.length
-                    ? vendor.availableDays
-                        .map((day) => WEEKDAY_LABELS[day])
-                        .join(", ")
-                    : isPending
-                      ? "Loading..."
-                      : "Not set"}
-                </span>
+                <span className="text-sm font-medium">{deliveryDays}</span>
               </div>
               <div className="flex flex-col gap-2">
                 <span className="flex items-center gap-2 text-sm text-muted-foreground">

@@ -3,8 +3,15 @@
 
 import Link from "next/link";
 
-import { ClipboardList, Package, ShoppingBag, ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  ClipboardList,
+  Package,
+  ShoppingBag,
+  Store,
+} from "lucide-react";
 
+import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge/OrderStatusBadge";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -105,15 +112,12 @@ export default function DashboardOverviewPage() {
   const stats = [pendingOrders, productsInStock, ordersThisWeek];
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      <div>
-        <h1 className="text-2xl sm:text-4xl font-semibold text-blue-950">
-          Overview
-        </h1>
-        <p className="text-sm sm:text-lg text-muted-foreground">
-          Here&apos;s how your storefront is doing
-        </p>
-      </div>
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <DashboardPageHeader
+        title="Overview"
+        description="Here's how your storefront is doing"
+        icon={Store}
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => {
