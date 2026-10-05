@@ -111,7 +111,9 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
                   <dt className="sr-only">Delivery fee</dt>
                   <Truck aria-hidden="true" className="size-4 text-primary" />
                   <dd className="font-medium ">
-                    {`${formatPrice(vendor.deliveryFee)} delivery`}
+                    {vendor.deliveryFee === null
+                      ? "Delivery fee unavailable"
+                      : `${formatPrice(vendor.deliveryFee)} delivery`}
                   </dd>
                 </div>
                 <div className="flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5">

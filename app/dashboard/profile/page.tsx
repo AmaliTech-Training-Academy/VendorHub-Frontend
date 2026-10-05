@@ -144,6 +144,11 @@ function DeliveryDetailsCard({
   isPending: boolean;
 }) {
   const loadingOrUnset = isPending ? "Loading..." : "Not set";
+  let deliveryFee = loadingOrUnset;
+  if (vendor) {
+    deliveryFee =
+      vendor.deliveryFee === null ? "Not set" : formatPrice(vendor.deliveryFee);
+  }
   const deliveryDays = vendor?.availableDays.length
     ? vendor.availableDays.map((day) => WEEKDAY_LABELS[day]).join(", ")
     : loadingOrUnset;
@@ -163,9 +168,7 @@ function DeliveryDetailsCard({
             <Truck aria-hidden="true" className="size-4" />
             Delivery fee
           </span>
-          <span className="text-sm font-medium">
-            {vendor ? formatPrice(vendor.deliveryFee) : loadingOrUnset}
-          </span>
+          <span className="text-sm font-medium">{deliveryFee}</span>
         </div>
         <div className="flex flex-col gap-2">
           <span className="flex items-center gap-2 text-sm text-muted-foreground">
