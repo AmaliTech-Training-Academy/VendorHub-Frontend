@@ -56,7 +56,9 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
   }
 
   function confirmSwitchVendor() {
-    if (!pendingSwitchProduct) {return;}
+    if (!pendingSwitchProduct) {
+      return;
+    }
     clearCart();
     addItem({
       productId: pendingSwitchProduct.id,
@@ -190,7 +192,9 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
       <AlertDialog
         open={!!pendingSwitchProduct}
         onOpenChange={(open) => {
-          if (!open) {setPendingSwitchProduct(null);}
+          if (!open) {
+            setPendingSwitchProduct(null);
+          }
         }}
       >
         <AlertDialogContent>
