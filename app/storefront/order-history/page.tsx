@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { OrderHistoryCard } from "@/components/shared/OrderHistoryCard";
 import { OrderHistorySkeleton } from "@/components/shared/OrderHistorySkeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useEmployeeOrders } from "@/hooks/useOrders";
+import { useOrders } from "@/hooks/useOrders";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function OrderHistoryPage() {
@@ -15,7 +15,7 @@ export default function OrderHistoryPage() {
     data: orders,
     isPending,
     isError,
-  } = useEmployeeOrders(userId === null ? "" : String(userId));
+  } = useOrders(userId === null ? "" : String(userId));
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-6">

@@ -49,7 +49,7 @@ const recentOrders: RecentOrder[] = [
     customer: "Daniel Osei",
     items: "2x Jollof rice, 1x Meat pie",
     total: 48,
-    status: "placed",
+    status: "received",
     placedAt: "10 min ago",
   },
   {

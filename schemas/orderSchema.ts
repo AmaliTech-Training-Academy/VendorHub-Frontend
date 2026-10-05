@@ -44,7 +44,7 @@ export const confirmOrderSchema = placeOrderSchema.pick({
   deliveryDate: true,
 });
 
-/** POST /api/orders/ response (OrderCreateOutput). */
+/** OrderCreateOutput and OrderListOutput, which have identical fields. */
 const orderApiSchema = z.object({
   id: z.number(),
   order_code: z.string(),
@@ -74,14 +74,30 @@ const orderApiSchema = z.object({
   updated_at: z.string(),
 });
 
+type OrderStatusValue = (typeof ORDER_STATUSES)[number];
+
+/** The backend's StatusEnum values; note the spaces in "READY FOR COLLECTION". */
+export const ORDER_STATUS_WIRE: Record<OrderStatusValue, string> = {
+  received: "RECEIVED",
+  preparing: "PREPARING",
+  ready_for_collection: "READY FOR COLLECTION",
+};
+
 /**
- * The spec types status as a free string. An order that's already been
- * created server-side must never fail to parse (the employee would retry and
- * double-order), so an unrecognised status falls back to "placed".
+ * An order that already exists server-side must never fail to parse (the
+ * employee would retry and double-order), so an unrecognised status falls
+ * back to "received" instead of throwing.
  */
-function toOrderStatus(status: string) {
-  const normalised = status.toLowerCase();
-  return ORDER_STATUSES.find((s) => s === normalised) ?? "placed";
+export function toOrderStatus(status: string): OrderStatusValue {
+  const normalised = status.trim().toUpperCase().replace(/_/g, " ");
+  return (
+    ORDER_STATUSES.find((s) => ORDER_STATUS_WIRE[s] === normalised) ?? "received"
+  );
+}
+
+/** The status a vendor can move an order to next, or null once it's ready. */
+export function nextOrderStatus(status: OrderStatusValue): OrderStatusValue | null {
+  return ORDER_STATUSES[ORDER_STATUSES.indexOf(status) + 1] ?? null;
 }
 
 export const orderSchema = orderApiSchema.transform((raw) => ({
@@ -107,3 +123,8 @@ export const orderSchema = orderApiSchema.transform((raw) => ({
   status: toOrderStatus(raw.status),
   createdAt: raw.created_at,
 }));
+
+/** PATCH /api/orders/{id}/status/ response (OrderStatusUpdateOutput). */
+export const orderStatusUpdateSchema = z
+  .object({ id: z.number(), status: z.string(), updated_at: z.string() })
+  .transform((raw) => ({ id: String(raw.id), status: toOrderStatus(raw.status) }));
