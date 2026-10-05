@@ -1,5 +1,6 @@
 "use client";
 
+import { Store } from "lucide-react";
 import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 import { DeliveryDetailsCard } from "@/components/shared/layout/dashboard/DeliveryDetailsCard";
 import { StoreIdentityCard } from "@/components/shared/layout/dashboard/StoreIdentityCard";
@@ -15,15 +16,6 @@ export default function VendorProfilePage() {
     isPending,
     isError,
   } = useVendor(userId === null ? "" : String(userId));
-  let deliveryDays = "Not set";
-  if (isPending) {
-    deliveryDays = "Loading...";
-  }
-  if (vendor?.availableDays.length) {
-    deliveryDays = vendor.availableDays
-      .map((day) => WEEKDAY_LABELS[day])
-      .join(", ");
-  }
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
