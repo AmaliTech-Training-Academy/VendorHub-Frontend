@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect , useSyncExternalStore  } from "react";
 
+import { homePathForRole } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { UserRole } from "@/types/types";
 
@@ -36,7 +37,8 @@ export function AuthGuard({ children, allowedRoles }: Props) {
     }
 
     if (!allowedRoles.includes(role)) {
-      router.replace(role === "VENDOR" ? "/dashboard/products" : "/storefront");
+      router.replace(homePathForRole(role));
+      return;
     }
   }, [accessToken, role, allowedRoles, router]);
 
