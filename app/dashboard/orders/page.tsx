@@ -1,22 +1,37 @@
 "use client"
 
 import { CircleAlert, ClipboardList, Clock, Wallet } from "lucide-react"
+import { toast } from "sonner"
 
 import { EmptyState } from "@/components/shared/EmptyState"
 import { OrdersTable } from "@/components/shared/OrdersTable"
 import { OrdersTableSkeleton } from "@/components/shared/OrdersTableSkeleton"
 import { StatCard } from "@/components/shared/StatCard"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { useVendorOrders } from "@/hooks/useOrders"
+import { useOrders, useUpdateOrderStatus } from "@/hooks/useOrders"
 import { useVendorId } from "@/hooks/useVendorId"
 import { formatPrice } from "@/lib/utils"
+import type { Order, OrderStatus } from "@/types/order"
 
 export default function OrdersPage() {
   const vendorId = useVendorId()
-  const { data: orders, isPending, isError } = useVendorOrders(vendorId)
+  const { data: orders, isPending, isError } = useOrders(vendorId)
+  const updateStatus = useUpdateOrderStatus(vendorId)
 
-  const pending = orders?.filter((order) => order.status !== "collected") ?? []
+  const inProgress =
+    orders?.filter((order) => order.status !== "ready_for_collection") ?? []
   const revenue = orders?.reduce((sum, order) => sum + order.total, 0) ?? 0
+
+  function handleAdvance(order: Order, status: OrderStatus) {
+    updateStatus.mutate(
+      { orderId: order.id, status },
+      {
+        onError: (error) => {
+          toast.error(error.message || `Couldn't update ${order.reference}`)
+        },
+      }
+    )
+  }
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-6">
@@ -39,7 +54,7 @@ export default function OrdersPage() {
             icon={Clock}
             tone="warning"
             label="In progress"
-            value={pending.length}
+            value={inProgress.length}
           />
           <StatCard
             icon={Wallet}
@@ -66,11 +81,19 @@ export default function OrdersPage() {
         <EmptyState
           icon={ClipboardList}
           title="No orders yet"
-          description="New orders from the storefront will appear here immediately."
+          description="New orders from the storefront will appear here."
         />
       )}
 
-      {orders && orders.length > 0 && <OrdersTable orders={orders} />}
+      {orders && orders.length > 0 && (
+        <OrdersTable
+          orders={orders}
+          onAdvance={handleAdvance}
+          updatingOrderId={
+            updateStatus.isPending ? updateStatus.variables.orderId : undefined
+          }
+        />
+      )}
     </div>
   )
 }
