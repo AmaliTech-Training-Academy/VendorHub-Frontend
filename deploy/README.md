@@ -106,12 +106,26 @@ One-time setup:
        "Condition": {
          "StringEquals": {
            "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
-           "token.actions.githubusercontent.com:sub": "repo:AmaliTech-Training-Academy/VendorHub-Frontend:environment:production"
+           "token.actions.githubusercontent.com:sub": "repo:AmaliTech-Training-Academy@104000470/VendorHub-Frontend@1326590141:environment:production"
          }
        }
      }]
    }
    ```
+
+   This repo uses GitHub's **immutable subject claims**, so `sub` carries the
+   org and repo IDs (`name@id`), not just their names. A recreated repo with
+   the same name gets a new ID and can't assume the role. The plain
+   `repo:AmaliTech-Training-Academy/VendorHub-Frontend:environment:production`
+   form never matches and fails with *Not authorized to perform
+   sts:AssumeRoleWithWebIdentity*. To get the exact prefix (no auth needed for
+   a public repo):
+
+   ```bash
+   curl -s https://api.github.com/repos/AmaliTech-Training-Academy/VendorHub-Frontend/actions/oidc/customization/sub
+   ```
+
+   then append `:environment:production` to `sub_claim_prefix`.
 
    and this permissions policy:
 
@@ -136,12 +150,18 @@ One-time setup:
    | Variable | Example |
    | --- | --- |
    | `AWS_ROLE_ARN` | `arn:aws:iam::<ACCOUNT_ID>:role/vendorhub-frontend-deploy` |
-   | `AWS_REGION` | `us-east-1` |
+   | `AWS_REGION` | the bucket's region, e.g. `eu-west-1` |
    | `S3_BUCKET` | `vendorhub-frontend-prod` |
    | `CLOUDFRONT_DISTRIBUTION_ID` | `E123EXAMPLE` |
    | `NEXT_PUBLIC_API_URL` | `https://<distribution>.cloudfront.net/api` |
 
 Until these exist, the workflow fails at *Configure AWS credentials*.
+
+If it fails there with *Not authorized to perform
+sts:AssumeRoleWithWebIdentity*, the trust policy doesn't match the token.
+Check the `sub` format above first. Expanding the step's first line in the job
+log shows the `role-to-assume` and `aws-region` it used. CloudTrail may not
+record these failed attempts, so don't rely on it to find the mismatch.
 
 ## Deploying manually
 
