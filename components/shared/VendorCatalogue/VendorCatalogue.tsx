@@ -272,7 +272,7 @@ function VendorCatalogue({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+            <div className="flex gap-4 justify-start flex-wrap w-full">
               {products.map((product, index) => (
                 <StorefrontProductCard
                   key={product.id}
