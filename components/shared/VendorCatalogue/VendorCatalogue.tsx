@@ -33,8 +33,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useVendor, useVendorCatalogue } from "@/hooks/useVendors";
-import { formatPrice } from "@/lib/utils";
-import { WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema";
+import { formatDays, formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import type { VendorProduct } from "@/types/product";
 
@@ -127,9 +126,9 @@ function VendorCatalogue({
               />
               <div className="relative flex min-h-72 flex-col justify-between gap-8 p-6 sm:min-h-88 sm:p-8">
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-orange-300">
+                  <div className="flex items-center gap-2 text-sm font-semibold uppercase text-orange-300">
                     <Store aria-hidden="true" className="size-4" />
-                    <span>LOCAL BUSINESS</span>
+                    <span>{vendor.categories[0] ?? "Local business"}</span>
                   </div>
                   <h1 className="max-w-2xl text-3xl leading-tight font-semibold sm:text-4xl">
                     {vendor.name}
@@ -169,9 +168,7 @@ function VendorCatalogue({
                     />
                     <dd>
                       {vendor.availableDays.length > 0
-                        ? vendor.availableDays
-                            .map((day) => WEEKDAY_LABELS[day])
-                            .join(", ")
+                        ? formatDays(vendor.availableDays)
                         : "No delivery days listed"}
                     </dd>
                   </div>
