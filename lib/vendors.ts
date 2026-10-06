@@ -1,8 +1,5 @@
 import { PRODUCT_CATEGORIES } from "@/schemas/productSchema";
-import type { Vendor } from "@/types/vendor";
-
-export type VendorGroup = { category: string; vendors: Vendor[] };
-export type DeliveryFeeRange = { minimum: number; maximum: number };
+import type { DeliveryFeeRange, Vendor, VendorGroup } from "@/types/vendor";
 
 /**
  * Groups vendors by their primary (first) category so each vendor appears
@@ -47,4 +44,18 @@ export function filterVendorGroups(
       }),
     }))
     .filter((group) => group.vendors.length > 0);
+}
+
+export function countVendorsInGroups(
+  groups: VendorGroup[],
+  category: string | null = null,
+): number {
+  return groups.reduce(
+    (count, group) =>
+      count +
+      (category === null || group.category === category
+        ? group.vendors.length
+        : 0),
+    0,
+  );
 }

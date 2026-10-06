@@ -47,7 +47,8 @@ export function Brand() {
 }
 
 export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
-  const pathname = usePathname();
+  // trailingSlash: true (static export) makes usePathname() return "/dashboard/".
+  const pathname = usePathname().replace(/\/+$/, "") || "/";
 
   return (
     <nav className="flex flex-col gap-2">

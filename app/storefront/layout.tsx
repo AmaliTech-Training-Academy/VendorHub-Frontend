@@ -1,6 +1,5 @@
 "use client";
 import { AuthGuard } from "@/components/auth/AuthGuard";
-import { FloatingCart } from "@/components/shared/layout/storefront/FloatingCart";
 import { StorefrontNav } from "@/components/shared/layout/storefront/StorefrontNav";
 import { useCartHydration } from "@/hooks/useCartHydration";
 
@@ -11,12 +10,11 @@ export default function StorefrontLayout({
 
   return (
     <AuthGuard allowedRoles={["EMPLOYEE"]}>
-      <div className="flex  flex-col space-y-15  md:space-y-4 ">
+      <div className="flex  flex-col space-y-6  md:space-y-0 ">
         <StorefrontNav />
         <main className="mx-auto flex w-full justify-center md:max-w-7xl">
           {children}
         </main>
-        <FloatingCart />
       </div>
     </AuthGuard>
   );
