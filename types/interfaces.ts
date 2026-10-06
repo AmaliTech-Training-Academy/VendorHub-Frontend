@@ -1,11 +1,9 @@
-
 import type {
   LoginFormData,
   RegisterFormValues,
   UserRole,
 } from "@/types/types";
 
-import type { OrderStatus } from "./order";
 import type {
   FieldErrors,
   UseFormRegister,
@@ -29,11 +27,13 @@ export interface AuthState {
   accessToken: string | null;
   /** The authenticated vendor or employee's own id, from LoginOutput.id. */
   userId: number | null;
+  email: string | null;
   setAuth: (
     role: UserRole,
     accessToken: string,
     refreshToken: string,
     userId: number,
+    email?: string,
   ) => void;
   logout: () => void;
 }
@@ -101,13 +101,4 @@ export interface LoginResponse {
   id: number;
   email: string;
   role: "VENDOR" | "EMPLOYEE";
-}
-
-export interface RecentOrder {
-  id: string;
-  customer: string;
-  items: string;
-  total: number;
-  status: OrderStatus;
-  placedAt: string;
 }

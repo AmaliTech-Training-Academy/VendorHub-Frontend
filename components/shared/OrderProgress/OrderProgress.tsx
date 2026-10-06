@@ -5,11 +5,9 @@ import { cn } from "@/lib/utils"
 import type { OrderStatus } from "@/types/order"
 
 const STEP_LABELS: Record<OrderStatus, string> = {
-  placed: "Placed",
-  confirmed: "Confirmed",
+  received: "Received",
   preparing: "Preparing",
   ready_for_collection: "Ready",
-  collected: "Collected",
 }
 
 /** Horizontal tracker showing how far an order has moved through ORDER_STATUSES. */
