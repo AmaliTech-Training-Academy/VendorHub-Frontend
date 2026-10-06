@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { CircleAlert, ClipboardList, Clock, Wallet } from "lucide-react"
 import { toast } from "sonner"
@@ -34,22 +34,20 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-6">
-      <div className="flex items-center gap-4 rounded-2xl bg-linear-to-br from-accent via-accent/60 to-transparent p-5">
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-950 text-orange-400 shadow-sm dark:ring-1 dark:ring-white/15">
-          <ClipboardList aria-hidden="true" className="size-6" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Incoming orders</h1>
-          <p className="text-sm text-muted-foreground">
-            Orders placed by employees through the storefront.
-          </p>
-        </div>
-      </div>
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <DashboardPageHeader
+        title="Incoming orders"
+        description="Orders placed by employees through the storefront."
+        icon={ClipboardList}
+      />
 
       {orders && orders.length > 0 && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <StatCard icon={ClipboardList} label="Total orders" value={orders.length} />
+          <StatCard
+            icon={ClipboardList}
+            label="Total orders"
+            value={orders.length}
+          />
           <StatCard
             icon={Clock}
             tone="warning"
@@ -95,5 +93,5 @@ export default function OrdersPage() {
         />
       )}
     </div>
-  )
+  );
 }

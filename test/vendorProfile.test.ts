@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { vendorProfileSchema } from "@/schemas/vendorProfile";
+import {
+  vendorProfileResponseSchema,
+  vendorProfileSchema,
+} from "@/schemas/vendorProfile";
 
 describe("vendorProfileSchema", () => {
   it("accepts trimmed contact data and slogan rows", () => {
@@ -23,5 +26,35 @@ describe("vendorProfileSchema", () => {
     });
 
     expect(result.success).toBe(false);
+  });
+
+  it("normalizes a vendor profile response for the identity and form UI", () => {
+    const profile = vendorProfileResponseSchema.parse({
+      id: 42,
+      business_name: "Corner Bakery",
+      email: "owner@example.com",
+      address: null,
+      phone: null,
+      categories: null,
+      delivery_fee: null,
+      available_days: null,
+      delivery_windows: null,
+      storefront_image: null,
+      slogans: null,
+    });
+
+    expect(profile).toMatchObject({
+      id: 42,
+      name: "Corner Bakery",
+      email: "owner@example.com",
+      address: "",
+      phone: "",
+      categories: [],
+      deliveryFee: null,
+      availableDays: [],
+      timeWindows: [],
+      storefrontImageUrl: null,
+      slogans: [],
+    });
   });
 });

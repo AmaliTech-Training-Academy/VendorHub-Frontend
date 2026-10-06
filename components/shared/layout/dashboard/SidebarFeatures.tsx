@@ -4,10 +4,10 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "cn";
 import {
+  ClipboardList,
   LayoutDashboard,
   LogOut,
   Package,
-  Receipt,
   Truck,
   User,
 } from "lucide-react";
@@ -16,7 +16,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
   { href: "/dashboard/products", label: "Products", icon: Package },
-  { href: "/dashboard/orders", label: "Orders", icon: Receipt },
+  { href: "/dashboard/orders", label: "Orders", icon: ClipboardList },
   {
     href: "/dashboard/delivery-settings",
     label: "Delivery settings",
