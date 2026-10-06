@@ -4,3 +4,5 @@ export const ORDER_STATUSES = [
   "preparing",
   "ready_for_collection",
 ] as const;
+
+export const PLACEHOLDER_IMAGE = "/ve1.jpg";
