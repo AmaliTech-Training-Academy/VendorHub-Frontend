@@ -23,7 +23,6 @@ const vendorProfileInputSchema = z.object({
           .max(80, "Keep it short — under 80 characters"),
       }),
     )
-    .min(1, "Add at least one slogan")
     .max(5, "Up to 5 slogans"),
   storefrontImage: z
     .instanceof(File)

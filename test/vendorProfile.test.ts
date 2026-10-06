@@ -18,6 +18,16 @@ describe("vendorProfileSchema", () => {
     expect(result.slogans).toEqual([{ value: "Fresh from the oven" }]);
   });
 
+  it("lets a vendor save contact details without any slogans", () => {
+    const result = vendorProfileSchema.safeParse({
+      address: "Ridge Office Park",
+      phone: "0241234567",
+      slogans: [],
+    });
+
+    expect(result.success).toBe(true);
+  });
+
   it("rejects blank slogans", () => {
     const result = vendorProfileSchema.safeParse({
       address: "Ridge Office Park",
