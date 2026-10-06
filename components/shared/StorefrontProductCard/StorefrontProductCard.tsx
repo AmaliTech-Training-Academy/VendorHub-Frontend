@@ -28,7 +28,7 @@ function StorefrontProductCard({
   return (
     <div
       style={{ animationDelay: `${Math.min(index, 8) * 50}ms` }}
-      className={`group flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:shadow-md hover:shadow-primary/10 cursor-pointer ${
+      className={`group flex flex-col sm:w-xs overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:shadow-md hover:shadow-primary/10 cursor-pointer ${
         quantityInCart > 0 ? "border-primary/40" : "border-border"
       }`}
     >
