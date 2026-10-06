@@ -1,7 +1,6 @@
-import { ClipboardList, Loader2 } from "lucide-react"
+import { ClipboardList } from "lucide-react"
 
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge"
-import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -11,25 +10,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { formatDate, formatPrice } from "@/lib/utils"
-import { nextOrderStatus } from "@/schemas/orderSchema"
-import type { Order, OrderStatus } from "@/types/order"
+import type { Order } from "@/types/order"
 
-const ADVANCE_LABEL: Record<OrderStatus, string> = {
-  received: "Mark received",
-  preparing: "Start preparing",
-  ready_for_collection: "Mark ready",
-}
-
-function OrdersTable({
-  orders,
-  onAdvance,
-  updatingOrderId,
-}: {
-  orders: Order[]
-  /** When given, each row gets a button to move the order to its next status. */
-  onAdvance?: (order: Order, status: OrderStatus) => void
-  updatingOrderId?: string
-}) {
+function OrdersTable({ orders }: { orders: Order[] }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
       <Table>
@@ -40,11 +23,6 @@ function OrdersTable({
             <TableHead>Items</TableHead>
             <TableHead>Total</TableHead>
             <TableHead>Status</TableHead>
-            {onAdvance && (
-              <TableHead>
-                <span className="sr-only">Actions</span>
-              </TableHead>
-            )}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -70,50 +48,11 @@ function OrdersTable({
               <TableCell>
                 <OrderStatusBadge status={order.status} />
               </TableCell>
-              {onAdvance && (
-                <TableCell className="text-right">
-                  <AdvanceButton
-                    order={order}
-                    isUpdating={updatingOrderId === order.id}
-                    onAdvance={onAdvance}
-                  />
-                </TableCell>
-              )}
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </div>
-  )
-}
-
-function AdvanceButton({
-  order,
-  isUpdating,
-  onAdvance,
-}: {
-  order: Order
-  isUpdating: boolean
-  onAdvance: (order: Order, status: OrderStatus) => void
-}) {
-  const next = nextOrderStatus(order.status)
-  if (!next) {
-    return null
-  }
-  return (
-    <Button
-      size="sm"
-      variant="outline"
-      className="rounded-full"
-      disabled={isUpdating}
-      aria-label={`${ADVANCE_LABEL[next]}: ${order.reference}`}
-      onClick={() => {
-        onAdvance(order, next)
-      }}
-    >
-      {isUpdating && <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />}
-      {ADVANCE_LABEL[next]}
-    </Button>
   )
 }
 

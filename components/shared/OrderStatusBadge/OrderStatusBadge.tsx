@@ -7,9 +7,11 @@ const STATUS_CONFIG: Record<
   OrderStatus,
   { label: string; variant: VariantProps<typeof badgeVariants>["variant"] }
 > = {
-  received: { label: "Received", variant: "secondary" },
+  placed: { label: "Placed", variant: "secondary" },
+  confirmed: { label: "Confirmed", variant: "outline" },
   preparing: { label: "Preparing", variant: "default" },
   ready_for_collection: { label: "Ready for collection", variant: "success" },
+  collected: { label: "Collected", variant: "outline" },
 }
 
 function OrderStatusBadge({ status }: { status: OrderStatus }) {

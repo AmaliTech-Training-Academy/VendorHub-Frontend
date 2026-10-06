@@ -7,9 +7,11 @@ import { cn, formatDate, formatPrice } from "@/lib/utils"
 import type { Order, OrderStatus } from "@/types/order"
 
 const STATUS_EDGE: Record<OrderStatus, string> = {
-  received: "border-l-slate-300 dark:border-l-slate-600",
+  placed: "border-l-slate-300 dark:border-l-slate-600",
+  confirmed: "border-l-sky-400",
   preparing: "border-l-primary",
   ready_for_collection: "border-l-emerald-500",
+  collected: "border-l-border",
 }
 
 function OrderHistoryCardComponent({ order }: { order: Order }) {

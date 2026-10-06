@@ -32,7 +32,7 @@ function StorefrontProductCard({
         quantityInCart > 0 ? "border-primary/40" : "border-border"
       }`}
     >
-      <ProductImage name={product.name} imageURL={product.imageUrl || null} />
+      <ProductImage name={product.name} imageURL={product.imageUrl} />
 
       <div className="flex flex-1 flex-col gap-1 p-3">
         <h3 className="truncate text-sm font-semibold leading-snug">

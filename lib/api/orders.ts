@@ -1,15 +1,6 @@
-import { z } from "zod";
-
 import { apiRequest } from "@/lib/api/client";
-import {
-  ORDER_STATUS_WIRE,
-  orderSchema,
-  orderStatusUpdateSchema,
-  placeOrderSchema,
-} from "@/schemas/orderSchema";
-import type { Order, OrderStatus, PlaceOrderInput } from "@/types/order";
-
-const orderListSchema = z.array(orderSchema);
+import { orderSchema, placeOrderSchema } from "@/schemas/orderSchema";
+import type { Order, PlaceOrderInput } from "@/types/order";
 
 /**
  * POST /api/orders/ — the employee is taken from the JWT and prices, fee and
@@ -33,24 +24,4 @@ export async function placeOrder(input: PlaceOrderInput): Promise<Order> {
   });
 
   return orderSchema.parse(raw);
-}
-
-/**
- * GET /api/orders/list/ — scoped by the JWT: a vendor gets their incoming
- * orders, an employee gets their own. Not paginated. Newest first.
- */
-export async function fetchOrders(): Promise<Order[]> {
-  const raw = await apiRequest<unknown>("orders/list/");
-  return orderListSchema
-    .parse(raw)
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-}
-
-/** PATCH /api/orders/{id}/status/ */
-export async function updateOrderStatus(orderId: string, status: OrderStatus) {
-  const raw = await apiRequest<unknown>(`orders/${orderId}/status/`, {
-    method: "PATCH",
-    body: { status: ORDER_STATUS_WIRE[status] },
-  });
-  return orderStatusUpdateSchema.parse(raw);
 }

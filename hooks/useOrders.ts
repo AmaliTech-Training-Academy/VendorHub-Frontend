@@ -1,23 +1,41 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { fetchOrders, placeOrder, updateOrderStatus } from "@/lib/api/orders";
-import type { Order, OrderStatus, PlaceOrderInput } from "@/types/order";
+import { placeOrder } from "@/lib/api/orders";
+import {
+  fetchOrdersByEmployee,
+  fetchOrdersByVendor,
+  seedMockOrder,
+} from "@/lib/api/orders-mock";
+import type { PlaceOrderInput } from "@/types/order";
 
-/** Keyed by the logged-in user so two accounts on one browser never share a cache. */
-export function ordersQueryKey(userId: string) {
-  return ["orders", userId] as const;
+export function ordersQueryKey(vendorId: string) {
+  return ["orders", vendorId] as const;
+}
+
+export function employeeOrdersQueryKey(employeeId: string) {
+  return ["orders", "employee", employeeId] as const;
+}
+
+/** Powers the vendor's incoming orders dashboard. */
+export function useVendorOrders(vendorId: string) {
+  return useQuery({
+    queryKey: ordersQueryKey(vendorId),
+    queryFn: () => fetchOrdersByVendor(vendorId),
+    enabled: Boolean(vendorId),
+  });
 }
 
 /**
- * The logged-in user's orders: a vendor's incoming orders or an employee's
- * history (the backend scopes the list by token). Polls so new orders and
- * status changes show up without a refresh; polling pauses in background tabs.
+ * Powers the employee's order history page. Polls so status changes (e.g. a
+ * vendor marking an order ready for collection) show up without a manual
+ * refresh; refetchIntervalInBackground defaults to false, so polling pauses
+ * once the tab isn't visible.
  */
-export function useOrders(userId: string) {
+export function useEmployeeOrders(employeeId: string) {
   return useQuery({
-    queryKey: ordersQueryKey(userId),
-    queryFn: fetchOrders,
-    enabled: Boolean(userId),
+    queryKey: employeeOrdersQueryKey(employeeId),
+    queryFn: () => fetchOrdersByEmployee(employeeId),
+    enabled: Boolean(employeeId),
     refetchInterval: 20_000,
   });
 }
@@ -27,40 +45,12 @@ export function usePlaceOrder() {
 
   return useMutation({
     mutationFn: (input: PlaceOrderInput) => placeOrder(input),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["orders"] });
-    },
-  });
-}
-
-/** Moves an order to a new status, updating the list optimistically. */
-export function useUpdateOrderStatus(userId: string) {
-  const queryClient = useQueryClient();
-  const queryKey = ordersQueryKey(userId);
-
-  return useMutation({
-    mutationFn: ({
-      orderId,
-      status,
-    }: {
-      orderId: string;
-      status: OrderStatus;
-    }) => updateOrderStatus(orderId, status),
-    onMutate: async ({ orderId, status }) => {
-      await queryClient.cancelQueries({ queryKey });
-      const previous = queryClient.getQueryData<Order[]>(queryKey);
-      queryClient.setQueryData<Order[]>(queryKey, (orders) =>
-        orders?.map((order) =>
-          order.id === orderId ? { ...order, status } : order,
-        ),
-      );
-      return { previous };
-    },
-    onError: (_error, _variables, context) => {
-      queryClient.setQueryData(queryKey, context?.previous);
-    },
-    onSettled: () => {
-      void queryClient.invalidateQueries({ queryKey });
+    onSuccess: (order) => {
+      seedMockOrder(order);
+      void queryClient.invalidateQueries({ queryKey: ordersQueryKey(order.vendorId) });
+      void queryClient.invalidateQueries({
+        queryKey: employeeOrdersQueryKey(order.employeeId),
+      });
     },
   });
 }

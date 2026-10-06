@@ -4,6 +4,7 @@ import type {
   UserRole,
 } from "@/types/types";
 
+import type { OrderStatus } from "./order";
 import type {
   FieldErrors,
   UseFormRegister,
@@ -101,4 +102,13 @@ export interface LoginResponse {
   id: number;
   email: string;
   role: "VENDOR" | "EMPLOYEE";
+}
+
+export interface RecentOrder {
+  id: string;
+  customer: string;
+  items: string;
+  total: number;
+  status: OrderStatus;
+  placedAt: string;
 }

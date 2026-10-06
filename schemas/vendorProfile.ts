@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-import { parseDecimal } from "@/lib/api/mapping";
 import {
   WEEKDAYS,
   storedTimeWindowSchema,
 } from "@/schemas/deliverySettingsSchema";
+import { parseDecimal } from "@/lib/api/mapping";
 
 const vendorProfileInputSchema = z.object({
   address: z.string().trim().min(1, "Address is required").max(255),
