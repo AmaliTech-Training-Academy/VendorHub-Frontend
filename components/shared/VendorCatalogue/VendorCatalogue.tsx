@@ -8,9 +8,7 @@ import {
   CalendarDays,
   CircleAlert,
   Clock,
-  Coffee,
   PackageX,
-  Sparkles,
   Store,
   Truck,
 } from "lucide-react";
@@ -20,6 +18,7 @@ import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { StorefrontProductCard } from "@/components/shared/StorefrontProductCard";
 import { VendorCatalogueSkeleton } from "@/components/shared/VendorCatalogueSkeleton";
+import { VendorSloganTicker } from "@/components/shared/VendorSloganTicker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
@@ -37,14 +36,6 @@ import { formatDays, formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import type { VendorProduct } from "@/types/product";
 
-const defaultVendorMessages = [
-  "Local favorites, delivered.",
-  "Lunch break, upgraded.",
-  "Easy ordering, right to your desk.",
-  "Good food, one less errand.",
-];
-const vendorMessageIcons = [Sparkles, Coffee, Truck, Store];
-
 function VendorCatalogue({
   vendorId,
   heroImage,
@@ -54,11 +45,6 @@ function VendorCatalogue({
 }) {
   const { data: vendor, isPending: isVendorPending } = useVendor(vendorId);
   const { data: products, isPending, isError } = useVendorCatalogue(vendorId);
-  const vendorMessages =
-    vendor?.slogans.filter((message) => message.trim().length > 0) ??
-    defaultVendorMessages;
-  const marqueeMessages =
-    vendorMessages.length > 0 ? vendorMessages : defaultVendorMessages;
   const { items, addItem, clearCart, increaseQuantity, decreaseQuantity } =
     useCartStore();
 
@@ -237,37 +223,7 @@ function VendorCatalogue({
               </span>
             </div>
 
-            <div className="overflow-hidden border-y border-border/70 py-2.5">
-              <p className="sr-only">{marqueeMessages.join(" ")}</p>
-              <div
-                aria-hidden="true"
-                className="vendor-message-track flex w-max items-center"
-              >
-                {[...marqueeMessages, ...marqueeMessages].map(
-                  (message, index) => (
-                    <span
-                      key={index}
-                      className="flex shrink-0 items-center gap-2.5 pr-7 text-xs text-muted-foreground sm:text-sm"
-                    >
-                      {(() => {
-                        const Icon =
-                          vendorMessageIcons[index % vendorMessageIcons.length];
-                        return (
-                          <>
-                            <Icon
-                              aria-hidden="true"
-                              className="size-3.5 text-primary/70"
-                            />
-                            {message}
-                            <span className="ml-4 size-1 rounded-full bg-primary/60" />
-                          </>
-                        );
-                      })()}
-                    </span>
-                  ),
-                )}
-              </div>
-            </div>
+            <VendorSloganTicker slogans={vendor?.slogans ?? []} />
 
             <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
               {products.map((product, index) => (
