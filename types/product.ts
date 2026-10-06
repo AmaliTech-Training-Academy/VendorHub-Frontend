@@ -13,6 +13,4 @@ export type ProductFormInput = z.input<typeof productSchema>;
 export type Product = z.infer<typeof productResponseSchema>;
 
 /** The storefront's leaner view of a product, from GET /api/vendors/products/. */
-export type VendorProduct = z.infer<typeof vendorProductSchema> & {
-  imageUrl?: string | null; // 🔧 TEMPORARY — not yet in the backend schema, add once confirmed
-};
+export type VendorProduct = z.infer<typeof vendorProductSchema>;
