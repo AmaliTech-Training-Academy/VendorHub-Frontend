@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
+import { VENDOR_PROFILE_ENABLED } from "@/lib/constants";
+
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
   { href: "/dashboard/products", label: "Products", icon: Package },
@@ -22,7 +24,9 @@ const navItems = [
     label: "Delivery settings",
     icon: Truck,
   },
-  { href: "/dashboard/profile", label: "Profile", icon: User },
+  ...(VENDOR_PROFILE_ENABLED
+    ? [{ href: "/dashboard/profile", label: "Profile", icon: User }]
+    : []),
 ];
 
 export function Brand() {
