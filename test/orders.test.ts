@@ -131,14 +131,14 @@ describe("placeOrder", () => {
       subtotal: 40,
       deliveryFee: 5,
       total: 45,
-      status: "placed",
+      status: "received",
     });
     expect(order.items).toEqual([
       { productId: 21, vendorId: "3", name: "Jollof rice", price: 20, quantity: 2 },
     ]);
   });
 
-  it("keeps a recognised status and falls back to placed for an unknown one", async () => {
+  it("keeps a recognised status and falls back to received for an unknown one", async () => {
     vi.mocked(fetch).mockResolvedValueOnce(
       new Response(JSON.stringify({ ...orderResponse, status: "PREPARING" }), {
         status: 201,
@@ -151,7 +151,7 @@ describe("placeOrder", () => {
         status: 201,
       }),
     );
-    expect((await orders.placeOrder(input)).status).toBe("placed");
+    expect((await orders.placeOrder(input)).status).toBe("received");
   });
 
   it("rejects an invalid order before calling the API", async () => {
@@ -170,5 +170,98 @@ describe("placeOrder", () => {
     );
 
     await expect(orders.placeOrder(input)).rejects.toThrow("Product is out of stock.");
+  });
+});
+
+describe("order status mapping", () => {
+  it("reads the backend's StatusEnum values, including the spaces", async () => {
+    const { toOrderStatus } = await import("../schemas/orderSchema");
+    expect(toOrderStatus("RECEIVED")).toBe("received");
+    expect(toOrderStatus("PREPARING")).toBe("preparing");
+    expect(toOrderStatus("READY FOR COLLECTION")).toBe("ready_for_collection");
+    expect(toOrderStatus("ready_for_collection")).toBe("ready_for_collection");
+    expect(toOrderStatus(" Preparing ")).toBe("preparing");
+    expect(toOrderStatus("PENDING")).toBe("received");
+  });
+
+  it("only moves forward, and stops at ready for collection", async () => {
+    const { nextOrderStatus } = await import("../schemas/orderSchema");
+    expect(nextOrderStatus("received")).toBe("preparing");
+    expect(nextOrderStatus("preparing")).toBe("ready_for_collection");
+    expect(nextOrderStatus("ready_for_collection")).toBeNull();
+  });
+});
+
+describe("fetchOrders and updateOrderStatus", () => {
+  let orders: typeof OrdersModule;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    vi.stubEnv("NEXT_PUBLIC_API_URL", apiUrl);
+    vi.stubGlobal("fetch", vi.fn());
+    orders = await import("../lib/api/orders");
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  it("GETs orders/list/ and returns mapped orders, newest first", async () => {
+    const older = { ...orderResponse, id: 1, created_at: "2026-10-01T09:00:00Z" };
+    const newer = {
+      ...orderResponse,
+      id: 2,
+      status: "READY FOR COLLECTION",
+      created_at: "2026-10-04T09:00:00Z",
+    };
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify([older, newer]), { status: 200 }),
+    );
+
+    const list = await orders.fetchOrders();
+
+    const [url, init] = vi.mocked(fetch).mock.calls[0];
+    expect(url).toBe(`${apiUrl}/orders/list/`);
+    expect(init?.method).toBe("GET");
+    expect(list.map((o) => o.id)).toEqual(["2", "1"]);
+    expect(list[0].status).toBe("ready_for_collection");
+  });
+
+  it("returns an empty list", async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response("[]", { status: 200 }));
+    await expect(orders.fetchOrders()).resolves.toEqual([]);
+  });
+
+  it("PATCHes the backend's status value and maps the response", async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: 17,
+          status: "READY FOR COLLECTION",
+          updated_at: "2026-10-05T10:00:00Z",
+        }),
+        { status: 200 },
+      ),
+    );
+
+    const result = await orders.updateOrderStatus("17", "ready_for_collection");
+
+    const [url, init] = vi.mocked(fetch).mock.calls[0];
+    expect(url).toBe(`${apiUrl}/orders/17/status/`);
+    expect(init?.method).toBe("PATCH");
+    expect(JSON.parse(init?.body as string)).toEqual({ status: "READY FOR COLLECTION" });
+    expect(result).toEqual({ id: "17", status: "ready_for_collection" });
+  });
+
+  it("surfaces the backend's error when a status change is rejected", async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify({ detail: "You do not own this order." }), {
+        status: 403,
+      }),
+    );
+    await expect(orders.updateOrderStatus("17", "preparing")).rejects.toThrow(
+      "You do not own this order.",
+    );
   });
 });

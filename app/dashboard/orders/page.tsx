@@ -19,6 +19,17 @@ export default function OrdersPage() {
   const pending = orders?.filter((order) => order.status !== "collected") ?? [];
   const revenue = orders?.reduce((sum, order) => sum + order.total, 0) ?? 0;
 
+  function handleAdvance(order: Order, status: OrderStatus) {
+    updateStatus.mutate(
+      { orderId: order.id, status },
+      {
+        onError: (error) => {
+          toast.error(error.message || `Couldn't update ${order.reference}`);
+        },
+      },
+    );
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
       <DashboardPageHeader
@@ -38,7 +49,7 @@ export default function OrdersPage() {
             icon={Clock}
             tone="warning"
             label="In progress"
-            value={pending.length}
+            value={inProgress.length}
           />
           <StatCard
             icon={Wallet}
@@ -65,11 +76,19 @@ export default function OrdersPage() {
         <EmptyState
           icon={ClipboardList}
           title="No orders yet"
-          description="New orders from the storefront will appear here immediately."
+          description="New orders from the storefront will appear here."
         />
       )}
 
-      {orders && orders.length > 0 && <OrdersTable orders={orders} />}
+      {orders && orders.length > 0 && (
+        <OrdersTable
+          orders={orders}
+          onAdvance={handleAdvance}
+          updatingOrderId={
+            updateStatus.isPending ? updateStatus.variables.orderId : undefined
+          }
+        />
+      )}
     </div>
   );
 }
