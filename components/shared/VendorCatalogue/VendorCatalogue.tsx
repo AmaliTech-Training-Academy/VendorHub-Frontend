@@ -171,7 +171,7 @@ function VendorCatalogue({ vendorId }: { vendorId: string }) {
       )}
 
       {products && products.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="flex gap-4 justify-start flex-wrap w-full">
           {products.map((product, index) => (
             <StorefrontProductCard
               key={product.id}
