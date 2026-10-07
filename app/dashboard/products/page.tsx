@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 
 import { EmptyState } from "@/components/shared/EmptyState";
+import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 import { ProductForm } from "@/components/shared/ProductForm";
 import { ProductsTable } from "@/components/shared/ProductsTable";
 import { ProductsTableSkeleton } from "@/components/shared/ProductsTableSkeleton";
@@ -70,7 +71,9 @@ function ProductDialog({
     <Dialog
       open={!!state}
       onOpenChange={(open) => {
-        if (!open && !isSubmitting) {onClose();}
+        if (!open && !isSubmitting) {
+          onClose();
+        }
       }}
     >
       <DialogContent>
@@ -109,11 +112,19 @@ export default function ProductsPage() {
     if (dialogState?.mode === "edit") {
       editProduct.mutate(
         { id: dialogState.product.id, input: values },
-        { onSuccess: () => { setDialogState(null); } },
+        {
+          onSuccess: () => {
+            setDialogState(null);
+          },
+        },
       );
       return;
     }
-    addProduct.mutate(values, { onSuccess: () => { setDialogState(null); } });
+    addProduct.mutate(values, {
+      onSuccess: () => {
+        setDialogState(null);
+      },
+    });
   }
 
   const isSubmitting = addProduct.isPending || editProduct.isPending;
@@ -127,29 +138,22 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full  flex-col gap-6 p-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-linear-to-br from-accent via-accent/60 to-transparent p-5">
-        <div className="flex items-center gap-4">
-          <div className="flex p-3 shrink-0 items-center justify-center rounded-xl bg-blue-950 text-orange-400 shadow-sm dark:ring-1 dark:ring-white/15">
-            <Package aria-hidden="true" className="size-8" />
-          </div>
-          <div>
-            <h1 className="text-lg sm:text-3xl font-semibold tracking-tight">
-              My Products
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Manage the products in your catalogue.
-            </p>
-          </div>
-        </div>
-        <Button
-          className="rounded-full px-4 "
-          onClick={() => { openDialog({ mode: "add" }); }}
-        >
-          <Plus />
-          Add product
-        </Button>
-      </div>
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <DashboardPageHeader
+        title="My products"
+        description="Manage the products in your catalogue."
+        icon={Package}
+        action={
+          <Button
+            onClick={() => {
+              openDialog({ mode: "add" });
+            }}
+          >
+            <Plus />
+            Add product
+          </Button>
+        }
+      />
 
       {status === Status.SUCCESS && products.length > 0 && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -196,8 +200,12 @@ export default function ProductsPage() {
       {status === Status.SUCCESS && products.length > 0 && (
         <ProductsTable
           products={products}
-          onEdit={(product) => { openDialog({ mode: "edit", product }); }}
-          onDelete={(product) => { deleteProduct.mutate(product.id); }}
+          onEdit={(product) => {
+            openDialog({ mode: "edit", product });
+          }}
+          onDelete={(product) => {
+            deleteProduct.mutate(product.id);
+          }}
           onToggleStock={(product, inStock) => {
             toggleStock.mutate({ id: product.id, inStock });
           }}
@@ -213,7 +221,9 @@ export default function ProductsPage() {
         isSubmitting={isSubmitting}
         submitError={submitError}
         onSubmit={handleSubmit}
-        onClose={() => { setDialogState(null); }}
+        onClose={() => {
+          setDialogState(null);
+        }}
       />
     </div>
   );
