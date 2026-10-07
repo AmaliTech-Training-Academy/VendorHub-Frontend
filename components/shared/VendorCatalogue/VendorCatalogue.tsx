@@ -225,7 +225,7 @@ function VendorCatalogue({
 
             <VendorSloganTicker slogans={vendor?.slogans ?? []} />
 
-            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+            <div className="flex  flex-wrap w-full gap-4">
               {products.map((product, index) => (
                 <StorefrontProductCard
                   key={product.id}
