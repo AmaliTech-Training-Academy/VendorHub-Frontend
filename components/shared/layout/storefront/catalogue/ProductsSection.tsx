@@ -49,7 +49,7 @@ export function ProductsSection({
 
       <VendorSloganTicker slogans={vendor?.slogans ?? []} />
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+      <div className="flex flex-wrap gap-4">
         {products.map((product, index) => (
           <StorefrontProductCard
             key={product.id}
