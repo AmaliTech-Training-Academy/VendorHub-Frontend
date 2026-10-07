@@ -1,40 +1,61 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { useVendorProfile } from "@/hooks/useVendorProfile";
-import type { VendorProfileFormValues } from "@/types/vendorProfile";
+import type { VendorProfileController } from "@/hooks/useVendorProfile";
 
 import { ContactDetailsCard } from "./ContactDetailsCard";
 import { SlogansCard } from "./SlogansCard";
 import { StorefrontImageCard } from "./StorefrontImageCard";
 
 type Props = {
-  defaultValues?: Partial<VendorProfileFormValues>;
-  existingImageUrl?: string;
+  form: VendorProfileController;
 };
 
-export function VendorProfileForm({ defaultValues, existingImageUrl }: Props) {
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    existingImageUrl ?? null,
+export function VendorProfileForm({ form }: Props) {
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const previewUrl = useRef<string | null>(null);
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    errors,
+    isLoading,
+    isProfilePending,
+    isProfileError,
+    profile,
+  } = form;
+  let submitLabel = "Save changes";
+  if (isProfilePending) {
+    submitLabel = "Loading profile...";
+  }
+  if (isLoading) {
+    submitLabel = "Saving...";
+  }
+
+  useEffect(
+    () => () => {
+      if (previewUrl.current) {
+        URL.revokeObjectURL(previewUrl.current);
+      }
+    },
+    [],
   );
-  const { register, control, handleSubmit, setValue, errors, isLoading } =
-    useVendorProfile({
-      defaultValues,
-      onSuccess: () => toast.success("Profile updated"),
-      onError: () => toast.error("Something went wrong. Please try again."),
-    });
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.currentTarget.files?.[0];
     if (!file) {
       return;
     }
+    if (previewUrl.current) {
+      URL.revokeObjectURL(previewUrl.current);
+    }
+    previewUrl.current = URL.createObjectURL(file);
     setValue("storefrontImage", file, { shouldValidate: true });
-    setImagePreview(URL.createObjectURL(file));
+    setImagePreview(previewUrl.current);
   }
 
   return (
@@ -45,10 +66,11 @@ export function VendorProfileForm({ defaultValues, existingImageUrl }: Props) {
       className="grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-2"
     >
       <StorefrontImageCard
-        imagePreview={imagePreview}
+        imagePreview={imagePreview ?? profile?.storefrontImageUrl ?? null}
         errors={errors}
         onImageChange={handleImageChange}
       />
+
       <ContactDetailsCard register={register} errors={errors} />
       <SlogansCard
         control={control}
@@ -58,11 +80,11 @@ export function VendorProfileForm({ defaultValues, existingImageUrl }: Props) {
       />
       <Button
         type="submit"
-        disabled={isLoading}
+        disabled={isLoading || isProfilePending || isProfileError}
         className="w-fit bg-orange-500 hover:bg-orange-600 xl:col-span-2"
       >
         {isLoading ? <Loader2 className="size-4 animate-spin" /> : null}
-        {isLoading ? "Saving..." : "Save changes"}
+        {submitLabel}
       </Button>
     </form>
   );

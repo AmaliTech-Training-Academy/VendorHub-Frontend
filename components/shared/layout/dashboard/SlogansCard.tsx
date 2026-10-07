@@ -71,7 +71,6 @@ export function SlogansCard({
               onClick={() => {
                 remove(index);
               }}
-              disabled={fields.length === 1}
               aria-label="Remove slogan"
             >
               <Trash2 className="size-4" />

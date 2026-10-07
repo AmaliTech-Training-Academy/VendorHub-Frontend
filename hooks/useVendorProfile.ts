@@ -1,41 +1,38 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
+import { fetchVendorProfile, updateVendorProfile } from "@/lib/api/vendors";
 import { vendorProfileSchema } from "@/schemas/vendorProfile";
 import type {
+  VendorProfile,
   VendorProfileFormInput,
   VendorProfileFormValues,
 } from "@/types/vendorProfile";
 
 type UseVendorProfileOptions = {
-  defaultValues?: Partial<VendorProfileFormValues>;
+  defaultValues?: Partial<VendorProfileFormInput>;
   onSuccess?: () => void;
   onError?: (message: string) => void;
 };
 
-async function updateVendorProfile(data: VendorProfileFormValues) {
-  const formData = new FormData();
-  formData.append("address", data.address);
-  formData.append("phone", data.phone);
-  data.slogans.forEach((slogan) => {
-    formData.append("slogans", slogan.value);
-  });
-  if (data.storefrontImage) {
-    formData.append("storefront_image", data.storefrontImage);
-  }
-
-  // Replace this placeholder with the vendor profile multipart endpoint when available.
-  await new Promise((resolve) => setTimeout(resolve, 1200));
-  return { success: true };
+function profileToFormValues(profile: VendorProfile): VendorProfileFormInput {
+  return {
+    address: profile.address,
+    phone: profile.phone,
+    slogans: profile.slogans.map((value) => ({ value })),
+  };
 }
 
 export function useVendorProfile({
-  defaultValues,
   onSuccess,
   onError,
 }: UseVendorProfileOptions = {}) {
   const queryClient = useQueryClient();
+  const profileQuery = useQuery({
+    queryKey: ["vendorProfile"],
+    queryFn: fetchVendorProfile,
+  });
   const form = useForm<
     VendorProfileFormInput,
     unknown,
@@ -43,16 +40,20 @@ export function useVendorProfile({
   >({
     resolver: zodResolver(vendorProfileSchema),
     defaultValues: {
-      address: defaultValues?.address ?? "",
-      phone: defaultValues?.phone ?? "",
-      slogans: defaultValues?.slogans ?? [{ value: "" }],
-      storefrontImage: defaultValues?.storefrontImage,
+      address: "",
+      phone: "",
+      slogans: [],
     },
+    values: profileQuery.data
+      ? profileToFormValues(profileQuery.data)
+      : undefined,
+    resetOptions: { keepDirtyValues: true },
   });
 
   const mutation = useMutation({
     mutationFn: updateVendorProfile,
-    onSuccess: async () => {
+    onSuccess: async (profile) => {
+      queryClient.setQueryData(["vendorProfile"], profile);
       await queryClient.invalidateQueries({ queryKey: ["vendorProfile"] });
       onSuccess?.();
     },
@@ -67,8 +68,13 @@ export function useVendorProfile({
     setValue: form.setValue,
     errors: form.formState.errors,
     isLoading: mutation.isPending,
+    profile: profileQuery.data,
+    isProfilePending: profileQuery.isPending,
+    isProfileError: profileQuery.isError,
     handleSubmit: form.handleSubmit((data) => {
       mutation.mutate(data);
     }),
   };
 }
+
+export type VendorProfileController = ReturnType<typeof useVendorProfile>;
