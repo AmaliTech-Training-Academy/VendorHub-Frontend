@@ -79,7 +79,7 @@ function StorefrontProductCard({
                   onIncrease(product.id);
                 }}
               >
-                <Plus className="size-3.5" />
+                <Plus className="size-5.5" />
               </Button>
             </div>
           ) : (
@@ -91,7 +91,7 @@ function StorefrontProductCard({
                 onAdd(product);
               }}
             >
-              <Plus className="size-3.5" />
+              <Plus className="size-6" />
             </Button>
           )}
         </div>
