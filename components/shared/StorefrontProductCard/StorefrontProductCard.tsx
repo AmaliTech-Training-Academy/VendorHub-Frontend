@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import type { VendorProduct } from "@/types/product";
 
-import { ProductImage } from "../layout/storefront/ProductImage";
+import { ProductImage } from "../layout/storefront/catalogue/ProductImage";
 
 function StorefrontProductCard({
   product,
