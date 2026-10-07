@@ -4,7 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Store, Receipt, Menu, LogOut, User } from "lucide-react";
+// eslint-disable-next-line import/order
+import { cn } from "cn";
+
+import { LogOut, Menu, Receipt, ShoppingCart, Store, User } from "lucide-react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -15,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
+import { useCartItemCount } from "@/store/cartStore";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const tabs = [
@@ -27,6 +30,8 @@ export function StorefrontNav() {
   const pathname = usePathname();
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
+  const cartCount = useCartItemCount();
+  const isCartPage = pathname.replace(/\/+$/, "") === "/storefront/cart";
 
   const handleLogout = () => {
     logout();
@@ -35,7 +40,7 @@ export function StorefrontNav() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-blue-950 shadow-sm">
-      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-4 px-6">
+      <div className="mx-auto flex h-18  items-center justify-between gap-4 px-6">
         {/* Logo */}
         <Link
           href="/storefront/vendors"
@@ -78,27 +83,52 @@ export function StorefrontNav() {
           })}
         </div>
 
-        {/* Account — desktop */}
-        <div className="hidden md:flex items-center shrink-0 z-100">
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-orange-500 hover:bg-white/10 hover:text-white rounded-full p-6  bg-white/20 cursor-pointer"
-                />
-              }
-            >
-              <User className="size-7 text-orange-500 " />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleLogout}>
-                <LogOut className="size-4 " />
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            href="/storefront/cart"
+            aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}
+            aria-current={pathname === "/storefront/cart" ? "page" : undefined}
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              "h-14 min-w-14 flex-col gap-0.5 px-2 text-white hover:bg-white/10 hover:text-white",
+              isCartPage &&
+                "bg-white text-blue-950 hover:bg-white hover:text-blue-950",
+            )}
+          >
+            <span className="relative flex size-6 items-center justify-center">
+              <ShoppingCart aria-hidden="true" className="size-5" />
+              <span
+                aria-hidden="true"
+                className="absolute -top-1.5 -right-2 flex min-w-4 items-center justify-center rounded-full bg-orange-400 px-1 text-[10px] leading-4 font-bold text-blue-950 tabular-nums"
+              >
+                {cartCount}
+              </span>
+            </span>
+            <span className="text-xs font-semibold leading-none">Cart</span>
+          </Link>
+
+          {/* Account — desktop */}
+          <div className="hidden items-center md:flex">
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="cursor-pointer rounded-full bg-white/20 p-6 text-orange-500 hover:bg-white/10 hover:text-white"
+                  />
+                }
+              >
+                <User className="size-7 text-orange-500" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="size-4" />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
         {/* Hamburger — mobile only */}
