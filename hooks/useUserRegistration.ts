@@ -56,6 +56,7 @@ export const useUserRegistration = ({
           response.refresh,
           response.id,
           response.email,
+          response.name,
         );
       onSuccess?.(variables);
     },
