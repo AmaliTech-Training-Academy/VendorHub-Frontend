@@ -17,7 +17,6 @@ import type {
   UseFormWatch,
 } from "react-hook-form";
 
-
 type Props = {
   register: UseFormRegister<RegisterFormValues>;
   errors: FieldErrors<RegisterFormValues>;
