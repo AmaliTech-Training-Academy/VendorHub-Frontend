@@ -111,8 +111,7 @@ export function StorefrontNav() {
           {/* Account — desktop */}
           <div className="hidden items-center gap-2 md:flex">
             {displayName && (
-              <span className="text-lg font-bold text-white/80 max-w-32 truncate flex flex-col">
-                <span className="text-sm font-medium">Hi there,</span>{" "}
+              <span className="text-sm font-medium text-white/80 max-w-32 truncate">
                 {displayName.split(" ")[0]}
               </span>
             )}
