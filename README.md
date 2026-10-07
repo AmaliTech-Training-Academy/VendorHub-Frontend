@@ -26,6 +26,8 @@ Ensure you have **Node.js (v18 or higher)** installed on your machine.
 
 Create a `.env.local` file in the project root (it is gitignored). The only required key is `NEXT_PUBLIC_API_URL`, described below.
 
+Optional: `NEXT_PUBLIC_VENDOR_PROFILE_ENABLED=true` turns on the vendor Store profile page. Leave it unset until the backend exposes `/api/vendors/me/profile/`.
+
 ### Connecting to the Backend
 
 This frontend expects a running instance of the **[VendorHub Backend](https://github.com/AmaliTech-Training-Academy/VendorHub-Backend)** (Django). Set up and run it separately using that repo's own setup instructions.

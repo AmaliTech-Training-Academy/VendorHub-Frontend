@@ -4,3 +4,6 @@ export const ORDER_STATUSES = [
   "preparing",
   "ready_for_collection",
 ] as const;
+
+export const VENDOR_PROFILE_ENABLED =
+  process.env.NEXT_PUBLIC_VENDOR_PROFILE_ENABLED === "true";

@@ -8,6 +8,26 @@
   scroll-behavior: smooth;
 }
 
+@keyframes vendor-message-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.vendor-message-track {
+  animation: vendor-message-marquee 36s linear infinite;
+}
+
+.vendor-message-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vendor-message-track {
+    animation: none;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
