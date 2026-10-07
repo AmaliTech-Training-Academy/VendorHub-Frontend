@@ -1,8 +1,5 @@
 import { PRODUCT_CATEGORIES } from "@/schemas/productSchema";
-import type { Vendor } from "@/types/vendor";
-
-export type VendorGroup = { category: string; vendors: Vendor[] };
-export type DeliveryFeeRange = { minimum: number; maximum: number };
+import type { DeliveryFeeRange, Vendor, VendorGroup } from "@/types/vendor";
 
 /**
  * Groups vendors by their primary (first) category so each vendor appears
@@ -26,6 +23,18 @@ export function groupVendorsByCategory(vendors: Vendor[]): VendorGroup[] {
     .map(([category, groupVendors]) => ({ category, vendors: groupVendors }));
 }
 
+/**
+ * A range spanning every fee isn't a filter. Returning null keeps vendors
+ * with no listed fee visible instead of hiding them as soon as the sliders
+ * are touched.
+ */
+export function normalizeFeeRange(
+  range: DeliveryFeeRange,
+  feeRangeLimit: number,
+): DeliveryFeeRange | null {
+  return range.minimum <= 0 && range.maximum >= feeRangeLimit ? null : range;
+}
+
 export function filterVendorGroups(
   groups: VendorGroup[],
   selectedCategory: string | null,
@@ -47,4 +56,18 @@ export function filterVendorGroups(
       }),
     }))
     .filter((group) => group.vendors.length > 0);
+}
+
+export function countVendorsInGroups(
+  groups: VendorGroup[],
+  category: string | null = null,
+): number {
+  return groups.reduce(
+    (count, group) =>
+      count +
+      (category === null || group.category === category
+        ? group.vendors.length
+        : 0),
+    0,
+  );
 }
