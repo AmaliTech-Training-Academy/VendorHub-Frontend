@@ -1,73 +1,89 @@
-import { PRODUCT_CATEGORIES } from "@/schemas/productSchema";
-import type { DeliveryFeeRange, Vendor, VendorGroup } from "@/types/vendor";
+import { describe, expect, it } from "vitest";
 
-/**
- * Groups vendors by their primary (first) category so each vendor appears
- * exactly once. Known categories keep their canonical order; any others follow
- * alphabetically.
- */
-export function groupVendorsByCategory(vendors: Vendor[]): VendorGroup[] {
-  const groups = new Map<string, Vendor[]>();
-  for (const vendor of vendors) {
-    const category = vendor.categories[0] ?? "Other";
-    groups.set(category, [...(groups.get(category) ?? []), vendor]);
-  }
+import {
+  countVendorsInGroups,
+  filterVendorGroups,
+  groupVendorsByCategory,
+  normalizeFeeRange,
+} from "@/lib/vendors";
+import type { Vendor } from "@/types/vendor";
 
-  const rank = (category: string) => {
-    const index = (PRODUCT_CATEGORIES as readonly string[]).indexOf(category);
-    return index === -1 ? PRODUCT_CATEGORIES.length : index;
+function makeVendor(
+  id: number,
+  category: string,
+  deliveryFee: number | null,
+): Vendor {
+  return {
+    id,
+    name: `Vendor ${id}`,
+    categories: [category],
+    deliveryFee,
+    availableDays: [],
+    timeWindows: [],
+    slogans: [],
   };
-
-  return [...groups.entries()]
-    .sort(([a], [b]) => rank(a) - rank(b) || a.localeCompare(b))
-    .map(([category, groupVendors]) => ({ category, vendors: groupVendors }));
 }
 
-/**
- * A range spanning every fee isn't a filter. Returning null keeps vendors
- * with no listed fee visible instead of hiding them as soon as the sliders
- * are touched.
- */
-export function normalizeFeeRange(
-  range: DeliveryFeeRange,
-  feeRangeLimit: number,
-): DeliveryFeeRange | null {
-  return range.minimum <= 0 && range.maximum >= feeRangeLimit ? null : range;
-}
+describe("filterVendorGroups", () => {
+  const groups = groupVendorsByCategory([
+    makeVendor(1, "Groceries", 2.25),
+    makeVendor(2, "Groceries", 5.5),
+    makeVendor(3, "Bakery", 8),
+    makeVendor(4, "Bakery", null),
+  ]);
 
-export function filterVendorGroups(
-  groups: VendorGroup[],
-  selectedCategory: string | null,
-  feeRange: DeliveryFeeRange | null,
-): VendorGroup[] {
-  return groups
-    .filter((group) => !selectedCategory || group.category === selectedCategory)
-    .map((group) => ({
-      ...group,
-      vendors: group.vendors.filter((vendor) => {
-        if (!feeRange) {
-          return true;
-        }
-        return (
-          vendor.deliveryFee !== null &&
-          vendor.deliveryFee >= feeRange.minimum &&
-          vendor.deliveryFee <= feeRange.maximum
-        );
-      }),
-    }))
-    .filter((group) => group.vendors.length > 0);
-}
+  it("includes fees on both range boundaries and excludes fees outside them", () => {
+    const filtered = filterVendorGroups(groups, null, {
+      minimum: 2.25,
+      maximum: 5.5,
+    });
 
-export function countVendorsInGroups(
-  groups: VendorGroup[],
-  category: string | null = null,
-): number {
-  return groups.reduce(
-    (count, group) =>
-      count +
-      (category === null || group.category === category
-        ? group.vendors.length
-        : 0),
-    0,
-  );
-}
+    expect(
+      filtered.flatMap((group) => group.vendors.map((vendor) => vendor.id)),
+    ).toEqual([1, 2]);
+  });
+
+  it("combines category and fee filters and omits empty groups", () => {
+    const filtered = filterVendorGroups(groups, "Bakery", {
+      minimum: 0,
+      maximum: 8,
+    });
+
+    expect(filtered).toEqual([
+      { category: "Bakery", vendors: [makeVendor(3, "Bakery", 8)] },
+    ]);
+  });
+
+  it("keeps vendors with unknown fees until a fee range is applied", () => {
+    const unfiltered = filterVendorGroups(groups, null, null);
+    const feeFiltered = filterVendorGroups(groups, null, {
+      minimum: 0,
+      maximum: 10,
+    });
+
+    expect(unfiltered.flatMap((group) => group.vendors)).toHaveLength(4);
+    expect(feeFiltered.flatMap((group) => group.vendors)).toHaveLength(3);
+  });
+
+  it("counts vendors across all groups or within one category", () => {
+    expect(countVendorsInGroups(groups)).toBe(4);
+    expect(countVendorsInGroups(groups, "Bakery")).toBe(2);
+  });
+});
+
+describe("normalizeFeeRange", () => {
+  it("treats the full span as no filter, so unpriced vendors stay visible", () => {
+    expect(normalizeFeeRange({ minimum: 0, maximum: 8 }, 8)).toBeNull();
+  });
+
+  it("keeps a narrower range", () => {
+    expect(normalizeFeeRange({ minimum: 2, maximum: 8 }, 8)).toEqual({
+      minimum: 2,
+      maximum: 8,
+    });
+    expect(normalizeFeeRange({ minimum: 0, maximum: 5 }, 8)).toEqual({
+      minimum: 0,
+      maximum: 5,
+    });
+  });
+});
