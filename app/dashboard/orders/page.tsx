@@ -1,45 +1,59 @@
-"use client"
+"use client";
 
 import { CircleAlert, ClipboardList, Clock, Wallet } from "lucide-react"
+import { toast } from "sonner"
 
 import { EmptyState } from "@/components/shared/EmptyState"
+import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader"
 import { OrdersTable } from "@/components/shared/OrdersTable"
 import { OrdersTableSkeleton } from "@/components/shared/OrdersTableSkeleton"
 import { StatCard } from "@/components/shared/StatCard"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { useVendorOrders } from "@/hooks/useOrders"
+import { useOrders, useUpdateOrderStatus } from "@/hooks/useOrders"
 import { useVendorId } from "@/hooks/useVendorId"
 import { formatPrice } from "@/lib/utils"
+import type { Order, OrderStatus } from "@/types/order"
 
 export default function OrdersPage() {
   const vendorId = useVendorId()
-  const { data: orders, isPending, isError } = useVendorOrders(vendorId)
+  const { data: orders, isPending, isError } = useOrders(vendorId)
+  const updateStatus = useUpdateOrderStatus(vendorId)
 
-  const pending = orders?.filter((order) => order.status !== "collected") ?? []
+  const inProgress =
+    orders?.filter((order) => order.status !== "ready_for_collection") ?? []
   const revenue = orders?.reduce((sum, order) => sum + order.total, 0) ?? 0
 
+  function handleAdvance(order: Order, status: OrderStatus) {
+    updateStatus.mutate(
+      { orderId: order.id, status },
+      {
+        onError: (error) => {
+          toast.error(error.message || `Couldn't update ${order.reference}`)
+        },
+      }
+    )
+  }
+
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-6">
-      <div className="flex items-center gap-4 rounded-2xl bg-linear-to-br from-accent via-accent/60 to-transparent p-5">
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-950 text-orange-400 shadow-sm dark:ring-1 dark:ring-white/15">
-          <ClipboardList aria-hidden="true" className="size-6" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Incoming orders</h1>
-          <p className="text-sm text-muted-foreground">
-            Orders placed by employees through the storefront.
-          </p>
-        </div>
-      </div>
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <DashboardPageHeader
+        title="Incoming orders"
+        description="Orders placed by employees through the storefront."
+        icon={ClipboardList}
+      />
 
       {orders && orders.length > 0 && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <StatCard icon={ClipboardList} label="Total orders" value={orders.length} />
+          <StatCard
+            icon={ClipboardList}
+            label="Total orders"
+            value={orders.length}
+          />
           <StatCard
             icon={Clock}
             tone="warning"
             label="In progress"
-            value={pending.length}
+            value={inProgress.length}
           />
           <StatCard
             icon={Wallet}
@@ -66,11 +80,19 @@ export default function OrdersPage() {
         <EmptyState
           icon={ClipboardList}
           title="No orders yet"
-          description="New orders from the storefront will appear here immediately."
+          description="New orders from the storefront will appear here."
         />
       )}
 
-      {orders && orders.length > 0 && <OrdersTable orders={orders} />}
+      {orders && orders.length > 0 && (
+        <OrdersTable
+          orders={orders}
+          onAdvance={handleAdvance}
+          updatingOrderId={
+            updateStatus.isPending ? updateStatus.variables.orderId : undefined
+          }
+        />
+      )}
     </div>
-  )
+  );
 }

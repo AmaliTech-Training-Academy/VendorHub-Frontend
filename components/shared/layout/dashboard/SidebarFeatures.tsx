@@ -3,18 +3,30 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "cn";
-import { LayoutDashboard, LogOut, Package, Receipt, Truck } from "lucide-react";
+import {
+  ClipboardList,
+  LayoutDashboard,
+  LogOut,
+  Package,
+  Truck,
+  User,
+} from "lucide-react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
+import { VENDOR_PROFILE_ENABLED } from "@/lib/constants";
+
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
   { href: "/dashboard/products", label: "Products", icon: Package },
-  { href: "/dashboard/orders", label: "Orders", icon: Receipt },
+  { href: "/dashboard/orders", label: "Orders", icon: ClipboardList },
   {
     href: "/dashboard/delivery-settings",
     label: "Delivery settings",
     icon: Truck,
   },
+  ...(VENDOR_PROFILE_ENABLED
+    ? [{ href: "/dashboard/profile", label: "Profile", icon: User }]
+    : []),
 ];
 
 export function Brand() {

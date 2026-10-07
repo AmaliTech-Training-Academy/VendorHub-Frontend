@@ -3,8 +3,15 @@
 
 import Link from "next/link";
 
-import { ClipboardList, Package, ShoppingBag, ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  ClipboardList,
+  Package,
+  ShoppingBag,
+  Store,
+} from "lucide-react";
 
+import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge/OrderStatusBadge";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -22,72 +29,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useOrders } from "@/hooks/useOrders";
 import { useProducts } from "@/hooks/useProducts";
 import { useVendorId } from "@/hooks/useVendorId";
-import { formatPrice } from "@/lib/utils";
-import type { RecentOrder } from "@/types/interfaces";
+import {
+  countOrdersThisWeek,
+  countPendingOrders,
+  summariseItems,
+} from "@/lib/orderStats";
+import { formatDate, formatPrice } from "@/lib/utils";
+import type { Order } from "@/types/order";
 
-// TEMPORARY: the order stats and recent orders below are hardcoded until the
-// backend has endpoints for listing orders. Product stats are real.
-const pendingOrders = {
-  label: "Pending orders",
-  value: 3,
-  hint: "Waiting for you to prepare",
-  icon: ClipboardList,
-};
-
-const ordersThisWeek = {
-  label: "Orders this week",
-  value: 27,
-  hint: "Since Monday",
-  icon: ShoppingBag,
-};
-
-const recentOrders: RecentOrder[] = [
-  {
-    id: "1042",
-    customer: "Daniel Osei",
-    items: "2x Jollof rice, 1x Meat pie",
-    total: 48,
-    status: "placed",
-    placedAt: "10 min ago",
-  },
-  {
-    id: "1041",
-    customer: "Ama Boateng",
-    items: "1x Waakye",
-    total: 15,
-    status: "preparing",
-    placedAt: "35 min ago",
-  },
-  {
-    id: "1040",
-    customer: "Kwame Asante",
-    items: "3x Kelewele",
-    total: 30,
-    status: "preparing",
-    placedAt: "1 hr ago",
-  },
-  {
-    id: "1039",
-    customer: "Efua Mensah",
-    items: "2x Jollof rice",
-    total: 40,
-    status: "ready_for_collection",
-    placedAt: "2 hrs ago",
-  },
-  {
-    id: "1038",
-    customer: "Yaw Fosu",
-    items: "1x Meat pie, 1x Waakye",
-    total: 23,
-    status: "ready_for_collection",
-    placedAt: "Yesterday",
-  },
-];
+const RECENT_ORDER_COUNT = 5;
 
 export default function DashboardOverviewPage() {
-  const { data: products, isError } = useProducts(useVendorId());
+  const vendorId = useVendorId();
+  const { data: products, isError } = useProducts(vendorId);
+  const {
+    data: orders,
+    isPending: ordersPending,
+    isError: ordersError,
+  } = useOrders(vendorId);
 
   let productsHint = "Live in your storefront";
   if (products) {
@@ -102,18 +64,28 @@ export default function DashboardOverviewPage() {
     hint: productsHint,
     icon: Package,
   };
+  const ordersUnavailable = ordersError ? "Couldn't load your orders" : null;
+  const pendingOrders = {
+    label: "Pending orders",
+    value: orders ? countPendingOrders(orders) : "—",
+    hint: ordersUnavailable ?? "Received or being prepared",
+    icon: ClipboardList,
+  };
+  const ordersThisWeek = {
+    label: "Orders this week",
+    value: orders ? countOrdersThisWeek(orders) : "—",
+    hint: ordersUnavailable ?? "Since Monday",
+    icon: ShoppingBag,
+  };
   const stats = [pendingOrders, productsInStock, ordersThisWeek];
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      <div>
-        <h1 className="text-2xl sm:text-4xl font-semibold text-blue-950">
-          Overview
-        </h1>
-        <p className="text-sm sm:text-lg text-muted-foreground">
-          Here&apos;s how your storefront is doing
-        </p>
-      </div>
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <DashboardPageHeader
+        title="Overview"
+        description="Here's how your storefront is doing"
+        icon={Store}
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => {
@@ -139,67 +111,98 @@ export default function DashboardOverviewPage() {
         })}
       </div>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div className="flex flex-col gap-1">
-            <CardTitle>Recent orders</CardTitle>
-            <CardDescription>
-              The latest orders from your customers
-            </CardDescription>
-          </div>
-          <Link
-            href="/dashboard/orders"
-            className={buttonVariants({ variant: "ghost", size: "sm" })}
-          >
-            View all
-            <ArrowRight className="size-4" />
-          </Link>
-        </CardHeader>
-
-        <CardContent>
-          {recentOrders.length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              No orders yet. They&apos;ll show up here as soon as a customer
-              places one.
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead className="hidden md:table-cell">Items</TableHead>
-                  <TableHead className="text-right">Total</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="hidden lg:table-cell text-right">
-                    Placed
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">#{order.id}</TableCell>
-                    <TableCell>{order.customer}</TableCell>
-                    <TableCell className="hidden md:table-cell text-muted-foreground">
-                      {order.items}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {formatPrice(order.total)}
-                    </TableCell>
-                    <TableCell>
-                      <OrderStatusBadge status={order.status} />
-                    </TableCell>
-                    <TableCell className="hidden lg:table-cell text-right text-muted-foreground">
-                      {order.placedAt}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+      <RecentOrdersCard
+        orders={orders}
+        isPending={ordersPending}
+        isError={ordersError}
+      />
     </div>
+  );
+}
+
+function RecentOrdersCard({
+  orders,
+  isPending,
+  isError,
+}: {
+  orders: Order[] | undefined;
+  isPending: boolean;
+  isError: boolean;
+}) {
+  const recentOrders = orders?.slice(0, RECENT_ORDER_COUNT) ?? [];
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div className="flex flex-col gap-1">
+          <CardTitle>Recent orders</CardTitle>
+          <CardDescription>
+            The latest orders from your customers
+          </CardDescription>
+        </div>
+        <Link
+          href="/dashboard/orders"
+          className={buttonVariants({ variant: "ghost", size: "sm" })}
+        >
+          View all
+          <ArrowRight className="size-4" />
+        </Link>
+      </CardHeader>
+
+      <CardContent>
+        {isPending && (
+          <p className="py-8 text-center text-sm text-muted-foreground">
+            Loading your orders…
+          </p>
+        )}
+        {isError && (
+          <p className="py-8 text-center text-sm text-destructive">
+            Couldn&apos;t load your orders. Please try again.
+          </p>
+        )}
+        {orders && recentOrders.length === 0 && (
+          <p className="py-8 text-center text-sm text-muted-foreground">
+            No orders yet. They&apos;ll show up here as soon as an employee
+            places one.
+          </p>
+        )}
+        {recentOrders.length > 0 && (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Order</TableHead>
+                <TableHead className="hidden md:table-cell">Items</TableHead>
+                <TableHead className="text-right">Total</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="hidden lg:table-cell text-right">
+                  Placed
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {recentOrders.map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell className="font-mono text-sm font-medium">
+                    {order.reference}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell text-muted-foreground">
+                    {summariseItems(order)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatPrice(order.total)}
+                  </TableCell>
+                  <TableCell>
+                    <OrderStatusBadge status={order.status} />
+                  </TableCell>
+                  <TableCell className="hidden lg:table-cell text-right text-muted-foreground">
+                    {formatDate(order.createdAt)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </CardContent>
+    </Card>
   );
 }
