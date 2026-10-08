@@ -1,7 +1,9 @@
 "use client";
 
-import React from "react";
+import { useRouter } from "next/navigation";
+
 import { Clock, ShieldAlert, LogOut } from "lucide-react";
+
 import {
   AlertDialog,
   AlertDialogContent,
@@ -12,7 +14,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
 
 interface VerificationGuardModalProps {
   status: string | null;
@@ -21,14 +22,13 @@ interface VerificationGuardModalProps {
 export function VerificationGuardModal({
   status,
 }: VerificationGuardModalProps) {
-  const setAuth = useAuthStore((state) => state.setAuth);
   const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
 
-  function handleLogout() {
-    // Purge your store session state context variables cleanly
-    setAuth(null, null, null, null);
-    router.replace("/login");
-  }
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
 
   const isPending = status === "PENDING" || !status;
 
