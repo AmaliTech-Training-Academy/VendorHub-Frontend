@@ -63,7 +63,7 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
     <Link
       href={`/storefront/vendors/catalogue?id=${encodeURIComponent(vendor.id)}`}
       style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
-      className="group w-80 flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm outline-none transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 focus-visible:ring-3 focus-visible:ring-ring/50"
+      className="group w-90 flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm outline-none transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
         {/* Header: icon, name, categories */}
@@ -100,7 +100,9 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
                 aria-hidden="true"
                 className="mt-0.5 size-4 shrink-0 text-primary"
               />
-              <dd className="line-clamp-1 text-foreground">{vendor.address}</dd>
+              <dd className="line-clamp-1 text-foreground text-wrap">
+                {vendor.address}
+              </dd>
             </div>
           )}
           <div className="flex items-center gap-2">
@@ -140,7 +142,7 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
               <PackageCheck className="absolute top-1/2 left-1 size-4 origin-left -translate-y-1/2 translate-x-16 scale-75 text-blue-950 dark:text-orange-400 opacity-0 transition-all delay-100 duration-700 ease-in-out motion-reduce:transition-none group-hover:translate-x-0 group-hover:scale-150 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:scale-150 group-focus-visible:opacity-100" />
             </span>
 
-            <span>
+            <span className="text-xl text-blue-950">
               {vendor.deliveryFee === null
                 ? "Fee unavailable"
                 : formatPrice(vendor.deliveryFee)}
