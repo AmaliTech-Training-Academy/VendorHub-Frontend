@@ -39,7 +39,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   setAuth: (role, accessToken, refreshToken, userId, email, name) => {
     // Pick whichever name is actually available for this role —
     // vendors have owner_name, employees have full_name.
-    const displayName = name ?? email ?? null;
+    const displayName = name;
 
     if (typeof window !== "undefined") {
       localStorage.setItem("role", role);
@@ -54,7 +54,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
     }
 
-    set({ role, accessToken, userId, email: email ?? null, displayName });
+    set({ role, accessToken, userId, email, displayName });
   },
 
   logout: () => {

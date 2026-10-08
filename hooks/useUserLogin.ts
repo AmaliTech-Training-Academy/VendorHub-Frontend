@@ -31,6 +31,7 @@ export const useUserLogin = ({
           response.refresh,
           response.id,
           response.email,
+          response.name,
         );
       onSuccess?.(response.role);
     },
