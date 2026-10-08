@@ -22,23 +22,25 @@ describe("vendorSchema", () => {
       availableDays: [],
       timeWindows: [],
       slogans: [],
+      address: null,
+      phone: null,
     });
   });
 
-  it("preserves vendor-provided slogans when present", () => {
+  it("keeps address and phone as trimmed strings when provided", () => {
     const vendor = vendorSchema.parse({
-      id: 2,
-      business_name: "Corner Bakery",
-      categories: ["Bakery"],
-      delivery_fee: "2.50",
-      available_days: ["MONDAY"],
-      delivery_windows: [],
-      slogans: ["Fresh from the oven", "Made for your break"],
+      id: 1,
+      business_name: "Vendor Kitchen",
+      categories: null,
+      delivery_fee: null,
+      available_days: null,
+      delivery_windows: null,
+      slogans: null,
+      address: "  Ridge Office Park  ",
+      phone_number: "0241234567",
     });
 
-    expect(vendor.slogans).toEqual([
-      "Fresh from the oven",
-      "Made for your break",
-    ]);
+    expect(vendor.address).toBe("Ridge Office Park");
+    expect(vendor.phone).toBe("0241234567");
   });
 });
