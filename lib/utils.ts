@@ -30,15 +30,35 @@ export function formatDays(days: Vendor["availableDays"]) {
   let start = 0;
   while (start < indexes.length) {
     let end = start;
-    while (end + 1 < indexes.length && indexes[end + 1] === indexes[end] + 1)
-      {end++;}
+    while (end + 1 < indexes.length && indexes[end + 1] === indexes[end] + 1) {
+      end++;
+    }
     const label = (i: number) => WEEKDAY_LABELS[WEEKDAYS[indexes[i]]];
     if (end - start >= 2) {
       parts.push(`${label(start)}–${label(end)}`);
     } else {
-      for (let i = start; i <= end; i++) {parts.push(label(i));}
+      for (let i = start; i <= end; i++) {
+        parts.push(label(i));
+      }
     }
     start = end + 1;
   }
   return parts.join(", ");
+}
+
+export function formatDeliveryDays(days: Vendor["availableDays"]) {
+  return days.length > 0 ? formatDays(days) : "No delivery days listed";
+}
+
+export function formatTimeWindows(windows: Vendor["timeWindows"]) {
+  if (windows.length === 0) {
+    return "No delivery times listed";
+  }
+  return windows.map((w) => `${w.startTime}–${w.endTime}`).join(", ");
+}
+
+export function formatDeliveryFee(fee: Vendor["deliveryFee"]) {
+  return fee === null
+    ? "Delivery fee unavailable"
+    : `${formatPrice(fee)} delivery`;
 }

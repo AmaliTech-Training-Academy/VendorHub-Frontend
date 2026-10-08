@@ -12,7 +12,7 @@ export default function StorefrontLayout({
     <AuthGuard allowedRoles={["EMPLOYEE"]}>
       <div className="flex  flex-col space-y-6  md:space-y-0 ">
         <StorefrontNav />
-        <main className="mx-auto flex w-full justify-center md:max-w-7xl">
+        <main className="mx-auto flex w-full justify-center md:max-w-[90%]">
           {children}
         </main>
       </div>

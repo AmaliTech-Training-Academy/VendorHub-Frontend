@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import type { VendorProduct } from "@/types/product";
 
-import { ProductImage } from "../layout/storefront/ProductImage";
+import { ProductImage } from "../layout/storefront/catalogue/ProductImage";
 
 function StorefrontProductCard({
   product,
@@ -28,11 +28,11 @@ function StorefrontProductCard({
   return (
     <div
       style={{ animationDelay: `${Math.min(index, 8) * 50}ms` }}
-      className={`group flex flex-col sm:w-xs overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:shadow-md hover:shadow-primary/10 cursor-pointer ${
+      className={`group w-100 flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:shadow-md hover:shadow-primary/10 ${
         quantityInCart > 0 ? "border-primary/40" : "border-border"
       }`}
     >
-      <ProductImage name={product.name} />
+      <ProductImage name={product.name} imageURL={product.imageUrl || null} />
 
       <div className="flex flex-1 flex-col gap-1 p-3">
         <h3 className="truncate text-sm font-semibold leading-snug">
@@ -79,7 +79,7 @@ function StorefrontProductCard({
                   onIncrease(product.id);
                 }}
               >
-                <Plus className="size-3.5" />
+                <Plus className="size-5.5" />
               </Button>
             </div>
           ) : (
@@ -91,7 +91,7 @@ function StorefrontProductCard({
                 onAdd(product);
               }}
             >
-              <Plus className="size-3.5" />
+              <Plus className="size-6" />
             </Button>
           )}
         </div>
