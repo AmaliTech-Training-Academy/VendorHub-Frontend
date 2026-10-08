@@ -11,8 +11,6 @@ export type RegisterFormValues = {
   businessName?: string;
   ownerName?: string;
   fullName?: string;
-  phone?: string | null;
-  officeAddress?: string | null;
 };
 export type AuthMode = "login" | "register";
 export type AudienceTab = "employees" | "vendors";

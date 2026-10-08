@@ -185,67 +185,22 @@ export function RegisterFields({ register, errors, setValue, watch }: Props) {
 
           {/* Employee Fields */}
           {selectedRole === "EMPLOYEE" && (
-            <div className="mt-5 grid grid-cols-1 gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-1.5">
-                <Label
-                  htmlFor="fullName"
-                  className="text-xs font-bold uppercase tracking-wider text-slate-600"
-                >
-                  Full Name
-                </Label>
+            <div className="mt-5 flex flex-col gap-1.5 rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
+              <Label
+                htmlFor="fullName"
+                className="text-xs font-bold uppercase tracking-wider text-slate-600"
+              >
+                Full Name
+              </Label>
 
-                <Input
-                  {...register("fullName")}
-                  id="fullName"
-                  placeholder="Enter your full name"
-                  className="h-11 rounded-xl border-slate-200 bg-white focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
-                />
+              <Input
+                {...register("fullName")}
+                id="fullName"
+                placeholder="Enter your full name"
+                className="h-11 rounded-xl border-slate-200 bg-white focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
+              />
 
-                <FieldErrorAlert message={errors.fullName?.message} />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label
-                  htmlFor="phone"
-                  className="text-xs font-bold uppercase tracking-wider text-slate-600"
-                >
-                  Phone Number
-                </Label>
-
-                <Input
-                  {...register("phone")}
-                  id="phone"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="0241234567"
-                  className="h-11 rounded-xl border-slate-200 bg-white focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
-                />
-
-                <FieldErrorAlert message={errors.phone?.message} />
-              </div>
-
-              <div className="flex flex-col gap-1.5 sm:col-span-2">
-                <Label
-                  htmlFor="officeAddress"
-                  className="text-xs font-bold uppercase tracking-wider text-slate-600"
-                >
-                  Office Address
-                </Label>
-
-                <Input
-                  {...register("officeAddress")}
-                  id="officeAddress"
-                  placeholder="e.g. Ridge Office Park, 3rd Floor"
-                  className="h-11 rounded-xl border-slate-200 bg-white focus-visible:border-orange-500 focus-visible:ring-orange-500/20"
-                />
-
-                <p className="text-xs text-slate-500">
-                  Where vendors should deliver your orders.
-                </p>
-
-                <FieldErrorAlert message={errors.officeAddress?.message} />
-              </div>
+              <FieldErrorAlert message={errors.fullName?.message} />
             </div>
           )}
 

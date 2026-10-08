@@ -14,17 +14,6 @@ export const employeeRegisterSchema = z.object({
   email: z.email("Please enter a valid email"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   fullName: z.string().min(1, "Full name is required").max(255),
-  officeAddress: z.string().min(1),
-  phone: z
-    .union([z.string(), z.number()])
-    .nullable()
-    .optional()
-    .transform((val) => {
-      if (val === null || val === undefined) {
-        return "";
-      }
-      return String(val);
-    }),
 });
 
 export const registerSchema = z.discriminatedUnion("role", [

@@ -17,8 +17,6 @@ export const registerEmployee = (data: {
   email: string;
   password: string;
   full_name: string;
-  phone: string;
-  office_address: string;
 }) =>
   apiRequest<RegisterResponse>("accounts/employee/register/", {
     method: "POST",
