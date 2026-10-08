@@ -2,12 +2,14 @@
 
 import { useRouter } from "next/navigation";
 
-import { useEffect , useSyncExternalStore  } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
+import { useCurrentUser } from "@/hooks/useApproveVendor";
 import { homePathForRole } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { UserRole } from "@/types/types";
 
+import { VerificationGuardModal } from "./VerificationGuardModal";
 import { Spinner } from "../ui/spinner";
 
 type Props = {
@@ -21,13 +23,16 @@ export function AuthGuard({ children, allowedRoles }: Props) {
   const router = useRouter();
   const role = useAuthStore((state) => state.role);
   const accessToken = useAuthStore((state) => state.accessToken);
-  // The auth store reads localStorage on the client, so render the spinner
-  // during hydration (false) to match the server output.
+
+  // Synchronize dynamic server profiles verification status
+  const { data: serverUser, isLoading: isServerLoading } = useCurrentUser();
+
   const isClient = useSyncExternalStore(
     subscribeNoop,
     () => true,
     () => false,
   );
+
   const isAllowed = !!accessToken && !!role && allowedRoles.includes(role);
 
   useEffect(() => {
@@ -42,12 +47,17 @@ export function AuthGuard({ children, allowedRoles }: Props) {
     }
   }, [accessToken, role, allowedRoles, router]);
 
-  if (!isClient || !isAllowed) {
+  // Keep showing the spinner during hydration or when fetching the server validation status
+  if (!isClient || !isAllowed || isServerLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner className="size-6 text-orange-500" />
       </div>
     );
+  }
+
+  if (serverUser && serverUser.verification_status !== "APPROVED") {
+    return <VerificationGuardModal status={serverUser.verification_status} />;
   }
 
   return <>{children}</>;
