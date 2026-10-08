@@ -3,11 +3,12 @@
 The app builds as a static export (`output: "export"` in `next.config.ts`) into
 `out/`, which is served from a private S3 bucket through CloudFront. The same
 distribution proxies `/api/*` to the backend (deployed separately on Elastic
-Beanstalk), so the browser talks to one HTTPS origin for both:
+Beanstalk, behind a load balancer with an HTTPS certificate), so the browser
+talks to one HTTPS origin for both:
 
 ```
-browser ──HTTPS──▶ CloudFront ─┬─ /api/*  ──HTTP──▶ Elastic Beanstalk (Django)
-                               └─ default ─────────▶ S3 (static export, via OAC)
+browser ──HTTPS──▶ CloudFront ─┬─ /api/*  ──HTTPS──▶ vendorhub.dansarpong.com (Django)
+                               └─ default ──────────▶ S3 (static export, via OAC)
 ```
 
 Static export can't use anything that needs a Node server: middleware/proxy,
@@ -39,16 +40,19 @@ Do this once per environment, in the AWS console (us-east-1 or your team's regio
    response, for both **403** and **404**: response page `/404/index.html`,
    HTTP response code **404**. S3 returns 403 for missing keys under OAC.
 5. **Backend origin**: Distribution → Origins → Create origin. Origin
-   domain: the Elastic Beanstalk environment host (e.g.
-   `vendorhub-staging.eu-west-1.elasticbeanstalk.com`), protocol
-   **HTTP only**, port 80.
+   domain: the backend's custom domain (`vendorhub.dansarpong.com`), **not**
+   the `…elasticbeanstalk.com` name, because the certificate only matches the
+   custom domain. Protocol **HTTPS only**, HTTPS port 443, minimum origin SSL
+   protocol TLSv1.2. The load balancer redirects plain HTTP to HTTPS, so an
+   HTTP-only origin would send browsers off to the backend domain directly.
 6. **API behavior**: Distribution → Behaviors → Create behavior:
    - Path pattern `/api/*`, origin: the backend origin.
    - Viewer protocol policy: **HTTPS only**.
    - Allowed methods: **GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE**.
    - Cache policy: **CachingDisabled**. Origin request policy:
      **AllViewerExceptHostHeader** (forwards `Authorization` and query
-     strings; Django sees the Beanstalk host, which `ALLOWED_HOSTS` accepts).
+     strings; Django sees the origin's domain as its host, which
+     `ALLOWED_HOSTS` must accept).
    - **No** function association. The index rewrite would turn
      `/api/vendors` into `/api/vendors/index.html`.
 
@@ -60,17 +64,17 @@ Do this once per environment, in the AWS console (us-east-1 or your team's regio
 
 ## Why the API goes through CloudFront
 
-The Beanstalk environment only serves HTTP, and browsers block an HTTPS page
-from calling an `http://` API (mixed content). Proxying `/api/*` through the
-frontend's distribution gives the API an HTTPS URL, and because the frontend
-and API now share an origin, no CORS settings are needed on the backend.
+Proxying `/api/*` through the frontend's distribution puts the site and the API
+on one origin, so the browser makes no cross-origin requests and the backend's
+`CORS_ALLOWED_ORIGINS` doesn't need to list the frontend. It also means
+`NEXT_PUBLIC_API_URL` stays `https://<distribution>.cloudfront.net/api` if the
+backend's address changes: only the CloudFront origin needs editing, with no
+frontend rebuild.
 
-**Limitation:** the CloudFront → Beanstalk hop is still plain HTTP over the
-internet, so credentials and tokens are unencrypted on that leg. That's
-acceptable for staging only. Before production, give the backend real HTTPS
-(load-balanced Beanstalk environment + ACM certificate on a custom domain;
-ACM can't issue for `elasticbeanstalk.com`) and switch the origin's protocol
-to **HTTPS only**.
+The CloudFront → backend hop is encrypted (HTTPS only, validated against the
+backend's ACM certificate). Keep it that way: an HTTP origin would send
+credentials and tokens unencrypted between CloudFront and the server, and the
+load balancer answers plain HTTP with a redirect anyway.
 
 ## Automatic deploys (GitHub Actions)
 
