@@ -21,6 +21,8 @@ function makeVendor(
     availableDays: [],
     timeWindows: [],
     slogans: [],
+    address: null,
+    phone: null,
   };
 }
 

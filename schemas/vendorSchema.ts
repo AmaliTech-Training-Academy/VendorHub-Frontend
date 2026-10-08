@@ -34,5 +34,5 @@ export const vendorSchema = vendorApiSchema.transform((raw) => ({
   timeWindows: raw.delivery_windows ?? [],
   slogans: raw.slogans ?? [],
   address: raw.address?.trim() || null,
-  phone: raw.phone_number !== null ? String(raw.phone_number) : null,
+  phone: raw.phone_number?.toString().trim() || null,
 }));
