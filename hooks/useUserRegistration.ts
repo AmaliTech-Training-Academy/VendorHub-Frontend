@@ -50,7 +50,14 @@ export const useUserRegistration = ({
     onSuccess: (response, variables) => {
       useAuthStore
         .getState()
-        .setAuth(response.role, response.access, response.refresh, response.id);
+        .setAuth(
+          response.role,
+          response.access,
+          response.refresh,
+          response.id,
+          response.email,
+          response.name,
+        );
       onSuccess?.(variables);
     },
     onError: (err: Error) => {

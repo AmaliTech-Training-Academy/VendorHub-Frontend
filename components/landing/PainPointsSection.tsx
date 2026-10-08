@@ -32,12 +32,12 @@ export default function PainPointsSection() {
       <div className="w-11/12 max-w-7xl flex flex-col md:flex-row gap-12 lg:gap-20 items-center justify-between">
         <div className="relative w-full max-w-112.5 lg:max-w-125 h-87.5 md:h-125  rounded-2xl overflow-hidden  animate-slide-in-left transition-transform duration-500 hover:scale-[1.02]">
           <Image
-            src="/e1.jpg"
+            src="/why.png"
             alt="Delicious office vendor meal food"
             fill
             sizes="(max-width: 768px) 100vw, 500px"
             priority
-            className="object-fit transition-transform duration-700 hover:scale-110"
+            className="object-cover transition-transform duration-700 hover:scale-130"
           />
         </div>
 

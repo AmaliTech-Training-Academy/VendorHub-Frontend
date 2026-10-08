@@ -25,7 +25,14 @@ export const useUserLogin = ({
     onSuccess: (response) => {
       useAuthStore
         .getState()
-        .setAuth(response.role, response.access, response.refresh, response.id);
+        .setAuth(
+          response.role,
+          response.access,
+          response.refresh,
+          response.id,
+          response.email,
+          response.name,
+        );
       onSuccess?.(response.role);
     },
     onError: (err: Error) => {
