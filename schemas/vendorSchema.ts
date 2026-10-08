@@ -17,6 +17,11 @@ const vendorApiSchema = z.object({
   delivery_fee: z.string().nullable(),
   available_days: z.array(z.enum(WEEKDAYS)).nullable(),
   delivery_windows: z.array(storedTimeWindowSchema).nullable(),
+  slogans: z.array(z.string().trim().min(1)).nullable().optional(),
+  // Nullable: vendors registered before the profile form won't have these yet.
+  address: z.string().nullable().optional(),
+  // Accepts either type while the backend field is being settled (see note below).
+  phone_number: z.union([z.string(), z.number()]).nullable().optional(),
 });
 
 export const vendorSchema = vendorApiSchema.transform((raw) => ({
@@ -27,4 +32,7 @@ export const vendorSchema = vendorApiSchema.transform((raw) => ({
     raw.delivery_fee === null ? null : parseDecimal(raw.delivery_fee),
   availableDays: raw.available_days ?? [],
   timeWindows: raw.delivery_windows ?? [],
+  slogans: raw.slogans ?? [],
+  address: raw.address?.trim() || null,
+  phone: raw.phone_number?.toString().trim() || null,
 }));

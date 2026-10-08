@@ -20,6 +20,9 @@ const vendor: Vendor = {
   timeWindows: [
     { id: 1, label: "Morning", startTime: "09:00", endTime: "12:00" },
   ],
+  slogans: [],
+  address: null,
+  phone: null,
 };
 
 function ContactDetailsHarness() {
