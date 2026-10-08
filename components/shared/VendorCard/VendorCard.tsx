@@ -7,6 +7,7 @@ import {
   Croissant,
   House,
   Leaf,
+  MapPin,
   PackageCheck,
   ShoppingBasket,
   Store,
@@ -62,18 +63,21 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
     <Link
       href={`/storefront/vendors/catalogue?id=${encodeURIComponent(vendor.id)}`}
       style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm outline-none transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/10 focus-visible:ring-3 focus-visible:ring-ring/50"
+      className="group w-90 flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm outline-none transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
-        <div className="flex items-center gap-3">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/50">
+        {/* Header: icon, name, categories */}
+        <div className="flex items-start gap-3">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
             <Icon
               aria-hidden="true"
               className={`size-6 transition-transform duration-300 group-hover:scale-110 ${theme.iconColor}`}
             />
           </div>
           <div className="flex min-w-0 flex-col gap-1.5">
-            <h3 className="truncate text-base font-semibold">{vendor.name}</h3>
+            <h3 className="truncate text-lg font-semibold leading-tight">
+              {vendor.name}
+            </h3>
             <div className="flex flex-wrap gap-1.5">
               {vendor.categories.map((category) => (
                 <span
@@ -87,7 +91,20 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
           </div>
         </div>
 
-        <dl className="flex flex-col gap-1.5 text-sm text-muted-foreground">
+        {/* Details: address, days, times */}
+        <dl className="flex flex-col gap-2 text-sm text-muted-foreground">
+          {vendor.address && (
+            <div className="flex items-start gap-2">
+              <dt className="sr-only">Address</dt>
+              <MapPin
+                aria-hidden="true"
+                className="mt-0.5 size-4 shrink-0 text-primary"
+              />
+              <dd className="line-clamp-1 text-foreground text-wrap">
+                {vendor.address}
+              </dd>
+            </div>
+          )}
           <div className="flex items-center gap-2">
             <dt className="sr-only">Delivery days</dt>
             <CalendarDays aria-hidden="true" className="size-4 shrink-0" />
@@ -105,15 +122,16 @@ function VendorCard({ vendor, index = 0 }: { vendor: Vendor; index?: number }) {
           )}
         </dl>
 
-        <div className="mt-auto flex items-center justify-between gap-3 pt-1">
-          <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
+        {/* Footer: call to action and delivery fee */}
+        <div className="mt-auto flex items-center justify-between gap-3 border-t border-border pt-4">
+          <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
             Browse menu
             <ArrowRight
               aria-hidden="true"
               className="size-4 transition-transform duration-300 group-hover:translate-x-1"
             />
           </span>
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border bg-muted/40 px-2.5 text-xs font-medium text-foreground">
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border bg-muted/40 pr-3 text-sm font-semibold text-foreground">
             {/* On hover/focus the truck grows and drives off to the right while the delivered
                 package slides in and grows. Under reduced motion the swap is instant. */}
             <span
