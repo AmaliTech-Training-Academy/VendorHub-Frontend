@@ -15,7 +15,7 @@ function VendorList({
   return (
     <div
       className={cn(
-        "grid grid-cols-1 gap-4",
+        "flex flex-wrap gap-4",
         count === 1 && "max-w-md",
         count === 2 && "sm:grid-cols-2",
         (count === undefined || count > 2) && "sm:grid-cols-2 lg:grid-cols-3",
