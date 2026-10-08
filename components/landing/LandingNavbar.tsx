@@ -43,7 +43,7 @@ export default function LandingNavbar() {
 
   return (
     <header
-      className={`sticky top-0 sm:top-5 z-50 w-full transition-all duration-300 flex flex-col justify-center px-4 sm:px-6 py-4
+      className={`sticky top-0  z-50 w-full transition-all duration-300 flex flex-col justify-center px-4 sm:px-6 py-4
         ${
           scroll
             ? "md:w-full bg-white/90 backdrop-blur-md shadow-md sm:top-0 rounded-none"
@@ -103,7 +103,9 @@ export default function LandingNavbar() {
             type="button"
             variant="ghost"
             size="icon"
-            onClick={() => { setIsOpen(!isOpen); }}
+            onClick={() => {
+              setIsOpen(!isOpen);
+            }}
             className="text-blue-950"
             aria-label="Toggle Menu"
           >
@@ -123,7 +125,9 @@ export default function LandingNavbar() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  onClick={() => { setIsOpen(false); }}
+                  onClick={() => {
+                    setIsOpen(false);
+                  }}
                   className="block text-lg font-medium text-gray-700 hover:text-blue-900 py-1"
                 >
                   {link.label}
@@ -138,7 +142,9 @@ export default function LandingNavbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => { setIsOpen(false); }}
+                onClick={() => {
+                  setIsOpen(false);
+                }}
                 className={`w-full text-center px-4 py-2.5 rounded-md text-white font-semibold ${link.mobileClassName}`}
               >
                 {link.label}

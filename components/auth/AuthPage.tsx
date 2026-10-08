@@ -111,20 +111,22 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
           className={`w-full md:w-1/2 h-full flex flex-col justify-center p-6 md:p-12 animate-slide-in-right ${config.panelClassName}`}
         >
           <div className="max-w-md mx-auto w-full">
-            <div className="flex md:hidden items-center gap-2 mb-6">
-              <Image
-                src="/logo.png"
-                alt="VendorHub logo"
-                loading="eager"
-                width={32}
-                height={32}
-                className="object-contain"
-              />
-              <span className="text-lg font-extrabold tracking-tight">
-                <span className="text-blue-900">Vendor</span>
-                <span className="text-orange-500">Hub</span>
-              </span>
-            </div>
+            <Link href="/">
+              <div className="flex md:hidden items-center gap-2 mb-6">
+                <Image
+                  src="/logo.png"
+                  alt="VendorHub logo"
+                  loading="eager"
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                />
+                <span className="text-lg font-extrabold tracking-tight">
+                  <span className="text-blue-900">Vendor</span>
+                  <span className="text-orange-500">Hub</span>
+                </span>
+              </div>
+            </Link>
 
             <h1 className="text-2xl md:text-3xl font-extrabold text-blue-900 tracking-tight">
               {config.headingPrefix}
@@ -135,7 +137,12 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
               {config.description}
             </p>
 
-            <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-4">
+            <form
+              onSubmit={(e) => {
+                void handleSubmit(e);
+              }}
+              className="space-y-4"
+            >
               {error && (
                 <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>
