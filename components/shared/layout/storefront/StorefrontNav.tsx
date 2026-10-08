@@ -112,7 +112,7 @@ export function StorefrontNav() {
           <div className="hidden items-center gap-2 md:flex">
             {displayName && (
               <span className="text-sm font-medium text-white/80 max-w-32 truncate">
-                {displayName.split(" ")[0]}
+                hi there , {displayName.split(" ")[0]}
               </span>
             )}
             <DropdownMenu>
