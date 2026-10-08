@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { CalendarDays, Clock, Store, Truck } from "lucide-react";
+import { CalendarDays, Clock, MapPin, Phone, Store, Truck } from "lucide-react";
 
 import {
   formatDeliveryDays,
@@ -11,7 +11,6 @@ import type { Vendor } from "@/types/vendor";
 
 import { HeroChip } from "./HeroChip";
 
-
 export function VendorHero({
   vendor,
   heroImage,
@@ -19,6 +18,8 @@ export function VendorHero({
   vendor: Vendor;
   heroImage?: string;
 }) {
+  const hasContact = Boolean(vendor.address || vendor.phone);
+
   return (
     <section className="relative isolate min-h-72 overflow-hidden rounded-lg bg-slate-950 text-white sm:min-h-88">
       <Image
@@ -52,6 +53,27 @@ export function VendorHero({
                 </span>
               ))}
             </div>
+          )}
+
+          {/* Contact details only render for vendors who have filled them in */}
+          {hasContact && (
+            <dl className="flex flex-wrap gap-2 text-sm">
+              {vendor.address && (
+                <HeroChip icon={MapPin} label="Address">
+                  {vendor.address}
+                </HeroChip>
+              )}
+              {vendor.phone && (
+                <HeroChip icon={Phone} label="Contact">
+                  <a
+                    href={`tel:${vendor.phone.replace(/\s+/g, "")}`}
+                    className="underline-offset-2 hover:underline focus-visible:underline"
+                  >
+                    {vendor.phone}
+                  </a>
+                </HeroChip>
+              )}
+            </dl>
           )}
         </div>
 
