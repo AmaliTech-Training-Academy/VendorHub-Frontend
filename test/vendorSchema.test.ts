@@ -13,6 +13,8 @@ describe("vendorSchema", () => {
         available_days: null,
         delivery_windows: null,
         slogans: null,
+        address: null,
+        phone: null,
       }),
     ).toEqual({
       id: 1,
