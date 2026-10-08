@@ -4,6 +4,7 @@ import { CircleAlert, ClipboardList, Clock, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { EmptyState } from "@/components/shared/EmptyState";
+import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 import { OrdersTable } from "@/components/shared/OrdersTable";
 import { OrdersTableSkeleton } from "@/components/shared/OrdersTableSkeleton";
 import { StatCard } from "@/components/shared/StatCard";
@@ -12,7 +13,6 @@ import { useOrders, useUpdateOrderStatus } from "@/hooks/useOrders";
 import { useVendorId } from "@/hooks/useVendorId";
 import { formatPrice } from "@/lib/utils";
 import type { Order, OrderStatus } from "@/types/order";
-import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 
 export default function OrdersPage() {
   const vendorId = useVendorId();

@@ -1,4 +1,5 @@
 import { Filter } from "lucide-react";
+
 import { EmptyState } from "@/components/shared/EmptyState";
 import { VendorCard } from "@/components/shared/VendorCard";
 import { VendorList } from "@/components/shared/VendorList";

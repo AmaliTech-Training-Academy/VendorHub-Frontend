@@ -1,10 +1,10 @@
 import { z } from "zod";
 
+import { parseDecimal } from "@/lib/api/mapping";
 import {
   WEEKDAYS,
   storedTimeWindowSchema,
 } from "@/schemas/deliverySettingsSchema";
-import { parseDecimal } from "@/lib/api/mapping";
 
 const vendorProfileInputSchema = z.object({
   address: z.string().trim().min(1, "Address is required").max(255),
@@ -23,7 +23,6 @@ const vendorProfileInputSchema = z.object({
           .max(80, "Keep it short — under 80 characters"),
       }),
     )
-    .min(1, "Add at least one slogan")
     .max(5, "Up to 5 slogans"),
   storefrontImage: z
     .instanceof(File)

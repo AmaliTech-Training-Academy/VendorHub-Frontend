@@ -23,6 +23,18 @@ export function groupVendorsByCategory(vendors: Vendor[]): VendorGroup[] {
     .map(([category, groupVendors]) => ({ category, vendors: groupVendors }));
 }
 
+/**
+ * A range spanning every fee isn't a filter. Returning null keeps vendors
+ * with no listed fee visible instead of hiding them as soon as the sliders
+ * are touched.
+ */
+export function normalizeFeeRange(
+  range: DeliveryFeeRange,
+  feeRangeLimit: number,
+): DeliveryFeeRange | null {
+  return range.minimum <= 0 && range.maximum >= feeRangeLimit ? null : range;
+}
+
 export function filterVendorGroups(
   groups: VendorGroup[],
   selectedCategory: string | null,

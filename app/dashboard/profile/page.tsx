@@ -3,14 +3,40 @@
 import { Store } from "lucide-react";
 import { toast } from "sonner";
 
+import { EmptyState } from "@/components/shared/EmptyState";
 import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 import { DeliveryDetailsCard } from "@/components/shared/layout/dashboard/DeliveryDetailsCard";
 import { StoreIdentityCard } from "@/components/shared/layout/dashboard/StoreIdentityCard";
 import { VendorProfileForm } from "@/components/shared/layout/dashboard/VendorProfileForm";
 import { useVendorProfile } from "@/hooks/useVendorProfile";
+import { VENDOR_PROFILE_ENABLED } from "@/lib/constants";
 import { useAuthStore } from "@/store/useAuthStore";
 
+const HEADER = {
+  title: "Store profile",
+  description:
+    "Keep your store identity and storefront details together in one place.",
+  icon: Store,
+};
+
 export default function VendorProfilePage() {
+  if (!VENDOR_PROFILE_ENABLED) {
+    return (
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+        <DashboardPageHeader {...HEADER} />
+        <EmptyState
+          icon={Store}
+          title="Store profile is coming soon"
+          description="Editing your address, phone, slogans and storefront image will be available here shortly."
+        />
+      </div>
+    );
+  }
+
+  return <VendorProfileEditor />;
+}
+
+function VendorProfileEditor() {
   const authEmail = useAuthStore((state) => state.email);
   const profileForm = useVendorProfile({
     onSuccess: () => toast.success("Profile updated"),
@@ -20,11 +46,7 @@ export default function VendorProfilePage() {
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-      <DashboardPageHeader
-        title="Store profile"
-        description="Keep your store identity and storefront details together in one place."
-        icon={Store}
-      />
+      <DashboardPageHeader {...HEADER} />
 
       <div className="grid min-w-0 grid-cols-1 items-start gap-8 xl:grid-cols-[minmax(0,1fr)_20rem]">
         <VendorProfileForm form={profileForm} />

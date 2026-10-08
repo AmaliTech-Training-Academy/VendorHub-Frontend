@@ -2,7 +2,13 @@
 
 import Image from "next/image";
 
-import { ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Pause,
+  Play,
+  type LucideIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -24,13 +30,17 @@ export function PageHeader({
   slides: [PageHeaderSlide, ...PageHeaderSlide[]];
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  // Hover/focus pause is temporary; isStopped is the user's own choice (the
+  // only way to pause on touch screens) and survives until they press play.
   const [isPaused, setIsPaused] = useState(false);
+  const [isStopped, setIsStopped] = useState(false);
   const activeSlide = slides[activeIndex];
 
   useEffect(() => {
     if (
       slides.length < 2 ||
       isPaused ||
+      isStopped ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ) {
       return;
@@ -45,15 +55,17 @@ export function PageHeader({
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [isPaused, slides.length]);
+  }, [isPaused, isStopped, slides.length]);
 
   function showPrevious() {
+    setIsStopped(true);
     setActiveIndex((index) => {
       return (index - 1 + slides.length) % slides.length;
     });
   }
 
   function showNext() {
+    setIsStopped(true);
     setActiveIndex((index) => {
       return (index + 1) % slides.length;
     });
@@ -71,6 +83,7 @@ export function PageHeader({
   }
 
   function showSlide(index: number) {
+    setIsStopped(true);
     setActiveIndex(index);
   }
 
@@ -101,7 +114,7 @@ export function PageHeader({
       <div className="relative flex min-h-68 flex-col justify-between gap-8 p-6 sm:min-h-76 sm:p-8">
         <div
           key={activeIndex}
-          aria-live="off"
+          aria-live={isStopped ? "polite" : "off"}
           aria-atomic="true"
           className="flex max-w-3xl flex-col gap-4 animate-in slide-in-from-right-5 fade-in duration-700 motion-reduce:animate-none"
         >
@@ -124,6 +137,24 @@ export function PageHeader({
           </div>
 
           <div className="flex items-center gap-1" aria-label="Slide controls">
+            {slides.length > 1 && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="text-white hover:bg-white/15 hover:text-white"
+                aria-label={isStopped ? "Play highlights" : "Pause highlights"}
+                onClick={() => {
+                  setIsStopped((stopped) => !stopped);
+                }}
+              >
+                {isStopped ? (
+                  <Play aria-hidden="true" />
+                ) : (
+                  <Pause aria-hidden="true" />
+                )}
+              </Button>
+            )}
             <Button
               type="button"
               variant="ghost"

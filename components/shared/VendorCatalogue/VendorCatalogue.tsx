@@ -8,9 +8,7 @@ import {
   CalendarDays,
   CircleAlert,
   Clock,
-  Coffee,
   PackageX,
-  Sparkles,
   Store,
   Truck,
 } from "lucide-react";
@@ -20,6 +18,7 @@ import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { StorefrontProductCard } from "@/components/shared/StorefrontProductCard";
 import { VendorCatalogueSkeleton } from "@/components/shared/VendorCatalogueSkeleton";
+import { VendorSloganTicker } from "@/components/shared/VendorSloganTicker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
@@ -33,18 +32,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useVendor, useVendorCatalogue } from "@/hooks/useVendors";
-import { formatPrice } from "@/lib/utils";
-import { WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema";
+import { formatDays, formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import type { VendorProduct } from "@/types/product";
-
-const defaultVendorMessages = [
-  "Local favorites, delivered.",
-  "Lunch break, upgraded.",
-  "Easy ordering, right to your desk.",
-  "Good food, one less errand.",
-];
-const vendorMessageIcons = [Sparkles, Coffee, Truck, Store];
 
 function VendorCatalogue({
   vendorId,
@@ -127,9 +117,9 @@ function VendorCatalogue({
               />
               <div className="relative flex min-h-72 flex-col justify-between gap-8 p-6 sm:min-h-88 sm:p-8">
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-orange-300">
+                  <div className="flex items-center gap-2 text-sm font-semibold uppercase text-orange-300">
                     <Store aria-hidden="true" className="size-4" />
-                    <span>LOCAL BUSINESS</span>
+                    <span>{vendor.categories[0] ?? "Local business"}</span>
                   </div>
                   <h1 className="max-w-2xl text-3xl leading-tight font-semibold sm:text-4xl">
                     {vendor.name}
@@ -169,9 +159,7 @@ function VendorCatalogue({
                     />
                     <dd>
                       {vendor.availableDays.length > 0
-                        ? vendor.availableDays
-                            .map((day) => WEEKDAY_LABELS[day])
-                            .join(", ")
+                        ? formatDays(vendor.availableDays)
                         : "No delivery days listed"}
                     </dd>
                   </div>
@@ -240,39 +228,9 @@ function VendorCatalogue({
               </span>
             </div>
 
-            <div className="overflow-hidden border-y border-border/70 py-2.5">
-              <p className="sr-only">{marqueeMessages.join(" ")}</p>
-              <div
-                aria-hidden="true"
-                className="vendor-message-track flex w-max items-center"
-              >
-                {[...marqueeMessages, ...marqueeMessages].map(
-                  (message, index) => (
-                    <span
-                      key={index}
-                      className="flex shrink-0 items-center gap-2.5 pr-7 text-xs text-muted-foreground sm:text-sm"
-                    >
-                      {(() => {
-                        const Icon =
-                          vendorMessageIcons[index % vendorMessageIcons.length];
-                        return (
-                          <>
-                            <Icon
-                              aria-hidden="true"
-                              className="size-3.5 text-primary/70"
-                            />
-                            {message}
-                            <span className="ml-4 size-1 rounded-full bg-primary/60" />
-                          </>
-                        );
-                      })()}
-                    </span>
-                  ),
-                )}
-              </div>
-            </div>
+            <VendorSloganTicker slogans={vendor?.slogans ?? []} />
 
-            <div className="flex gap-4 justify-start flex-wrap w-full">
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
               {products.map((product, index) => (
                 <StorefrontProductCard
                   key={product.id}

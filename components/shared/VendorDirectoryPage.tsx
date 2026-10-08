@@ -27,6 +27,7 @@ import { formatPrice } from "@/lib/utils";
 import {
   countVendorsInGroups,
   filterVendorGroups,
+  normalizeFeeRange,
   groupVendorsByCategory,
 } from "@/lib/vendors";
 import type { DeliveryFeeRange } from "@/types/vendor";
@@ -83,6 +84,10 @@ export function VendorDirectoryPage() {
     highestDeliveryFee > 0 ? Number(highestDeliveryFee.toFixed(2)) : 1;
   const matchingVendorCount = countVendorsInGroups(feeFilteredGroups);
   const hasVendors = vendorList.length > 0;
+
+  function handleFeeRangeChange(range: DeliveryFeeRange) {
+    setFeeRange(normalizeFeeRange(range, feeRangeLimit));
+  }
 
   function resetFilters() {
     setSelectedCategory(null);
@@ -186,7 +191,7 @@ export function VendorDirectoryPage() {
                     feeRange={feeRange}
                     highestDeliveryFee={highestDeliveryFee}
                     feeRangeLimit={feeRangeLimit}
-                    onChange={setFeeRange}
+                    onChange={handleFeeRangeChange}
                   />
                 </div>
               </details>
@@ -263,7 +268,7 @@ export function VendorDirectoryPage() {
                 feeRange={feeRange}
                 highestDeliveryFee={highestDeliveryFee}
                 feeRangeLimit={feeRangeLimit}
-                onChange={setFeeRange}
+                onChange={handleFeeRangeChange}
               />
             </aside>
           </div>

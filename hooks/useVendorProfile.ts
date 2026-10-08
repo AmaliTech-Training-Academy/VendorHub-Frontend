@@ -42,7 +42,7 @@ export function useVendorProfile({
     defaultValues: {
       address: "",
       phone: "",
-      slogans: [{ value: "" }],
+      slogans: [],
     },
     values: profileQuery.data
       ? profileToFormValues(profileQuery.data)

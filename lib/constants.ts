@@ -5,6 +5,10 @@ export const ORDER_STATUSES = [
   "ready_for_collection",
 ] as const;
 
-// 🔧 TEMPORARY — placeholder image until the backend adds a real image field
-// to the product schema. Drop a file at this path in /public.
-export const PLACEHOLDER_IMAGE = "/jollof.jpg";
+/**
+ * The vendor profile page needs GET/PATCH /api/vendors/me/profile/, which the
+ * backend doesn't expose yet. Set NEXT_PUBLIC_VENDOR_PROFILE_ENABLED=true at
+ * build time once it does.
+ */
+export const VENDOR_PROFILE_ENABLED =
+  process.env.NEXT_PUBLIC_VENDOR_PROFILE_ENABLED === "true";
