@@ -45,7 +45,9 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Build and deploy
-        run: ./deploy/deploy.sh
+        # Via bash so a lost executable bit (e.g. a merge from a core.fileMode=false
+        # checkout) can't break the release.
+        run: bash deploy/deploy.sh
         env:
           NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
           S3_BUCKET: ${{ vars.S3_BUCKET }}
