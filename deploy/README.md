@@ -177,7 +177,7 @@ Needs the AWS CLI v2 with credentials that can `s3:PutObject`,
 NEXT_PUBLIC_API_URL=https://<distribution>.cloudfront.net/api \
 S3_BUCKET=vendorhub-frontend-prod \
 CLOUDFRONT_DISTRIBUTION_ID=E123EXAMPLE \
-./deploy/deploy.sh
+bash deploy/deploy.sh
 ```
 
 `NEXT_PUBLIC_API_URL` is inlined into the JavaScript during the build, so
