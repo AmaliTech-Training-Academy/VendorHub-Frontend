@@ -45,6 +45,8 @@ describe("auth API functions", () => {
       email: "employee@example.com",
       password: "secure-password",
       full_name: "Avery Employee",
+      phone: "0591655713",
+      office_address: "kronum abuohia , offinso road",
     };
     const response = { id: 2, email: data.email, role: "EMPLOYEE" };
     vi.mocked(fetch).mockResolvedValue(

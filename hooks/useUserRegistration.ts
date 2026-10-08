@@ -43,6 +43,8 @@ export const useUserRegistration = ({
           email: data.email,
           password: data.password,
           full_name: data.fullName,
+          phone: data.phone,
+          office_address: data.officeAddress,
         });
       }
       return loginUser({ email: data.email, password: data.password });
