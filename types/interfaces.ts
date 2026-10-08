@@ -105,3 +105,8 @@ export interface LoginResponse {
   role: "VENDOR" | "EMPLOYEE";
   name?: string;
 }
+
+export interface CurrentUserResponse {
+  role: string;
+  verification_status: string | null;
+}
