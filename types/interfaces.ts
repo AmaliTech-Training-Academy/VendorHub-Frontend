@@ -28,12 +28,14 @@ export interface AuthState {
   /** The authenticated vendor or employee's own id, from LoginOutput.id. */
   userId: number | null;
   email: string | null;
+  displayName: string | null;
   setAuth: (
     role: UserRole,
     accessToken: string,
     refreshToken: string,
     userId: number,
     email?: string,
+    name?: string | null,
   ) => void;
   logout: () => void;
 }
@@ -101,4 +103,5 @@ export interface LoginResponse {
   id: number;
   email: string;
   role: "VENDOR" | "EMPLOYEE";
+  name?: string;
 }

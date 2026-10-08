@@ -32,6 +32,7 @@ export function StorefrontNav() {
   const logout = useAuthStore((state) => state.logout);
   const cartCount = useCartItemCount();
   const isCartPage = pathname.replace(/\/+$/, "") === "/storefront/cart";
+  const displayName = useAuthStore((state) => state.displayName);
 
   const handleLogout = () => {
     logout();
@@ -108,7 +109,12 @@ export function StorefrontNav() {
           </Link>
 
           {/* Account — desktop */}
-          <div className="hidden items-center md:flex">
+          <div className="hidden items-center gap-2 md:flex">
+            {displayName && (
+              <span className="text-sm font-medium text-white/80 max-w-32 truncate">
+                {displayName.split(" ")[0]}
+              </span>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
@@ -125,6 +131,11 @@ export function StorefrontNav() {
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="size-4" />
                   Log out
+                </DropdownMenuItem>
+                <Separator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <User className="size-4" />
+                  {displayName}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
