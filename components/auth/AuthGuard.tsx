@@ -19,13 +19,37 @@ type Props = {
 
 const subscribeNoop = () => () => {};
 
+function FullScreenSpinner() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <Spinner className="size-6 text-orange-500" />
+    </div>
+  );
+}
+
+/**
+ * Only vendors go through admin approval, so the server-side verification
+ * lookup lives in its own component. It is mounted for vendors alone, which
+ * means employees never trigger the request or wait on it.
+ */
+function VendorApprovalGate({ children }: { children: React.ReactNode }) {
+  const { data: serverUser, isLoading } = useCurrentUser();
+
+  if (isLoading) {
+    return <FullScreenSpinner />;
+  }
+
+  if (serverUser && serverUser.verification_status !== "APPROVED") {
+    return <VerificationGuardModal status={serverUser.verification_status} />;
+  }
+
+  return <>{children}</>;
+}
+
 export function AuthGuard({ children, allowedRoles }: Props) {
   const router = useRouter();
   const role = useAuthStore((state) => state.role);
   const accessToken = useAuthStore((state) => state.accessToken);
-
-  // Synchronize dynamic server profiles verification status
-  const { data: serverUser, isLoading: isServerLoading } = useCurrentUser();
 
   const isClient = useSyncExternalStore(
     subscribeNoop,
@@ -47,17 +71,13 @@ export function AuthGuard({ children, allowedRoles }: Props) {
     }
   }, [accessToken, role, allowedRoles, router]);
 
-  // Keep showing the spinner during hydration or when fetching the server validation status
-  if (!isClient || !isAllowed || isServerLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Spinner className="size-6 text-orange-500" />
-      </div>
-    );
+  // Keep showing the spinner during hydration or while redirecting
+  if (!isClient || !isAllowed) {
+    return <FullScreenSpinner />;
   }
 
-  if (serverUser && serverUser.verification_status !== "APPROVED") {
-    return <VerificationGuardModal status={serverUser.verification_status} />;
+  if (role === "VENDOR") {
+    return <VendorApprovalGate>{children}</VendorApprovalGate>;
   }
 
   return <>{children}</>;
