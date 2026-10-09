@@ -67,6 +67,19 @@ function ProductDialog({
   const copy = DIALOG_COPY[state?.mode ?? "add"];
   const product = state?.mode === "edit" ? state.product : undefined;
 
+  // Map the raw product data structure to match the expected ProductFormValues format
+  const mappedDefaultValues: ProductFormValues | undefined = product
+    ? {
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category,
+        inStock: product.inStock,
+        image: null, // Form logic requires a fresh File object interface initialized to null
+        removeImage: false, // Default interactive state flag
+      }
+    : undefined;
+
   return (
     <Dialog
       open={!!state}
@@ -84,7 +97,8 @@ function ProductDialog({
         {state && (
           <ProductForm
             key={product?.id ?? "add"}
-            defaultValues={product}
+            defaultValues={mappedDefaultValues} // Swapped raw product for the mapped fields
+            imageUrl={product?.imageUrl} // Pass remote web thumbnail image down separately if accepted
             submitLabel={copy.submitLabel}
             submittingLabel={copy.submittingLabel}
             submitError={submitError}
