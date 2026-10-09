@@ -11,18 +11,15 @@ import { StoreIdentityCard } from "@/components/shared/layout/dashboard/StoreIde
 import type { Vendor } from "@/types/vendor";
 import type { VendorProfileFormInput } from "@/types/vendorProfile";
 
-const vendor: Vendor = {
-  id: 42,
-  name: "Corner Bakery",
-  categories: ["Bakery"],
+const deliveryVendor: Pick<
+  Vendor,
+  "deliveryFee" | "availableDays" | "timeWindows"
+> = {
   deliveryFee: null,
   availableDays: ["MONDAY"],
   timeWindows: [
     { id: 1, label: "Morning", startTime: "09:00", endTime: "12:00" },
   ],
-  slogans: [],
-  address: null,
-  phone: null,
 };
 
 function ContactDetailsHarness() {
@@ -76,10 +73,10 @@ describe("standalone vendor profile cards", () => {
     expect(markup).toContain('name="phone"');
   });
 
-  it("renders a standalone slogans field array", () => {
+  it("renders a standalone slogan field array", () => {
     const markup = renderToStaticMarkup(createElement(SlogansHarness));
 
-    expect(markup).toContain("Slogans");
+    expect(markup).toContain("Slogan");
     expect(markup).toContain('name="slogans.0.value"');
     expect(markup).toContain("Add slogan");
   });
@@ -87,26 +84,38 @@ describe("standalone vendor profile cards", () => {
   it("renders store identity independently", () => {
     const markup = renderToStaticMarkup(
       createElement(StoreIdentityCard, {
-        vendor,
+        vendorId: "42",
+        name: "Corner Bakery",
         email: "owner@example.com",
-        isPending: false,
-        isError: false,
       }),
     );
 
     expect(markup).toContain("Corner Bakery");
     expect(markup).toContain("owner@example.com");
-    expect(markup).toContain("Bakery");
   });
 
   it("renders delivery details and handles an unavailable fee", () => {
     const markup = renderToStaticMarkup(
-      createElement(DeliveryDetailsCard, { vendor, isPending: false }),
+      createElement(DeliveryDetailsCard, {
+        vendor: deliveryVendor,
+        isPending: false,
+      }),
     );
 
     expect(markup).toContain("Delivery details");
     expect(markup).toContain("Not set");
     expect(markup).toContain("Mon");
     expect(markup).toContain("Morning");
+  });
+
+  it("shows a loading state while delivery settings are pending", () => {
+    const markup = renderToStaticMarkup(
+      createElement(DeliveryDetailsCard, {
+        vendor: undefined,
+        isPending: true,
+      }),
+    );
+
+    expect(markup).toContain("Loading...");
   });
 });

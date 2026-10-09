@@ -8,6 +8,7 @@ import { DashboardPageHeader } from "@/components/shared/layout/dashboard/Dashbo
 import { DeliveryDetailsCard } from "@/components/shared/layout/dashboard/DeliveryDetailsCard";
 import { StoreIdentityCard } from "@/components/shared/layout/dashboard/StoreIdentityCard";
 import { VendorProfileForm } from "@/components/shared/layout/dashboard/VendorProfileForm";
+import { useDeliverySettings } from "@/hooks/useDeliverySettings";
 import { useVendorProfile } from "@/hooks/useVendorProfile";
 import { VENDOR_PROFILE_ENABLED } from "@/lib/constants";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -38,11 +39,15 @@ export default function VendorProfilePage() {
 
 function VendorProfileEditor() {
   const authEmail = useAuthStore((state) => state.email);
+  const authName = useAuthStore((state) => state.displayName);
+  const vendorId = useAuthStore((state) => state.userId)?.toString() || null;
   const profileForm = useVendorProfile({
     onSuccess: () => toast.success("Profile updated"),
     onError: (message) => toast.error(message),
   });
-  const { profile, isProfilePending, isProfileError } = profileForm;
+
+  const { data: deliverySettings, isPending: isDeliveryPending } =
+    useDeliverySettings(vendorId);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
@@ -53,12 +58,14 @@ function VendorProfileEditor() {
 
         <aside className="flex min-w-0 flex-col gap-6">
           <StoreIdentityCard
-            vendor={profile}
-            email={profile?.email ?? authEmail}
-            isPending={isProfilePending}
-            isError={isProfileError}
+            vendorId={vendorId}
+            name={authName}
+            email={authEmail}
           />
-          <DeliveryDetailsCard vendor={profile} isPending={isProfilePending} />
+          <DeliveryDetailsCard
+            vendor={deliverySettings}
+            isPending={isDeliveryPending}
+          />
         </aside>
       </div>
     </div>

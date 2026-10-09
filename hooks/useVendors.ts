@@ -13,7 +13,13 @@ export function useVendors() {
 export function useVendor(vendorId: string) {
   return useQuery({
     queryKey: ["vendors", vendorId],
-    queryFn: () => fetchVendorById(vendorId),
+    queryFn: async () => {
+      const vendor = await fetchVendorById(vendorId);
+      if (!vendor) {
+        throw new Error("Vendor not found");
+      }
+      return vendor;
+    },
     enabled: Boolean(vendorId),
   });
 }

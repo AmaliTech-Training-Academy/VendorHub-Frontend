@@ -20,15 +20,20 @@ const vendorListResponseSchema = paginatedSchema(vendorSchema);
 
 /**
  * GET /api/vendors/. There's no single-vendor detail endpoint, so
- * fetchVendorById (below) fetches this same list and finds the match.
- * page_size is set high since there's no vendor list/detail split to page
- * through in the UI yet — worth revisiting if the vendor count grows.
+ * fetchVendorById fetches this same list and finds the match.
  */
 export async function fetchVendors(): Promise<Vendor[]> {
   const raw = await apiRequest<unknown>("vendors/", {
     query: { page_size: 100 },
   });
-  return vendorListResponseSchema.parse(raw).results;
+
+  const parsed = vendorListResponseSchema.safeParse(raw);
+  if (!parsed.success) {
+    console.error("VENDOR LIST PARSE FAILED:", parsed.error.issues);
+    console.error("RAW RESPONSE WAS:", raw);
+    throw parsed.error;
+  }
+  return parsed.data.results;
 }
 
 export async function fetchVendorById(
@@ -38,8 +43,7 @@ export async function fetchVendorById(
   return vendors.find((vendor) => String(vendor.id) === vendorId);
 }
 
-/** GET /api/vendors/me/delivery-settings/. Vendor identity comes from the
- *  JWT, not a path param, so there's no vendorId argument here. */
+/** GET /api/vendors/me/delivery-settings/. Vendor identity comes from the JWT. */
 export async function fetchDeliverySettings(): Promise<DeliverySettings> {
   const raw = await apiRequest<unknown>("vendors/me/delivery-settings/");
   return deliverySettingsResponseSchema.parse(raw);
@@ -55,27 +59,25 @@ export async function updateDeliverySettings(
   return deliverySettingsResponseSchema.parse(raw);
 }
 
-/** GET /api/vendors/me/profile/. The vendor is identified by the JWT. */
+/** GET /api/vendors/me/storefront/ */
 export async function fetchVendorProfile(): Promise<VendorProfile> {
-  const raw = await apiRequest<unknown>("vendors/me/profile/");
+  const raw = await apiRequest<unknown>("vendors/me/storefront/");
   return vendorProfileResponseSchema.parse(raw);
 }
 
-/** PATCH /api/vendors/me/profile/. FormData lets the browser set the multipart boundary. */
+/** PATCH /api/vendors/me/storefront/ */
 export async function updateVendorProfile(
   input: VendorProfileFormValues,
 ): Promise<VendorProfile> {
   const body = new FormData();
   body.append("address", input.address);
-  body.append("phone", input.phone);
-  input.slogans.forEach((slogan) => {
-    body.append("slogans", slogan.value);
-  });
+  body.append("phone_number", input.phone);
+  body.append("slogan", input.slogans[0]?.value ?? ""); // backend has ONE slogan
   if (input.storefrontImage) {
-    body.append("storefront_image", input.storefrontImage);
+    body.append("logo", input.storefrontImage); // backend field is "logo"
   }
 
-  const raw = await apiRequest<unknown>("vendors/me/profile/", {
+  const raw = await apiRequest<unknown>("vendors/me/storefront/", {
     method: "PATCH",
     body,
   });
