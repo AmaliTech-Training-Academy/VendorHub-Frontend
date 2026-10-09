@@ -10,7 +10,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import type { UserRole } from "@/types/types";
 
 import { VerificationGuardModal } from "./VerificationGuardModal";
-import { Spinner } from "../ui/spinner";
+import { AppLayoutSkeleton } from "../shared/layout/dashboard/AppLayoutSkeleton";
 
 type Props = {
   children: React.ReactNode;
@@ -18,14 +18,6 @@ type Props = {
 };
 
 const subscribeNoop = () => () => {};
-
-function FullScreenSpinner() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Spinner className="size-6 text-orange-500" />
-    </div>
-  );
-}
 
 /**
  * Only vendors go through admin approval, so the server-side verification
@@ -36,7 +28,7 @@ function VendorApprovalGate({ children }: { children: React.ReactNode }) {
   const { data: serverUser, isLoading } = useCurrentUser();
 
   if (isLoading) {
-    return <FullScreenSpinner />;
+    return <AppLayoutSkeleton />;
   }
 
   if (serverUser && serverUser.verification_status !== "APPROVED") {
@@ -71,9 +63,9 @@ export function AuthGuard({ children, allowedRoles }: Props) {
     }
   }, [accessToken, role, allowedRoles, router]);
 
-  // Keep showing the spinner during hydration or while redirecting
+  // Keep showing the skeleton during hydration or while redirecting
   if (!isClient || !isAllowed) {
-    return <FullScreenSpinner />;
+    return <AppLayoutSkeleton />;
   }
 
   if (role === "VENDOR") {
