@@ -3,13 +3,13 @@
 import { Store } from "lucide-react";
 import { toast } from "sonner";
 
-
+import { EmptyState } from "@/components/shared/EmptyState";
 import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 import { DeliveryDetailsCard } from "@/components/shared/layout/dashboard/DeliveryDetailsCard";
 import { StoreIdentityCard } from "@/components/shared/layout/dashboard/StoreIdentityCard";
 import { VendorProfileForm } from "@/components/shared/layout/dashboard/VendorProfileForm";
-import { useDeliverySettings } from "@/hooks/useDeliverySettings";
 import { useVendorProfile } from "@/hooks/useVendorProfile";
+import { VENDOR_PROFILE_ENABLED } from "@/lib/constants";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const HEADER = {
@@ -20,33 +20,29 @@ const HEADER = {
 };
 
 export default function VendorProfilePage() {
-  // if (!VENDOR_PROFILE_ENABLED) {
-  //   return (
-  //     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-  //       <DashboardPageHeader {...HEADER} />
-  //       <EmptyState
-  //         icon={Store}
-  //         title="Store profile is coming soon"
-  //         description="Editing your address, phone, slogans and storefront image will be available here shortly."
-  //       />
-  //     </div>
-  //   );
-  // }
+  if (!VENDOR_PROFILE_ENABLED) {
+    return (
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+        <DashboardPageHeader {...HEADER} />
+        <EmptyState
+          icon={Store}
+          title="Store profile is coming soon"
+          description="Editing your address, phone, slogans and storefront image will be available here shortly."
+        />
+      </div>
+    );
+  }
 
   return <VendorProfileEditor />;
 }
 
 function VendorProfileEditor() {
   const authEmail = useAuthStore((state) => state.email);
-  const authName = useAuthStore((state) => state.displayName);
-  const vendorId = useAuthStore((state) => state.userId)?.toString() || null;
   const profileForm = useVendorProfile({
     onSuccess: () => toast.success("Profile updated"),
     onError: (message) => toast.error(message),
   });
-
-  const { data: deliverySettings, isPending: isDeliveryPending } =
-    useDeliverySettings(vendorId);
+  const { profile, isProfilePending, isProfileError } = profileForm;
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
@@ -57,14 +53,12 @@ function VendorProfileEditor() {
 
         <aside className="flex min-w-0 flex-col gap-6">
           <StoreIdentityCard
-            vendorId={vendorId}
-            name={authName}
-            email={authEmail}
+            vendor={profile}
+            email={profile?.email ?? authEmail}
+            isPending={isProfilePending}
+            isError={isProfileError}
           />
-          <DeliveryDetailsCard
-            vendor={deliverySettings}
-            isPending={isDeliveryPending}
-          />
+          <DeliveryDetailsCard vendor={profile} isPending={isProfilePending} />
         </aside>
       </div>
     </div>

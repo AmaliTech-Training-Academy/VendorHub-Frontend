@@ -1,12 +1,4 @@
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 type FakeStorage = ReturnType<typeof fakeStorage>;
 
@@ -45,12 +37,6 @@ async function load(userId: number | null, storage: FakeStorage) {
 describe("persisted cart", () => {
   let storage: FakeStorage;
 
-  // Warm Vite's transform cache once so the first real test isn't slow.
-  beforeAll(async () => {
-    await load(null, fakeStorage());
-    vi.unstubAllGlobals();
-  }, 30_000);
-
   beforeEach(() => {
     storage = fakeStorage();
   });
@@ -66,11 +52,7 @@ describe("persisted cart", () => {
     cart.getState().setDeliveryDate("2026-10-12");
 
     const saved = readSaved(storage, KEY);
-    expect(Object.keys(saved.state).sort()).toEqual([
-      "items",
-      "ownerId",
-      "vendorId",
-    ]);
+    expect(Object.keys(saved.state).sort()).toEqual(["items", "ownerId", "vendorId"]);
     expect(saved.state).toMatchObject({ vendorId: "3", ownerId: 7 });
     expect(saved.state.items).toEqual([{ ...item, quantity: 2 }]);
   });
@@ -120,14 +102,8 @@ describe("persisted cart", () => {
   it("ignores corrupt, wrongly shaped and old-version saved data", async () => {
     for (const saved of [
       "{not json",
-      JSON.stringify({
-        state: { vendorId: "3", items: [{ bad: true }], ownerId: 7 },
-        version: 1,
-      }),
-      JSON.stringify({
-        state: { vendorId: "3", items: [], ownerId: 7 },
-        version: 0,
-      }),
+      JSON.stringify({ state: { vendorId: "3", items: [{ bad: true }], ownerId: 7 }, version: 1 }),
+      JSON.stringify({ state: { vendorId: "3", items: [], ownerId: 7 }, version: 0 }),
     ]) {
       storage = fakeStorage();
       const { cart, KEY } = await load(7, storage);
@@ -142,10 +118,7 @@ describe("persisted cart", () => {
     const boom = () => {
       throw new Error("blocked");
     };
-    const { cart } = await load(
-      7,
-      fakeStorage({ getItem: boom, setItem: boom }),
-    );
+    const { cart } = await load(7, fakeStorage({ getItem: boom, setItem: boom }));
 
     expect(() => cart.getState().addItem(item)).not.toThrow();
     expect(cart.getState().items).toHaveLength(1);

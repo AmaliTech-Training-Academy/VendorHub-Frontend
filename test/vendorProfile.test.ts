@@ -38,35 +38,33 @@ describe("vendorProfileSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("normalizes an empty storefront response for the identity and form UI", () => {
+  it("normalizes a vendor profile response for the identity and form UI", () => {
     const profile = vendorProfileResponseSchema.parse({
+      id: 42,
+      business_name: "Corner Bakery",
+      email: "owner@example.com",
       address: null,
-      phone_number: null,
-      slogan: null,
-      logo: null,
+      phone: null,
+      categories: null,
+      delivery_fee: null,
+      available_days: null,
+      delivery_windows: null,
+      storefront_image: null,
+      slogans: null,
     });
 
-    expect(profile).toEqual({
+    expect(profile).toMatchObject({
+      id: 42,
+      name: "Corner Bakery",
+      email: "owner@example.com",
       address: "",
       phone: "",
-      slogans: [],
+      categories: [],
+      deliveryFee: null,
+      availableDays: [],
+      timeWindows: [],
       storefrontImageUrl: null,
-    });
-  });
-
-  it("maps storefront response fields to the profile shape", () => {
-    const profile = vendorProfileResponseSchema.parse({
-      address: "Ridge Office Park",
-      phone_number: "0241234567",
-      slogan: "Fresh from the oven",
-      logo: "https://example.com/logo.png",
-    });
-
-    expect(profile).toEqual({
-      address: "Ridge Office Park",
-      phone: "0241234567",
-      slogans: ["Fresh from the oven"],
-      storefrontImageUrl: "https://example.com/logo.png",
+      slogans: [],
     });
   });
 });

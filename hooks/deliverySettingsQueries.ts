@@ -1,3 +1,3 @@
-export function deliverySettingsQueryKey(vendorId: string | null) {
+export function deliverySettingsQueryKey(vendorId: string) {
   return ["deliverySettings", vendorId] as const;
 }
