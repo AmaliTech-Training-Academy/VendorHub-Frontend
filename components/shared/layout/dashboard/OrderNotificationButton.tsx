@@ -43,7 +43,7 @@ export function OrderNotificationButton() {
   };
 
   return (
-    <div className="fixed right-6 bottom-6 z-50 flex flex-col items-end gap-2">
+    <div className="fixed right-6 bottom-6  flex flex-col items-end gap-2">
       {permission === "default" && (
         <Button
           size="sm"

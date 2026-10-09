@@ -11,6 +11,7 @@ import type { UserRole } from "@/types/types";
 
 import { VerificationGuardModal } from "./VerificationGuardModal";
 import { AppLayoutSkeleton } from "../shared/layout/dashboard/AppLayoutSkeleton";
+import { StorefrontLayoutSkeleton } from "../shared/layout/storefront/StorefrontLayoutSkeleton";
 
 type Props = {
   children: React.ReactNode;
@@ -20,15 +21,23 @@ type Props = {
 const subscribeNoop = () => () => {};
 
 /**
- * Only vendors go through admin approval, so the server-side verification
- * lookup lives in its own component. It is mounted for vendors alone, which
- * means employees never trigger the request or wait on it.
+ * Renders the contextually correct skeleton fallback framework based on user roles
  */
+function GuardSkeletonFallback({ role }: { role: UserRole | null }) {
+  // If the active profile is verified as a VENDOR, return the Dashboard view structure.
+  // Otherwise, default to the Storefront skeleton view structure (for EMPLOYEES or unauthenticated states).
+  if (role === "VENDOR") {
+    return <AppLayoutSkeleton />;
+  }
+  return <StorefrontLayoutSkeleton />;
+}
+
 function VendorApprovalGate({ children }: { children: React.ReactNode }) {
   const { data: serverUser, isLoading } = useCurrentUser();
+  const role = useAuthStore((state) => state.role);
 
   if (isLoading) {
-    return <AppLayoutSkeleton />;
+    return <GuardSkeletonFallback role={role} />;
   }
 
   if (serverUser && serverUser.verification_status !== "APPROVED") {
@@ -63,9 +72,9 @@ export function AuthGuard({ children, allowedRoles }: Props) {
     }
   }, [accessToken, role, allowedRoles, router]);
 
-  // Keep showing the skeleton during hydration or while redirecting
+  // Handle Hydration or Redirection States safely with context matching skeletons
   if (!isClient || !isAllowed) {
-    return <AppLayoutSkeleton />;
+    return <GuardSkeletonFallback role={role} />;
   }
 
   if (role === "VENDOR") {
