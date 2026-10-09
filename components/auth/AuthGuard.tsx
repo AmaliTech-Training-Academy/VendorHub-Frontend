@@ -56,9 +56,9 @@ export function AuthGuard({ children, allowedRoles }: Props) {
     );
   }
 
-  if (serverUser && serverUser.verification_status !== "APPROVED") {
-    return <VerificationGuardModal status={serverUser.verification_status} />;
-  }
+  // if (serverUser && serverUser.verification_status !== "APPROVED") {
+  //   return <VerificationGuardModal status={serverUser.verification_status} />;
+  // }
 
   return <>{children}</>;
 }
