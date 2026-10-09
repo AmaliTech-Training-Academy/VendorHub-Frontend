@@ -17,14 +17,14 @@ export function ProductImage({
 
   // If the absolute fallback image fails as well, render the empty gray placeholder box
   if (failedToLoad) {
-    return <div className="aspect-4/3 w-full bg-muted" />;
+    return <div className="aspect-4/4 w-full bg-muted" />;
   }
 
   // Use the imageURL prop if available; otherwise, fall back to the PLACEHOLDER_IMAGE constant
   const displaySrc = imageURL || PLACEHOLDER_IMAGE;
 
   return (
-    <div className="relative aspect-4/3 w-full overflow-hidden bg-muted">
+    <div className="relative aspect-4/4 w-full overflow-hidden bg-muted">
       <Image
         src={displaySrc}
         alt={name}
