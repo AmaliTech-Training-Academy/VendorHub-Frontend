@@ -35,17 +35,16 @@ export function SlogansCard({
   const { fields, append, remove } = useFieldArray<
     VendorProfileFormInput,
     "slogans"
-  >({
-    control,
-    name: "slogans",
-  });
+  >({ control, name: "slogans" });
+
+  const slogansError = errors.slogans?.message ?? errors.slogans?.root?.message;
 
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>Slogans</CardTitle>
+        <CardTitle>Slogan</CardTitle>
         <CardDescription>
-          Short lines that scroll across your storefront banner — up to 5
+          A short line shown on your storefront (max 150 characters)
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
@@ -54,6 +53,7 @@ export function SlogansCard({
             <div className="flex flex-1 flex-col gap-1.5">
               <Input
                 {...register(`slogans.${index}.value` as const)}
+                maxLength={150}
                 placeholder="e.g. Local favorites, delivered."
               />
               {errors.slogans?.[index]?.value?.message && (
@@ -68,18 +68,16 @@ export function SlogansCard({
               type="button"
               variant="ghost"
               size="icon"
-              onClick={() => {
-                remove(index);
-              }}
+              onClick={() => {remove(index)}}
               aria-label="Remove slogan"
             >
               <Trash2 className="size-4" />
             </Button>
           </div>
         ))}
-        {errors.slogans?.message && (
+        {slogansError && (
           <Alert variant="destructive" className="px-3 py-2 text-xs">
-            <AlertDescription>{errors.slogans.message}</AlertDescription>
+            <AlertDescription>{slogansError}</AlertDescription>
           </Alert>
         )}
         <Button
@@ -87,10 +85,8 @@ export function SlogansCard({
           variant="outline"
           size="sm"
           className="w-fit"
-          onClick={() => {
-            append({ value: "" });
-          }}
-          disabled={fields.length >= 5}
+          onClick={() => {append({ value: "" })}}
+          disabled={fields.length >= 1}
         >
           <Plus className="size-4" />
           Add slogan
