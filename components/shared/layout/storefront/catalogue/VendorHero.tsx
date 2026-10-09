@@ -23,10 +23,11 @@ export function VendorHero({
   return (
     <section className="relative isolate min-h-72 overflow-hidden rounded-lg bg-slate-950 text-white sm:min-h-88">
       <Image
-        src={heroImage ?? "/street.jpg"}
-        alt=""
+        src={vendor.storefrontImageUrl ?? heroImage ?? "/street.jpg"}
+        alt={vendor.storefrontImageUrl ? `${vendor.name} storefront` : ""}
         fill
         priority
+        unoptimized={Boolean(vendor.storefrontImageUrl)}
         className="object-cover"
       />
       <div
