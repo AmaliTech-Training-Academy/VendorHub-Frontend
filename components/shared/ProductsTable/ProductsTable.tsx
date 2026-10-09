@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import { Loader2, Package, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -35,12 +36,12 @@ function ProductsTable({
   isDeleting,
   isTogglingId,
 }: {
-  products: Product[]
-  onEdit: (product: Product) => void
-  onDelete: (product: Product) => void
-  onToggleStock: (product: Product, inStock: boolean) => void
-  isDeleting?: boolean
-  isTogglingId?: number
+  products: Product[];
+  onEdit: (product: Product) => void;
+  onDelete: (product: Product) => void;
+  onToggleStock: (product: Product, inStock: boolean) => void;
+  isDeleting?: boolean;
+  isTogglingId?: number;
 }) {
   const [productPendingDelete, setProductPendingDelete] =
     useState<Product | null>(null);
@@ -63,8 +64,19 @@ function ProductsTable({
               <TableRow key={product.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <Package aria-hidden="true" className="size-5" />
+                    {/* Added relative positioning to parent container so 'fill' computes properly */}
+                    <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary/10 text-primary border border-border">
+                      {product.imageUrl ? (
+                        <Image
+                          src={product.imageUrl}
+                          alt={product.name}
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <Package aria-hidden="true" className="size-5" />
+                      )}
                     </div>
                     <div className="flex min-w-0 flex-col">
                       <span className="font-semibold">{product.name}</span>
@@ -85,8 +97,9 @@ function ProductsTable({
                     <Switch
                       checked={product.inStock}
                       disabled={isTogglingId === product.id}
-                      onCheckedChange={(checked) => { onToggleStock(product, checked); }
-                      }
+                      onCheckedChange={(checked) => {
+                        onToggleStock(product, checked);
+                      }}
                       aria-label={
                         product.inStock
                           ? "Mark as out of stock"
@@ -110,7 +123,9 @@ function ProductsTable({
                       variant="ghost"
                       size="icon-sm"
                       aria-label={`Edit ${product.name}`}
-                      onClick={() => { onEdit(product); }}
+                      onClick={() => {
+                        onEdit(product);
+                      }}
                     >
                       <Pencil />
                     </Button>
@@ -118,7 +133,9 @@ function ProductsTable({
                       variant="ghost"
                       size="icon-sm"
                       aria-label={`Delete ${product.name}`}
-                      onClick={() => { setProductPendingDelete(product); }}
+                      onClick={() => {
+                        setProductPendingDelete(product);
+                      }}
                     >
                       <Trash2 className="text-destructive" />
                     </Button>
@@ -133,7 +150,9 @@ function ProductsTable({
       <AlertDialog
         open={!!productPendingDelete}
         onOpenChange={(open) => {
-          if (!open) {setProductPendingDelete(null);}
+          if (!open) {
+            setProductPendingDelete(null);
+          }
         }}
       >
         <AlertDialogContent>

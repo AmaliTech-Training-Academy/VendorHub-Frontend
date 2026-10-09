@@ -28,18 +28,18 @@ function StorefrontProductCard({
   return (
     <div
       style={{ animationDelay: `${Math.min(index, 8) * 50}ms` }}
-      className={`group w-100 flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:shadow-md hover:shadow-primary/10 ${
+      className={`group w-70 flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:shadow-md hover:shadow-primary/10 ${
         quantityInCart > 0 ? "border-primary/40" : "border-border"
       }`}
     >
       <ProductImage name={product.name} imageURL={product.imageUrl || null} />
 
-      <div className="flex flex-1 flex-col gap-1 p-3">
+      <div className="flex  flex-1 flex-col gap-1 p-3">
         <h3 className="truncate text-sm font-semibold leading-snug">
           {product.name}
         </h3>
 
-        <p className="line-clamp-1 text-xs text-muted-foreground">
+        <p className="line-clamp-2  text-xs text-muted-foreground">
           {product.description}
         </p>
 
