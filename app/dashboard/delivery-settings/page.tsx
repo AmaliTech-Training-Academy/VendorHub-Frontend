@@ -49,7 +49,7 @@ export default function DeliverySettingsPage() {
       )}
 
       {settings && (
-        <div className="w-full max-w-2xl rounded-lg border border-border bg-card p-5 sm:p-6">
+        <div className="w-full max-w-7xl rounded-lg border border-border bg-card p-5 sm:p-6">
           <DeliverySettingsForm
             defaultValues={settings}
             isSubmitting={updateSettings.isPending}
