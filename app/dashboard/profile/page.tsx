@@ -3,13 +3,14 @@
 import { Store } from "lucide-react";
 import { toast } from "sonner";
 
-
+import { EmptyState } from "@/components/shared/EmptyState";
 import { DashboardPageHeader } from "@/components/shared/layout/dashboard/DashboardPageHeader";
 import { DeliveryDetailsCard } from "@/components/shared/layout/dashboard/DeliveryDetailsCard";
 import { StoreIdentityCard } from "@/components/shared/layout/dashboard/StoreIdentityCard";
 import { VendorProfileForm } from "@/components/shared/layout/dashboard/VendorProfileForm";
 import { useDeliverySettings } from "@/hooks/useDeliverySettings";
 import { useVendorProfile } from "@/hooks/useVendorProfile";
+import { VENDOR_PROFILE_ENABLED } from "@/lib/constants";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const HEADER = {
@@ -20,18 +21,18 @@ const HEADER = {
 };
 
 export default function VendorProfilePage() {
-  // if (!VENDOR_PROFILE_ENABLED) {
-  //   return (
-  //     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-  //       <DashboardPageHeader {...HEADER} />
-  //       <EmptyState
-  //         icon={Store}
-  //         title="Store profile is coming soon"
-  //         description="Editing your address, phone, slogans and storefront image will be available here shortly."
-  //       />
-  //     </div>
-  //   );
-  // }
+  if (!VENDOR_PROFILE_ENABLED) {
+    return (
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+        <DashboardPageHeader {...HEADER} />
+        <EmptyState
+          icon={Store}
+          title="Store profile is coming soon"
+          description="Editing your address, phone, slogans and storefront image will be available here shortly."
+        />
+      </div>
+    );
+  }
 
   return <VendorProfileEditor />;
 }
