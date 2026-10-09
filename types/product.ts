@@ -6,8 +6,14 @@ import type {
 
 import type { z } from "zod";
 
-export type ProductFormValues = z.infer<typeof productSchema>;
-export type ProductFormInput = z.input<typeof productSchema>;
+export type ProductFormValues = z.infer<typeof productSchema> & {
+  image: File | null;
+  removeImage: boolean;
+};
+export type ProductFormInput = z.input<typeof productSchema> & {
+  image: File | null;
+  removeImage: boolean;
+};
 
 /** The vendor's own product, as returned by GET/POST/PATCH /api/products/. */
 export type Product = z.infer<typeof productResponseSchema>;
