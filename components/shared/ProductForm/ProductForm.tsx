@@ -21,6 +21,7 @@ import {
 } from "@/schemas/productSchema";
 import type { ProductFormInput, ProductFormValues } from "@/types/product";
 
+// ProductForm.tsx
 const DEFAULT_VALUES: ProductFormInput = {
   name: "",
   description: "",

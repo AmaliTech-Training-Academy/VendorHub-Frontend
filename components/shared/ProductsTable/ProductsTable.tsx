@@ -1,7 +1,14 @@
 "use client";
 import Image from "next/image";
 
-import { Loader2, Package, Pencil, Trash2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Package,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -25,8 +32,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { usePagination } from "@/hooks/usePagination";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types/product";
+
+const ITEMS_PER_PAGE = 10;
 
 function ProductsTable({
   products,
@@ -46,6 +56,12 @@ function ProductsTable({
   const [productPendingDelete, setProductPendingDelete] =
     useState<Product | null>(null);
 
+  const { page, setPage, pageCount, pageItems, total, pageSize } =
+    usePagination(products, ITEMS_PER_PAGE);
+
+  const rangeStart = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const rangeEnd = Math.min(page * pageSize, total);
+
   return (
     <>
       <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
@@ -60,7 +76,7 @@ function ProductsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
+            {pageItems.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
@@ -145,6 +161,70 @@ function ProductsTable({
             ))}
           </TableBody>
         </Table>
+
+        {/* Pagination footer */}
+        <div className="flex items-center justify-between border-t border-border px-4 py-4 sm:px-6">
+          <div className="flex flex-1 justify-between sm:hidden">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setPage(page - 1);
+              }}
+              disabled={page === 1}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setPage(page + 1);
+              }}
+              disabled={page === pageCount}
+            >
+              Next
+            </Button>
+          </div>
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <p className="text-sm text-muted-foreground">
+              Showing <span className="font-medium">{rangeStart}</span> to{" "}
+              <span className="font-medium">{rangeEnd}</span> of{" "}
+              <span className="font-medium">{total}</span> results
+            </p>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground">
+                Page {page} of {pageCount}
+              </span>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => {
+                    setPage(page - 1);
+                  }}
+                  disabled={page === 1}
+                  aria-label="Go to previous page"
+                >
+                  <ChevronLeft className="size-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => {
+                    setPage(page + 1);
+                  }}
+                  disabled={page === pageCount}
+                  aria-label="Go to next page"
+                >
+                  <ChevronRight className="size-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <AlertDialog
