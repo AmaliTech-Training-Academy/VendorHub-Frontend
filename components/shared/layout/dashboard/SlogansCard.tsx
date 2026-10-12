@@ -21,6 +21,9 @@ import type {
   VendorProfileFormValues,
 } from "@/types/vendorProfile";
 
+// Keep this in sync with the `.max(...)` on `slogans` in the vendor profile schema.
+const MAX_SLOGANS = 5;
+
 export function SlogansCard({
   control,
   register,
@@ -38,59 +41,74 @@ export function SlogansCard({
   >({ control, name: "slogans" });
 
   const slogansError = errors.slogans?.message ?? errors.slogans?.root?.message;
+  const canAddMore = fields.length < MAX_SLOGANS;
 
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>Slogan</CardTitle>
+        <CardTitle>Slogans</CardTitle>
         <CardDescription>
-          A short line shown on your storefront (max 150 characters)
+          Short lines that scroll across your storefront (up to {MAX_SLOGANS},
+          max 150 characters each)
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="flex items-start gap-2">
-            <div className="flex flex-1 flex-col gap-1.5">
-              <Input
-                {...register(`slogans.${index}.value` as const)}
-                maxLength={150}
-                placeholder="e.g. Local favorites, delivered."
-              />
-              {errors.slogans?.[index]?.value?.message && (
-                <Alert variant="destructive" className="px-3 py-2 text-xs">
-                  <AlertDescription>
-                    {errors.slogans[index].value.message}
-                  </AlertDescription>
-                </Alert>
-              )}
+        {fields.map((field, index) => {
+          const sloganError = errors.slogans?.[index]?.value?.message;
+
+          return (
+            <div key={field.id} className="flex items-start gap-2">
+              <div className="flex flex-1 flex-col gap-1.5">
+                <Input
+                  {...register(`slogans.${index}.value` as const)}
+                  maxLength={150}
+                  placeholder="e.g. Local favorites, delivered."
+                />
+                {sloganError && (
+                  <Alert variant="destructive" className="px-3 py-2 text-xs">
+                    <AlertDescription>{sloganError}</AlertDescription>
+                  </Alert>
+                )}
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  remove(index);
+                }}
+                aria-label={`Remove slogan ${index + 1}`}
+              >
+                <Trash2 className="size-4" />
+              </Button>
             </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => {remove(index)}}
-              aria-label="Remove slogan"
-            >
-              <Trash2 className="size-4" />
-            </Button>
-          </div>
-        ))}
+          );
+        })}
+
         {slogansError && (
           <Alert variant="destructive" className="px-3 py-2 text-xs">
             <AlertDescription>{slogansError}</AlertDescription>
           </Alert>
         )}
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="w-fit"
-          onClick={() => {append({ value: "" })}}
-          disabled={fields.length >= 1}
-        >
-          <Plus className="size-4" />
-          Add slogan
-        </Button>
+
+        <div className="flex items-center gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="w-fit"
+            onClick={() => {
+              append({ value: "" });
+            }}
+            disabled={!canAddMore}
+          >
+            <Plus className="size-4" />
+            Add slogan
+          </Button>
+          <span className="text-xs text-muted-foreground tabular-nums">
+            {fields.length} of {MAX_SLOGANS}
+          </span>
+        </div>
       </CardContent>
     </Card>
   );
