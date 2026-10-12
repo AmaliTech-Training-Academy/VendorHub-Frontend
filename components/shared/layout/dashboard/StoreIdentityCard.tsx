@@ -7,30 +7,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Vendor } from "@/types/vendor";
+
+// The storefront endpoint only returns address/phone/logo/slogan, so the
+// identity fields (id, name, categories) are optional here.
 
 type StoreIdentityCardProps = {
-  vendor: Vendor | undefined;
-  email: string | null;
-  isPending: boolean;
-  isError: boolean;
+  vendorId: string | null;
+  email?: string | null;
+  name: string | null;
+  isPending?: boolean;
+  isError?: boolean;
 };
 
 export function StoreIdentityCard({
-  vendor,
+  vendorId,
   email,
+  name,
   isPending,
   isError,
 }: StoreIdentityCardProps) {
   let storeName = "Unavailable";
-  let vendorId = "Unavailable";
+  let id = "Unavailable";
   if (isPending) {
     storeName = "Loading store...";
-    vendorId = "Loading...";
+    id = "Loading...";
   }
-  if (vendor) {
-    storeName = vendor.name;
-    vendorId = String(vendor.id);
+  if (name) {
+    storeName = name;
+  }
+  if (vendorId) {
+    id = vendorId;
   }
 
   return (
@@ -55,7 +61,7 @@ export function StoreIdentityCard({
           <span className="text-xs font-medium uppercase text-muted-foreground">
             Vendor ID
           </span>
-          <span className="font-mono text-sm">{vendorId}</span>
+          <span className="font-mono text-sm">{id}</span>
         </div>
         <div className="flex flex-col gap-1">
           <span className="flex items-center gap-2 text-xs font-medium uppercase text-muted-foreground">
@@ -66,23 +72,7 @@ export function StoreIdentityCard({
             {email ?? "Sign in again to load your email"}
           </span>
         </div>
-        {vendor && vendor.categories.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <span className="text-xs font-medium uppercase text-muted-foreground">
-              Categories
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {vendor.categories.map((category) => (
-                <span
-                  key={category}
-                  className="border border-border px-2 py-1 text-xs"
-                >
-                  {category}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
+
         {isError && (
           <p role="status" className="text-sm text-muted-foreground">
             Store details could not be loaded right now.

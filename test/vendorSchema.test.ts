@@ -12,9 +12,7 @@ describe("vendorSchema", () => {
         delivery_fee: null,
         available_days: null,
         delivery_windows: null,
-        slogans: null,
-        address: null,
-        phone: null,
+        storefront: null,
       }),
     ).toEqual({
       id: 1,
@@ -26,10 +24,11 @@ describe("vendorSchema", () => {
       slogans: [],
       address: null,
       phone: null,
+      storefrontImageUrl: null,
     });
   });
 
-  it("keeps address and phone as trimmed strings when provided", () => {
+  it("reads trimmed storefront details when provided", () => {
     const vendor = vendorSchema.parse({
       id: 1,
       business_name: "Vendor Kitchen",
@@ -37,12 +36,17 @@ describe("vendorSchema", () => {
       delivery_fee: null,
       available_days: null,
       delivery_windows: null,
-      slogans: null,
-      address: "  Ridge Office Park  ",
-      phone_number: "0241234567",
+      storefront: {
+        address: "  Ridge Office Park ",
+        phone_number: " 0241234567 ",
+        slogan: "Fresh from the oven",
+        logo: "https://example.com/logo.png",
+      },
     });
 
     expect(vendor.address).toBe("Ridge Office Park");
     expect(vendor.phone).toBe("0241234567");
+    expect(vendor.slogans).toEqual(["Fresh from the oven"]);
+    expect(vendor.storefrontImageUrl).toBe("https://example.com/logo.png");
   });
 });

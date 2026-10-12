@@ -11,8 +11,12 @@ import { formatPrice } from "@/lib/utils";
 import { WEEKDAY_LABELS } from "@/schemas/deliverySettingsSchema";
 import type { Vendor } from "@/types/vendor";
 
+type DeliveryDetails = Partial<
+  Pick<Vendor, "deliveryFee" | "availableDays" | "timeWindows">
+>;
+
 type DeliveryDetailsCardProps = {
-  vendor: Vendor | undefined;
+  vendor: DeliveryDetails | undefined;
   isPending: boolean;
 };
 
@@ -21,14 +25,16 @@ export function DeliveryDetailsCard({
   isPending,
 }: DeliveryDetailsCardProps) {
   const loadingOrUnset = isPending ? "Loading..." : "Not set";
-  let deliveryFee = loadingOrUnset;
-  if (vendor) {
-    deliveryFee =
-      vendor.deliveryFee === null ? "Not set" : formatPrice(vendor.deliveryFee);
-  }
-  const deliveryDays = vendor?.availableDays.length
+
+  const deliveryFee =
+    vendor?.deliveryFee === null
+      ? loadingOrUnset
+      : formatPrice(Number(vendor?.deliveryFee));
+
+  const deliveryDays = vendor?.availableDays?.length
     ? vendor.availableDays.map((day) => WEEKDAY_LABELS[day]).join(", ")
     : loadingOrUnset;
+
   const deliveryWindows = vendor?.timeWindows ?? [];
 
   return (
@@ -40,7 +46,7 @@ export function DeliveryDetailsCard({
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-5">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col  justify-between gap-3">
           <span className="flex items-center gap-2 text-sm text-muted-foreground">
             <Truck aria-hidden="true" className="size-4" />
             Delivery fee

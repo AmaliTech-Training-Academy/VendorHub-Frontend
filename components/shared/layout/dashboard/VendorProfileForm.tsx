@@ -25,7 +25,7 @@ export function VendorProfileForm({ form }: Props) {
     errors,
     isLoading,
     isProfilePending,
-    isProfileError,
+    // isProfileError,
     profile,
   } = form;
   let submitLabel = "Save changes";
@@ -80,7 +80,7 @@ export function VendorProfileForm({ form }: Props) {
       />
       <Button
         type="submit"
-        disabled={isLoading || isProfilePending || isProfileError}
+        // disabled={isLoading || isProfilePending || isProfileError}
         className="w-fit bg-orange-500 hover:bg-orange-600 xl:col-span-2"
       >
         {isLoading ? <Loader2 className="size-4 animate-spin" /> : null}
