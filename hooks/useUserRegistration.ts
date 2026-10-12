@@ -44,7 +44,7 @@ export const useUserRegistration = ({
           email: data.email,
           password: data.password,
           full_name: data.fullName,
-          phone: data.phone,
+          phone_number: data.phone,
           office_address: data.officeAddress,
         });
       }
