@@ -7,7 +7,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { useCurrentUser } from "@/hooks/useApproveVendor";
 import { homePathForRole } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
-import type { UserRole } from "@/types/types";
+import { UserRole } from "@/types/types";
 
 import { VerificationGuardModal } from "./VerificationGuardModal";
 import { AppLayoutSkeleton } from "../shared/layout/dashboard/AppLayoutSkeleton";
@@ -20,13 +20,8 @@ type Props = {
 
 const subscribeNoop = () => () => {};
 
-/**
- * Renders the contextually correct skeleton fallback framework based on user roles
- */
 function GuardSkeletonFallback({ role }: { role: UserRole | null }) {
-  // If the active profile is verified as a VENDOR, return the Dashboard view structure.
-  // Otherwise, default to the Storefront skeleton view structure (for EMPLOYEES or unauthenticated states).
-  if (role === "VENDOR") {
+  if (role === UserRole.VENDOR) {
     return <AppLayoutSkeleton />;
   }
   return <StorefrontLayoutSkeleton />;
@@ -76,8 +71,7 @@ export function AuthGuard({ children, allowedRoles }: Props) {
   if (!isClient || !isAllowed) {
     return <GuardSkeletonFallback role={role} />;
   }
-
-  if (role === "VENDOR") {
+  if (role === UserRole.VENDOR) {
     return <VendorApprovalGate>{children}</VendorApprovalGate>;
   }
 
