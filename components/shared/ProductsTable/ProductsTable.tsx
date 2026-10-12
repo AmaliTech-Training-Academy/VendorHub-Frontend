@@ -1,6 +1,14 @@
 "use client";
+import Image from "next/image";
 
-import { Loader2, Package, Pencil, Trash2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Package,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -24,8 +32,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { usePagination } from "@/hooks/usePagination";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types/product";
+
+const ITEMS_PER_PAGE = 10;
 
 function ProductsTable({
   products,
@@ -35,15 +46,21 @@ function ProductsTable({
   isDeleting,
   isTogglingId,
 }: {
-  products: Product[]
-  onEdit: (product: Product) => void
-  onDelete: (product: Product) => void
-  onToggleStock: (product: Product, inStock: boolean) => void
-  isDeleting?: boolean
-  isTogglingId?: number
+  products: Product[];
+  onEdit: (product: Product) => void;
+  onDelete: (product: Product) => void;
+  onToggleStock: (product: Product, inStock: boolean) => void;
+  isDeleting?: boolean;
+  isTogglingId?: number;
 }) {
   const [productPendingDelete, setProductPendingDelete] =
     useState<Product | null>(null);
+
+  const { page, setPage, pageCount, pageItems, total, pageSize } =
+    usePagination(products, ITEMS_PER_PAGE);
+
+  const rangeStart = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const rangeEnd = Math.min(page * pageSize, total);
 
   return (
     <>
@@ -59,12 +76,23 @@ function ProductsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
+            {pageItems.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <Package aria-hidden="true" className="size-5" />
+                    {/* Added relative positioning to parent container so 'fill' computes properly */}
+                    <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary/10 text-primary border border-border">
+                      {product.imageUrl ? (
+                        <Image
+                          src={product.imageUrl}
+                          alt={product.name}
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <Package aria-hidden="true" className="size-5" />
+                      )}
                     </div>
                     <div className="flex min-w-0 flex-col">
                       <span className="font-semibold">{product.name}</span>
@@ -85,8 +113,9 @@ function ProductsTable({
                     <Switch
                       checked={product.inStock}
                       disabled={isTogglingId === product.id}
-                      onCheckedChange={(checked) => { onToggleStock(product, checked); }
-                      }
+                      onCheckedChange={(checked) => {
+                        onToggleStock(product, checked);
+                      }}
                       aria-label={
                         product.inStock
                           ? "Mark as out of stock"
@@ -110,7 +139,9 @@ function ProductsTable({
                       variant="ghost"
                       size="icon-sm"
                       aria-label={`Edit ${product.name}`}
-                      onClick={() => { onEdit(product); }}
+                      onClick={() => {
+                        onEdit(product);
+                      }}
                     >
                       <Pencil />
                     </Button>
@@ -118,7 +149,9 @@ function ProductsTable({
                       variant="ghost"
                       size="icon-sm"
                       aria-label={`Delete ${product.name}`}
-                      onClick={() => { setProductPendingDelete(product); }}
+                      onClick={() => {
+                        setProductPendingDelete(product);
+                      }}
                     >
                       <Trash2 className="text-destructive" />
                     </Button>
@@ -128,12 +161,78 @@ function ProductsTable({
             ))}
           </TableBody>
         </Table>
+
+        {/* Pagination footer */}
+        <div className="flex items-center justify-between border-t border-border px-4 py-4 sm:px-6">
+          <div className="flex flex-1 justify-between sm:hidden">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setPage(page - 1);
+              }}
+              disabled={page === 1}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setPage(page + 1);
+              }}
+              disabled={page === pageCount}
+            >
+              Next
+            </Button>
+          </div>
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <p className="text-sm text-muted-foreground">
+              Showing <span className="font-medium">{rangeStart}</span> to{" "}
+              <span className="font-medium">{rangeEnd}</span> of{" "}
+              <span className="font-medium">{total}</span> results
+            </p>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground">
+                Page {page} of {pageCount}
+              </span>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => {
+                    setPage(page - 1);
+                  }}
+                  disabled={page === 1}
+                  aria-label="Go to previous page"
+                >
+                  <ChevronLeft className="size-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => {
+                    setPage(page + 1);
+                  }}
+                  disabled={page === pageCount}
+                  aria-label="Go to next page"
+                >
+                  <ChevronRight className="size-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <AlertDialog
         open={!!productPendingDelete}
         onOpenChange={(open) => {
-          if (!open) {setProductPendingDelete(null);}
+          if (!open) {
+            setProductPendingDelete(null);
+          }
         }}
       >
         <AlertDialogContent>
