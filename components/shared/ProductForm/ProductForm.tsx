@@ -32,6 +32,83 @@ const DEFAULT_VALUES: ProductFormInput = {
   removeImage: false,
 };
 
+function FieldError({ message }: { message?: string }) {
+  if (!message) {
+    return null;
+  }
+  return (
+    <p role="alert" className="text-sm text-destructive">
+      {message}
+    </p>
+  );
+}
+
+function ProductImageField({
+  shownImage,
+  error,
+  isSubmitting,
+  onSelect,
+  onRemove,
+}: {
+  shownImage: string | null;
+  error?: string;
+  isSubmitting?: boolean;
+  onSelect: (file: File | null) => void;
+  onRemove: () => void;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <Label htmlFor="product-image">Product image</Label>
+      <div className="flex items-center gap-3">
+        <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-muted/40">
+          {shownImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={shownImage}
+              alt="Product preview"
+              className="size-full object-cover"
+            />
+          ) : (
+            <ImagePlus
+              aria-hidden="true"
+              className="size-6 text-muted-foreground"
+            />
+          )}
+        </div>
+        <div className="flex min-w-0 flex-col gap-2">
+          <Input
+            id="product-image"
+            type="file"
+            accept={ACCEPTED_IMAGE_TYPES.join(",")}
+            aria-invalid={!!error}
+            disabled={isSubmitting}
+            onChange={(e) => {
+              onSelect(e.target.files?.[0] ?? null);
+            }}
+          />
+          {shownImage && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-fit"
+              disabled={isSubmitting}
+              onClick={onRemove}
+            >
+              <Trash2 className="size-4" />
+              Remove image
+            </Button>
+          )}
+        </div>
+      </div>
+      <p className="text-xs text-muted-foreground">
+        PNG, JPG, GIF or WebP, up to {MAX_PRODUCT_IMAGE_MB} MB. Optional.
+      </p>
+      <FieldError message={error} />
+    </div>
+  );
+}
+
 function ProductForm({
   defaultValues,
   imageUrl,
@@ -93,6 +170,22 @@ function ProductForm({
   // New file wins, then the saved image (unless the vendor removed it).
   const shownImage = preview ?? (removeImage ? null : (imageUrl ?? null));
 
+  function handleImageSelect(file: File | null) {
+    setValue("image", file, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+    if (file) {
+      setValue("removeImage", false);
+    }
+  }
+
+  function handleImageRemove() {
+    setValue("image", null, { shouldValidate: true });
+    // Only ask the backend to clear an image that already exists.
+    setValue("removeImage", Boolean(imageUrl));
+  }
+
   return (
     <form
       onSubmit={(e) => {
@@ -110,11 +203,7 @@ function ProductForm({
           disabled={isSubmitting}
           {...register("name")}
         />
-        {errors.name && (
-          <p role="alert" className="text-sm text-destructive">
-            {errors.name.message}
-          </p>
-        )}
+        <FieldError message={errors.name?.message} />
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -126,11 +215,7 @@ function ProductForm({
           disabled={isSubmitting}
           {...register("description")}
         />
-        {errors.description && (
-          <p role="alert" className="text-sm text-destructive">
-            {errors.description.message}
-          </p>
-        )}
+        <FieldError message={errors.description?.message} />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -146,11 +231,7 @@ function ProductForm({
             disabled={isSubmitting}
             {...register("price")}
           />
-          {errors.price && (
-            <p role="alert" className="text-sm text-destructive">
-              {errors.price.message}
-            </p>
-          )}
+          <FieldError message={errors.price?.message} />
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -170,78 +251,17 @@ function ProductForm({
               <option key={category} value={category} />
             ))}
           </datalist>
-          {errors.category && (
-            <p role="alert" className="text-sm text-destructive">
-              {errors.category.message}
-            </p>
-          )}
+          <FieldError message={errors.category?.message} />
         </div>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="product-image">Product image</Label>
-        <div className="flex items-center gap-3">
-          <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-muted/40">
-            {shownImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={shownImage}
-                alt="Product preview"
-                className="size-full object-cover"
-              />
-            ) : (
-              <ImagePlus
-                aria-hidden="true"
-                className="size-6 text-muted-foreground"
-              />
-            )}
-          </div>
-          <div className="flex min-w-0 flex-col gap-2">
-            <Input
-              id="product-image"
-              type="file"
-              accept={ACCEPTED_IMAGE_TYPES.join(",")}
-              aria-invalid={!!errors.image}
-              disabled={isSubmitting}
-              onChange={(e) => {
-                const file = e.target.files?.[0] ?? null;
-                setValue("image", file, {
-                  shouldValidate: true,
-                  shouldDirty: true,
-                });
-                if (file) {
-                  setValue("removeImage", false);
-                }
-              }}
-            />
-            {shownImage && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="w-fit"
-                disabled={isSubmitting}
-                onClick={() => {
-                  setValue("image", null, { shouldValidate: true });
-                  // Only ask the backend to clear an image that already exists.
-                  setValue("removeImage", Boolean(imageUrl));
-                }}
-              >
-                <Trash2 className="size-4" />
-                Remove image
-              </Button>
-            )}
-          </div>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          PNG, JPG, GIF or WebP, up to {MAX_PRODUCT_IMAGE_MB} MB. Optional.
-        </p>
-        {errors.image && (
-          <p role="alert" className="text-sm text-destructive">
-            {errors.image.message}
-          </p>
-        )}
-      </div>
+      <ProductImageField
+        shownImage={shownImage}
+        error={errors.image?.message}
+        isSubmitting={isSubmitting}
+        onSelect={handleImageSelect}
+        onRemove={handleImageRemove}
+      />
 
       <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
         <Label htmlFor="product-in-stock" className="cursor-pointer">
