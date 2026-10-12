@@ -6,7 +6,6 @@ import {
   ClipboardList,
   Loader2,
 } from "lucide-react";
-import { useState } from "react";
 
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { usePagination } from "@/hooks/usePagination";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { nextOrderStatus } from "@/schemas/orderSchema";
 import type { Order, OrderStatus } from "@/types/order";
@@ -40,19 +40,11 @@ function OrdersTable({
   onAdvance?: (order: Order, status: OrderStatus) => void;
   updatingOrderId?: string;
 }) {
-  // Pagination State
-  const [currentPage, setCurrentPage] = useState(1);
+  const { page, setPage, pageCount, pageItems, total, pageSize } =
+    usePagination(orders, ITEMS_PER_PAGE);
 
-  // Pagination Calculations
-  const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE) || 1;
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedOrders = orders.slice(startIndex, endIndex);
-
-  // Readjust active page if external filters or data reductions make it out of bounds
-  if (currentPage > totalPages) {
-    setCurrentPage(totalPages);
-  }
+  const rangeStart = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const rangeEnd = Math.min(page * pageSize, total);
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
@@ -72,7 +64,7 @@ function OrdersTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {paginatedOrders.length === 0 ? (
+          {pageItems.length === 0 ? (
             <TableRow>
               <TableCell
                 colSpan={onAdvance ? 6 : 5}
@@ -82,7 +74,7 @@ function OrdersTable({
               </TableCell>
             </TableRow>
           ) : (
-            paginatedOrders.map((order) => (
+            pageItems.map((order) => (
               <TableRow key={order.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
@@ -122,7 +114,7 @@ function OrdersTable({
         </TableBody>
       </Table>
 
-      {/* Pagination Footer Container */}
+      {/* Pagination footer */}
       <div className="flex items-center justify-between border-t border-border px-4 py-4 sm:px-6">
         {/* Mobile Layout */}
         <div className="flex flex-1 justify-between sm:hidden">
@@ -130,9 +122,9 @@ function OrdersTable({
             variant="outline"
             size="sm"
             onClick={() => {
-              setCurrentPage((prev) => Math.max(prev - 1, 1));
+              setPage(page - 1);
             }}
-            disabled={currentPage === 1}
+            disabled={page === 1}
           >
             Previous
           </Button>
@@ -140,9 +132,9 @@ function OrdersTable({
             variant="outline"
             size="sm"
             onClick={() => {
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+              setPage(page + 1);
             }}
-            disabled={currentPage === totalPages}
+            disabled={page === pageCount}
           >
             Next
           </Button>
@@ -150,22 +142,14 @@ function OrdersTable({
 
         {/* Desktop Layout */}
         <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">
-              Showing{" "}
-              <span className="font-medium">
-                {orders.length === 0 ? 0 : startIndex + 1}
-              </span>{" "}
-              to{" "}
-              <span className="font-medium">
-                {Math.min(endIndex, orders.length)}
-              </span>{" "}
-              of <span className="font-medium">{orders.length}</span> results
-            </p>
-          </div>
+          <p className="text-sm text-muted-foreground">
+            Showing <span className="font-medium">{rangeStart}</span> to{" "}
+            <span className="font-medium">{rangeEnd}</span> of{" "}
+            <span className="font-medium">{total}</span> results
+          </p>
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-muted-foreground">
-              Page {currentPage} of {totalPages}
+              Page {page} of {pageCount}
             </span>
             <div className="flex items-center gap-1">
               <Button
@@ -173,9 +157,9 @@ function OrdersTable({
                 size="icon"
                 className="size-8"
                 onClick={() => {
-                  setCurrentPage((prev) => Math.max(prev - 1, 1));
+                  setPage(page - 1);
                 }}
-                disabled={currentPage === 1}
+                disabled={page === 1}
                 aria-label="Go to previous page"
               >
                 <ChevronLeft className="size-4" />
@@ -185,9 +169,9 @@ function OrdersTable({
                 size="icon"
                 className="size-8"
                 onClick={() => {
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                  setPage(page + 1);
                 }}
-                disabled={currentPage === totalPages}
+                disabled={page === pageCount}
                 aria-label="Go to next page"
               >
                 <ChevronRight className="size-4" />
