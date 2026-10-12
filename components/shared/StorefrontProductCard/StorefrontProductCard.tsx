@@ -8,6 +8,10 @@ import type { VendorProduct } from "@/types/product";
 
 import { ProductImage } from "../layout/storefront/catalogue/ProductImage";
 
+// Stretches the button's hit area over the whole card (the card is `relative`).
+const STRETCH =
+  "cursor-pointer after:absolute after:inset-0 after:content-['']";
+
 function StorefrontProductCard({
   product,
   quantityInCart = 0,
@@ -28,18 +32,18 @@ function StorefrontProductCard({
   return (
     <div
       style={{ animationDelay: `${Math.min(index, 8) * 50}ms` }}
-      className={`group w-70 flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:shadow-md hover:shadow-primary/10 ${
+      className={`group relative w-70 flex select-none flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards motion-reduce:animate-none hover:shadow-md hover:shadow-primary/10 active:scale-[0.99] has-focus-visible:ring-2 has-focus-visible:ring-ring ${
         quantityInCart > 0 ? "border-primary/40" : "border-border"
       }`}
     >
       <ProductImage name={product.name} imageURL={product.imageUrl || null} />
 
-      <div className="flex  flex-1 flex-col gap-1 p-3">
+      <div className="flex flex-1 flex-col gap-1 p-3">
         <h3 className="truncate text-sm font-semibold leading-snug">
           {product.name}
         </h3>
 
-        <p className="line-clamp-2  text-xs text-muted-foreground">
+        <p className="line-clamp-2 text-xs text-muted-foreground">
           {product.description}
         </p>
 
@@ -54,10 +58,12 @@ function StorefrontProductCard({
               aria-label={`Quantity of ${product.name} in cart`}
               className="flex items-center gap-0.5 rounded-full bg-primary/10 p-0.5"
             >
+              {/* z-10 lifts minus above the card-wide overlay from the plus button */}
               <Button
+                type="button"
                 size="icon-sm"
                 variant="ghost"
-                className="size-6 rounded-full"
+                className="relative z-10 size-6 cursor-pointer rounded-full"
                 aria-label={`Remove one ${product.name}`}
                 onClick={() => {
                   onDecrease(product.id);
@@ -71,9 +77,11 @@ function StorefrontProductCard({
               >
                 {quantityInCart}
               </span>
+              {/* Stretched: clicking anywhere else on the card hits this button */}
               <Button
+                type="button"
                 size="icon-sm"
-                className="size-6 rounded-full"
+                className={`size-6 rounded-full ${STRETCH}`}
                 aria-label={`Add one more ${product.name}`}
                 onClick={() => {
                   onIncrease(product.id);
@@ -84,8 +92,9 @@ function StorefrontProductCard({
             </div>
           ) : (
             <Button
+              type="button"
               size="icon-sm"
-              className="size-6 rounded-full"
+              className={`size-6 rounded-full ${STRETCH}`}
               aria-label={`Add ${product.name}`}
               onClick={() => {
                 onAdd(product);
