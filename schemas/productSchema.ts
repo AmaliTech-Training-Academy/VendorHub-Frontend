@@ -2,6 +2,14 @@ import { z } from "zod";
 
 import { parseDecimal } from "@/lib/api/mapping";
 
+export const MAX_PRODUCT_IMAGE_MB = 2; // mirrors MAX_IMAGE_SIZE_MB on the backend
+export const ACCEPTED_IMAGE_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/gif",
+  "image/webp",
+];
+
 /**
  * The backend's category is a free-form nullable string (maxLength 255),
  * not an enum. These are kept as suggestions only — offered in the form's
@@ -34,7 +42,7 @@ export const productSchema = z.object({
     .max(1_000_000, "Price must be GHS 1,000,000 or less")
     .refine(
       (value) => Math.round(value * 100) / 100 === value,
-      "Price can have at most 2 decimal places"
+      "Price can have at most 2 decimal places",
     ),
   category: z
     .string()
@@ -42,6 +50,18 @@ export const productSchema = z.object({
     .min(1, "Enter a category")
     .max(255, "Category must be 255 characters or fewer"),
   inStock: z.boolean(),
+  image: z
+    .custom<File>((value) => value instanceof File, "Choose a valid image")
+    .refine(
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+      "Use a PNG, JPG, GIF or WebP image",
+    )
+    .refine(
+      (file) => file.size <= MAX_PRODUCT_IMAGE_MB * 1024 * 1024,
+      `Image must be ${MAX_PRODUCT_IMAGE_MB} MB or smaller`,
+    )
+    .nullable(),
+  removeImage: z.boolean(),
 });
 
 /**
@@ -59,6 +79,7 @@ const productApiSchema = z.object({
   in_stock: z.boolean(),
   created_at: z.string(),
   updated_at: z.string(),
+  image: z.string().nullable(),
 });
 
 export const productResponseSchema = productApiSchema.transform((raw) => ({
@@ -71,6 +92,7 @@ export const productResponseSchema = productApiSchema.transform((raw) => ({
   inStock: raw.in_stock,
   createdAt: raw.created_at,
   updatedAt: raw.updated_at,
+  imageUrl: raw.image,
 }));
 
 /**
@@ -85,6 +107,7 @@ const vendorProductApiSchema = z.object({
   category: z.string().nullable(),
   price: z.string(),
   in_stock: z.boolean(),
+  image: z.string().nullable().optional(),
 });
 
 export const vendorProductSchema = vendorProductApiSchema.transform((raw) => ({
@@ -94,4 +117,5 @@ export const vendorProductSchema = vendorProductApiSchema.transform((raw) => ({
   category: raw.category ?? "",
   price: parseDecimal(raw.price),
   inStock: raw.in_stock,
+  imageUrl: raw.image ?? null,
 }));
