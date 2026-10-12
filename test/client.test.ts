@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { UserRole } from "@/types/types";
+
 import type * as ClientModule from "../lib/api/client";
 
 const apiUrl = "https://api.vendorhub.test";
@@ -129,7 +131,7 @@ describe("apiRequest error messages", () => {
     const { useAuthStore } = await import("../store/useAuthStore");
     useAuthStore
       .getState()
-      .setAuth("VENDOR", "expired-token", "refresh-token", 1);
+      .setAuth(UserRole.VENDOR, "expired-token", "refresh-token", 1);
     vi.mocked(fetch).mockResolvedValue(
       new Response(JSON.stringify({ detail: "Token expired." }), {
         status: 401,
@@ -146,7 +148,7 @@ describe("apiRequest error messages", () => {
     const { useAuthStore } = await import("../store/useAuthStore");
     useAuthStore
       .getState()
-      .setAuth("EMPLOYEE", "access-token", "refresh-token", 2);
+      .setAuth(UserRole.EMPLOYEE, "access-token", "refresh-token", 2);
     vi.mocked(fetch).mockResolvedValue(
       new Response(JSON.stringify({ detail: "Invalid credentials." }), {
         status: 401,
