@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +9,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "cn";
 
 import { LogOut, Menu, Receipt, ShoppingCart, Store, User } from "lucide-react";
+import { useState } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
