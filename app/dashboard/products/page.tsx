@@ -84,7 +84,18 @@ function ProductDialog({
         {state && (
           <ProductForm
             key={product?.id ?? "add"}
-            defaultValues={product}
+            // page.tsx, in ProductDialog
+            defaultValues={
+              product && {
+                name: product.name,
+                description: product.description,
+                price: product.price,
+                category: product.category,
+                inStock: product.inStock,
+                image: null,
+                removeImage: false,
+              }
+            }
             submitLabel={copy.submitLabel}
             submittingLabel={copy.submittingLabel}
             submitError={submitError}

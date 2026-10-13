@@ -15,12 +15,15 @@ import { cn } from "@/lib/utils";
 import { PRODUCT_CATEGORIES, productSchema } from "@/schemas/productSchema";
 import type { ProductFormInput, ProductFormValues } from "@/types/product";
 
+// ProductForm.tsx
 const DEFAULT_VALUES: ProductFormInput = {
   name: "",
   description: "",
   price: "",
   category: "",
   inStock: true,
+  image: null,
+  removeImage: false,
 };
 
 function ProductForm({
@@ -56,7 +59,9 @@ function ProductForm({
 
   return (
     <form
-      onSubmit={(e) => { void handleSubmit(onSubmit)(e); }}
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
       className="flex flex-col gap-4 "
       noValidate
     >
@@ -145,7 +150,9 @@ function ProductForm({
           id="product-in-stock"
           checked={inStock}
           disabled={isSubmitting}
-          onCheckedChange={(checked) => { setValue("inStock", checked); }}
+          onCheckedChange={(checked) => {
+            setValue("inStock", checked);
+          }}
         />
       </div>
 
