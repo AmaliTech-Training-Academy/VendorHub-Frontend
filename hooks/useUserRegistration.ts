@@ -7,6 +7,7 @@ import { registerSchema } from "@/schemas/registerSchema";
 import type { RegisterFormData } from "@/schemas/registerSchema";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { UseUserRegistrationOptions } from "@/types/interfaces";
+import { UserRole } from "@/types/types";
 import type { RegisterFormValues } from "@/types/types";
 
 import type { Resolver } from "react-hook-form";
@@ -31,7 +32,7 @@ export const useUserRegistration = ({
 
   const mutation = useMutation({
     mutationFn: async (data: RegisterFormData) => {
-      if (data.role === "VENDOR") {
+      if (data.role === UserRole.VENDOR) {
         await registerVendor({
           email: data.email,
           password: data.password,
@@ -43,6 +44,8 @@ export const useUserRegistration = ({
           email: data.email,
           password: data.password,
           full_name: data.fullName,
+          phone_number: data.phone,
+          office_address: data.officeAddress,
         });
       }
       return loginUser({ email: data.email, password: data.password });

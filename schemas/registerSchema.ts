@@ -1,8 +1,10 @@
-// types/registerSchema.ts
+// schemas/registerSchema.ts
 import { z } from "zod";
 
+import { UserRole } from "@/types/types";
+
 export const vendorRegisterSchema = z.object({
-  role: z.literal("VENDOR"),
+  role: z.literal(UserRole.VENDOR),
   email: z.email("Please enter a valid email"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   businessName: z.string().min(1, "Business name is required").max(255),
@@ -10,10 +12,21 @@ export const vendorRegisterSchema = z.object({
 });
 
 export const employeeRegisterSchema = z.object({
-  role: z.literal("EMPLOYEE"),
+  role: z.literal(UserRole.EMPLOYEE),
   email: z.email("Please enter a valid email"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   fullName: z.string().min(1, "Full name is required").max(255),
+  officeAddress: z.string().min(1),
+  phone: z
+    .union([z.string(), z.number()])
+    .nullable()
+    .optional()
+    .transform((val) => {
+      if (val === null || val === undefined) {
+        return "";
+      }
+      return String(val);
+    }),
 });
 
 export const registerSchema = z.discriminatedUnion("role", [

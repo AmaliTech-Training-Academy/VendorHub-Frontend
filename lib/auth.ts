@@ -1,7 +1,7 @@
-import type { UserRole } from "@/types/types";
+import { UserRole } from "@/types/types";
 
 export function homePathForRole(role: UserRole): string {
-  return role === "VENDOR" ? "/dashboard/products" : "/storefront";
+  return role === UserRole.VENDOR ? "/dashboard/products" : "/storefront";
 }
 
 export function isAccessTokenExpired(accessToken: string): boolean {

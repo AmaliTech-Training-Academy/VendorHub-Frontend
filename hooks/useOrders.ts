@@ -13,12 +13,16 @@ export function ordersQueryKey(userId: string) {
  * history (the backend scopes the list by token). Polls so new orders and
  * status changes show up without a refresh; polling pauses in background tabs.
  */
-export function useOrders(userId: string) {
+export function useOrders(
+  userId: string,
+  { pollInBackground = false }: { pollInBackground?: boolean } = {},
+) {
   return useQuery({
     queryKey: ordersQueryKey(userId),
     queryFn: fetchOrders,
     enabled: Boolean(userId),
     refetchInterval: 20_000,
+    refetchIntervalInBackground: pollInBackground,
   });
 }
 
@@ -39,13 +43,20 @@ export function useUpdateOrderStatus(userId: string) {
   const queryKey = ordersQueryKey(userId);
 
   return useMutation({
-    mutationFn: ({ orderId, status }: { orderId: string; status: OrderStatus }) =>
-      updateOrderStatus(orderId, status),
+    mutationFn: ({
+      orderId,
+      status,
+    }: {
+      orderId: string;
+      status: OrderStatus;
+    }) => updateOrderStatus(orderId, status),
     onMutate: async ({ orderId, status }) => {
       await queryClient.cancelQueries({ queryKey });
       const previous = queryClient.getQueryData<Order[]>(queryKey);
       queryClient.setQueryData<Order[]>(queryKey, (orders) =>
-        orders?.map((order) => (order.id === orderId ? { ...order, status } : order)),
+        orders?.map((order) =>
+          order.id === orderId ? { ...order, status } : order,
+        ),
       );
       return { previous };
     },

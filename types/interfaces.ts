@@ -16,7 +16,7 @@ export interface User {
   id: string;
   email: string;
   password: string;
-  role: "VENDOR" | "EMPLOYEE";
+  role: UserRole;
   businessName?: string;
   ownerName?: string;
   fullName?: string;
@@ -94,7 +94,7 @@ export interface AuthConfig {
 export interface RegisterResponse {
   id: number;
   email: string;
-  role: "VENDOR" | "EMPLOYEE";
+  role: UserRole;
 }
 
 export interface LoginResponse {
@@ -102,6 +102,11 @@ export interface LoginResponse {
   refresh: string;
   id: number;
   email: string;
-  role: "VENDOR" | "EMPLOYEE";
+  role: UserRole;
   name?: string;
+}
+
+export interface CurrentUserResponse {
+  role: string;
+  verification_status: string | null;
 }
