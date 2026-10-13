@@ -22,7 +22,7 @@ import { formatDate, formatPrice } from "@/lib/utils";
 import { nextOrderStatus } from "@/schemas/orderSchema";
 import type { Order, OrderStatus } from "@/types/order";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 5;
 
 const ADVANCE_LABEL: Record<OrderStatus, string> = {
   received: "Mark received",

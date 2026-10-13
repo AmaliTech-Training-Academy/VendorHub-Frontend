@@ -35,7 +35,7 @@ function ContactDetailsHarness() {
 }
 
 function SlogansHarness() {
-  const { control, register, formState } = useForm<VendorProfileFormInput>({
+  const { register, formState } = useForm<VendorProfileFormInput>({
     defaultValues: {
       address: "Ridge Office Park",
       phone: "0241234567",
@@ -44,7 +44,6 @@ function SlogansHarness() {
   });
 
   return createElement(SlogansCard, {
-    control,
     register,
     errors: formState.errors,
   });
@@ -73,12 +72,12 @@ describe("standalone vendor profile cards", () => {
     expect(markup).toContain('name="phone"');
   });
 
-  it("renders a standalone slogan field array", () => {
+  it("renders a single slogan field", () => {
     const markup = renderToStaticMarkup(createElement(SlogansHarness));
 
     expect(markup).toContain("Slogan");
     expect(markup).toContain('name="slogans.0.value"');
-    expect(markup).toContain("Add slogan");
+    expect(markup).not.toContain("Add slogan");
   });
 
   it("renders store identity independently", () => {
