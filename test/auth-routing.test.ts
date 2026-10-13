@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { UserRole } from "@/types/types";
+
 import { homePathForRole, isAccessTokenExpired } from "../lib/auth";
 
 function tokenWithExpiry(exp: number): string {
@@ -12,8 +14,8 @@ function tokenWithExpiry(exp: number): string {
 
 describe("auth routing", () => {
   it("uses the correct landing route for each role", () => {
-    expect(homePathForRole("VENDOR")).toBe("/dashboard/products");
-    expect(homePathForRole("EMPLOYEE")).toBe("/storefront");
+    expect(homePathForRole(UserRole.VENDOR)).toBe("/dashboard/products");
+    expect(homePathForRole(UserRole.EMPLOYEE)).toBe("/storefront");
   });
 
   it("recognizes expired and active JWT access tokens", () => {
