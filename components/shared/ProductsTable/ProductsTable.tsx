@@ -36,7 +36,7 @@ import { usePagination } from "@/hooks/usePagination";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 5;
 
 function ProductsTable({
   products,
