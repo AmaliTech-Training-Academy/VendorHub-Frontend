@@ -65,6 +65,15 @@ const directorySlides: [PageHeaderSlide, ...PageHeaderSlide[]] = [
   },
 ];
 
+function getHighestDeliveryFee(vendors: { deliveryFee: number | null }[]) {
+  return Math.max(
+    0,
+    ...vendors.flatMap((vendor) =>
+      vendor.deliveryFee === null ? [] : [vendor.deliveryFee],
+    ),
+  );
+}
+
 export function VendorDirectoryPage() {
   const { data: vendors, isPending, isError } = useVendors();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -74,16 +83,13 @@ export function VendorDirectoryPage() {
   const groups = groupVendorsByCategory(vendorList);
   const feeFilteredGroups = filterVendorGroups(groups, null, feeRange);
   const visibleGroups = filterVendorGroups(groups, selectedCategory, feeRange);
-  const highestDeliveryFee = Math.max(
-    0,
-    ...vendorList.flatMap((vendor) =>
-      vendor.deliveryFee === null ? [] : [vendor.deliveryFee],
-    ),
-  );
+  const highestDeliveryFee = getHighestDeliveryFee(vendorList);
   const feeRangeLimit =
     highestDeliveryFee > 0 ? Number(highestDeliveryFee.toFixed(2)) : 1;
   const matchingVendorCount = countVendorsInGroups(feeFilteredGroups);
   const hasVendors = vendorList.length > 0;
+  const isReady = !isPending && !isError;
+  const hasActiveFilters = !!selectedCategory || !!feeRange;
 
   function handleFeeRangeChange(range: DeliveryFeeRange) {
     setFeeRange(normalizeFeeRange(range, feeRangeLimit));
@@ -112,7 +118,7 @@ export function VendorDirectoryPage() {
           </AlertDescription>
         </Alert>
       )}
-      {!isPending && !isError && !hasVendors && (
+      {isReady && !hasVendors && (
         <EmptyState
           icon={Store}
           title="No vendors available"
@@ -120,7 +126,7 @@ export function VendorDirectoryPage() {
         />
       )}
 
-      {!isPending && !isError && hasVendors && (
+      {isReady && hasVendors && (
         <div className="grid items-start gap-8 lg:grid-cols-[14rem_minmax(0,1fr)]">
           <div className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-24">
             <div className="flex flex-col gap-3 lg:hidden">
@@ -131,7 +137,7 @@ export function VendorDirectoryPage() {
                   variant="ghost"
                   size="sm"
                   onClick={resetFilters}
-                  disabled={!selectedCategory && !feeRange}
+                  disabled={!hasActiveFilters}
                 >
                   <RotateCcw aria-hidden="true" />
                   Reset
@@ -208,7 +214,7 @@ export function VendorDirectoryPage() {
                   variant="ghost"
                   size="sm"
                   onClick={resetFilters}
-                  disabled={!selectedCategory && !feeRange}
+                  disabled={!hasActiveFilters}
                   aria-label="Reset filters"
                 >
                   <RotateCcw aria-hidden="true" />

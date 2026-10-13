@@ -7,10 +7,11 @@ import { useEffect, useSyncExternalStore } from "react";
 import { useCurrentUser } from "@/hooks/useApproveVendor";
 import { homePathForRole } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
-import type { UserRole } from "@/types/types";
+import { UserRole, VerificationStatus } from "@/types/types";
 
 import { VerificationGuardModal } from "./VerificationGuardModal";
-import { Spinner } from "../ui/spinner";
+import { AppLayoutSkeleton } from "../shared/layout/dashboard/AppLayoutSkeleton";
+import { StorefrontLayoutSkeleton } from "../shared/layout/storefront/StorefrontLayoutSkeleton";
 
 type Props = {
   children: React.ReactNode;
@@ -19,27 +20,25 @@ type Props = {
 
 const subscribeNoop = () => () => {};
 
-function FullScreenSpinner() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Spinner className="size-6 text-orange-500" />
-    </div>
-  );
+function GuardSkeletonFallback({ role }: { role: UserRole | null }) {
+  if (role === UserRole.VENDOR) {
+    return <AppLayoutSkeleton />;
+  }
+  return <StorefrontLayoutSkeleton />;
 }
 
-/**
- * Only vendors go through admin approval, so the server-side verification
- * lookup lives in its own component. It is mounted for vendors alone, which
- * means employees never trigger the request or wait on it.
- */
 function VendorApprovalGate({ children }: { children: React.ReactNode }) {
   const { data: serverUser, isLoading } = useCurrentUser();
+  const role = useAuthStore((state) => state.role);
 
   if (isLoading) {
-    return <FullScreenSpinner />;
+    return <GuardSkeletonFallback role={role} />;
   }
 
-  if (serverUser && serverUser.verification_status !== "APPROVED") {
+  if (
+    serverUser &&
+    serverUser.verification_status !== VerificationStatus.APPROVED
+  ) {
     return <VerificationGuardModal status={serverUser.verification_status} />;
   }
 
@@ -71,12 +70,11 @@ export function AuthGuard({ children, allowedRoles }: Props) {
     }
   }, [accessToken, role, allowedRoles, router]);
 
-  // Keep showing the spinner during hydration or while redirecting
+  // Handle Hydration or Redirection States safely with context matching skeletons
   if (!isClient || !isAllowed) {
-    return <FullScreenSpinner />;
+    return <GuardSkeletonFallback role={role} />;
   }
-
-  if (role === "VENDOR") {
+  if (role === UserRole.VENDOR) {
     return <VendorApprovalGate>{children}</VendorApprovalGate>;
   }
 
