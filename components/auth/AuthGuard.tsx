@@ -7,7 +7,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { useCurrentUser } from "@/hooks/useApproveVendor";
 import { homePathForRole } from "@/lib/auth";
 import { useAuthStore } from "@/store/useAuthStore";
-import { UserRole } from "@/types/types";
+import { UserRole, VerificationStatus } from "@/types/types";
 
 import { VerificationGuardModal } from "./VerificationGuardModal";
 import { AppLayoutSkeleton } from "../shared/layout/dashboard/AppLayoutSkeleton";
@@ -35,7 +35,10 @@ function VendorApprovalGate({ children }: { children: React.ReactNode }) {
     return <GuardSkeletonFallback role={role} />;
   }
 
-  if (serverUser && serverUser.verification_status !== "APPROVED") {
+  if (
+    serverUser &&
+    serverUser.verification_status !== VerificationStatus.APPROVED
+  ) {
     return <VerificationGuardModal status={serverUser.verification_status} />;
   }
 

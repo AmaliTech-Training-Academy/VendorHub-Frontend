@@ -3,6 +3,11 @@ export enum UserRole {
   EMPLOYEE = "EMPLOYEE",
 }
 
+export enum VerificationStatus {
+  APPROVED = "APPROVED",
+  PENDING = "PENDING",
+}
+
 export type LoginFormData = {
   email: string;
   password: string;
